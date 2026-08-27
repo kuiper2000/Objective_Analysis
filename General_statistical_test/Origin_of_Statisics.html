@@ -363,6 +363,13 @@
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-origin-of-statistics-why-the-bell-curve">The origin of statistics: why the bell curve?</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#a-practical-problem-combining-noisy-measurements">A practical problem: combining noisy measurements</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#setting-up-the-likelihood">Setting up the likelihood</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-key-constraint-forcing-the-mean-to-be-optimal">The key constraint: forcing the mean to be optimal</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#from-the-constraint-to-an-ode">From the constraint to an ODE</a></li>
+</ul>
+</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mean-variance-and-higher-moments">Mean, variance and higher moments</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mean">Mean</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#median">Median</a></li>
@@ -439,6 +446,65 @@
                   
   <section class="tex2jax_ignore mathjax_ignore" id="week-1-rule101">
 <span id="origin-of-statisics"></span><h1>Week 1: Rule101<a class="headerlink" href="#week-1-rule101" title="Link to this heading">#</a></h1>
+<section id="the-origin-of-statistics-why-the-bell-curve">
+<h2>The origin of statistics: why the bell curve?<a class="headerlink" href="#the-origin-of-statistics-why-the-bell-curve" title="Link to this heading">#</a></h2>
+<p>Before diving into means and variances, it’s worth asking a more basic question: why does so much of statistics revolve around one particular curve, the Gaussian? The answer has a clean historical and mathematical origin, and walking through it will motivate almost everything else in this section.</p>
+<section id="a-practical-problem-combining-noisy-measurements">
+<h3>A practical problem: combining noisy measurements<a class="headerlink" href="#a-practical-problem-combining-noisy-measurements" title="Link to this heading">#</a></h3>
+<p>Imagine an early 19th-century astronomer repeatedly measuring the position of a star. Every observation gives a slightly different number,</p>
+<div class="math notranslate nohighlight">
+\[x_1, x_2, x_3, \dots, x_N,\]</div>
+<p>due to measurement error, yet everyone agrees there is a single true position, <span class="math notranslate nohighlight">\(\mu\)</span>. Astronomers and geodesists had long used the arithmetic mean <span class="math notranslate nohighlight">\(\overline{x}\)</span> as their best estimate of <span class="math notranslate nohighlight">\(\mu\)</span>, but until the early 1800s, nobody had shown <em>why</em> the mean should be the right choice rather than, say, the median or some other combination of the data.</p>
+<p>This is the problem Carl Friedrich Gauss tackled in <em>Theoria Motus</em> (1809), and his solution is what ties the normal distribution directly to an ordinary differential equation.</p>
+</section>
+<section id="setting-up-the-likelihood">
+<h3>Setting up the likelihood<a class="headerlink" href="#setting-up-the-likelihood" title="Link to this heading">#</a></h3>
+<p>Suppose measurement errors follow some (unknown) probability density <span class="math notranslate nohighlight">\(f(e)\)</span>, symmetric about zero. Then, given a candidate true value <span class="math notranslate nohighlight">\(\mu\)</span>, the probability (likelihood) of observing the data you actually got is</p>
+<div class="math notranslate nohighlight">
+\[L(\mu) = \prod_{i=1}^{N} f(x_i - \mu)\]</div>
+<p>The best estimate of <span class="math notranslate nohighlight">\(\mu\)</span> is the one that maximizes <span class="math notranslate nohighlight">\(L(\mu)\)</span> — the value that makes the observed data most probable. Taking logs (to turn the product into a sum, which is easier to differentiate) gives the log-likelihood</p>
+<div class="math notranslate nohighlight">
+\[\ln L(\mu) = \sum_{i=1}^{N}\ln f(x_i - \mu)\]</div>
+<p>Differentiating with respect to <span class="math notranslate nohighlight">\(\mu\)</span> and setting the result to zero (the usual condition for a maximum) gives</p>
+<div class="math notranslate nohighlight">
+\[\sum_{i=1}^{N}\varphi(x_i - \mu) = 0, \qquad \text{where } \varphi(e) \equiv \frac{f'(e)}{f(e)}\]</div>
+<p>Note that this condition holds for <em>any</em> error density <span class="math notranslate nohighlight">\(f\)</span> — nothing Gaussian has been assumed yet.</p>
+</section>
+<section id="the-key-constraint-forcing-the-mean-to-be-optimal">
+<h3>The key constraint: forcing the mean to be optimal<a class="headerlink" href="#the-key-constraint-forcing-the-mean-to-be-optimal" title="Link to this heading">#</a></h3>
+<p>Gauss then imposed the requirement he was really after: whatever <span class="math notranslate nohighlight">\(f\)</span> turns out to be, the solution to the equation above should always be <span class="math notranslate nohighlight">\(\mu = \overline{x}\)</span>, no matter which sample was drawn. This is a strong demand — it is not automatically true for an arbitrary <span class="math notranslate nohighlight">\(f\)</span>, and it is exactly the extra assumption needed to pin down the shape of <span class="math notranslate nohighlight">\(f\)</span>.</p>
+<p>It turns out this holds for every possible sample only if <span class="math notranslate nohighlight">\(\varphi\)</span> is a straight line through the origin,</p>
+<div class="math notranslate nohighlight">
+\[\varphi(e) = -he, \qquad h &gt; 0\]</div>
+<div class="tip admonition">
+<p class="admonition-title">Why linearity is required</p>
+<p>If <span class="math notranslate nohighlight">\(\varphi(e) = -he\)</span>, then</p>
+<div class="math notranslate nohighlight">
+\[\sum_{i=1}^N \varphi(x_i-\mu) = -h\sum_{i=1}^N (x_i - \mu) = -h(N\overline{x} - N\mu)\]</div>
+<p>Setting this to zero gives <span class="math notranslate nohighlight">\(\mu = \overline{x}\)</span> automatically, for <em>any</em> sample. Try any nonlinear <span class="math notranslate nohighlight">\(\varphi\)</span> and this stops being true in general — linearity is what makes the mean universally optimal.</p>
+</div>
+</section>
+<section id="from-the-constraint-to-an-ode">
+<h3>From the constraint to an ODE<a class="headerlink" href="#from-the-constraint-to-an-ode" title="Link to this heading">#</a></h3>
+<p>Recalling that <span class="math notranslate nohighlight">\(\varphi(e) = f'(e)/f(e)\)</span>, the constraint becomes a first-order, separable ordinary differential equation:</p>
+<div class="math notranslate nohighlight">
+\[\frac{f'(e)}{f(e)} = -he\]</div>
+<p>Separating variables and integrating both sides,</p>
+<div class="math notranslate nohighlight">
+\[\int \frac{df}{f} = -h\int e\,de \quad\Longrightarrow\quad \ln f(e) = -\frac{h}{2}e^2 + C\]</div>
+<p>Exponentiating,</p>
+<div class="math notranslate nohighlight">
+\[f(e) = A\,e^{-\frac{h}{2}e^2}\]</div>
+<p>This is the Gaussian shape — it falls directly out of the single requirement that the sample mean be the maximum-likelihood estimate of <span class="math notranslate nohighlight">\(\mu\)</span>. The constants <span class="math notranslate nohighlight">\(A\)</span> and <span class="math notranslate nohighlight">\(h\)</span> are then fixed by requiring <span class="math notranslate nohighlight">\(f\)</span> to be a valid probability density (i.e. <span class="math notranslate nohighlight">\(\int_{-\infty}^{\infty} f = 1\)</span>) and by identifying the spread parameter with the variance (<span class="math notranslate nohighlight">\(h = 1/\sigma^2\)</span>), which recovers the familiar form used throughout the rest of these notes:</p>
+<div class="math notranslate nohighlight">
+\[f(x) = \frac{1}{\sigma\sqrt{2\pi}}\exp\left(-\frac{(x-\mu)^2}{2\sigma^2}\right)\]</div>
+<div class="note admonition">
+<p class="admonition-title">A note on priority</p>
+<p>Gauss was not first to derive this curve — Abraham de Moivre had already arrived at essentially the same density in 1733, but from a completely different direction: as a limiting approximation to the binomial distribution for large <span class="math notranslate nohighlight">\(N\)</span>. That result is the historical seed of the Central Limit Theorem, discussed later in this section. Pierre-Simon Laplace subsequently unified and extended both lines of reasoning. Gauss’s derivation is worth walking through in detail here because it is short, self-contained, and directly motivates why we build so much of statistical inference (z-scores, standard errors, the CLT, the t-test) on top of this one particular curve.</p>
+</div>
+<p>So the normal distribution is not simply an empirical curve that happens to fit a lot of data well — it is, in a precise sense, <em>the</em> density implied by treating the arithmetic mean as the optimal summary of noisy, repeated measurements. With that motivation in hand, we can now turn to how we actually characterize samples drawn from (approximately) this kind of distribution, starting with the most basic summary statistics: the mean, variance, and higher moments.</p>
+</section>
+</section>
 <section id="mean-variance-and-higher-moments">
 <h2>Mean, variance and higher moments<a class="headerlink" href="#mean-variance-and-higher-moments" title="Link to this heading">#</a></h2>
 <section id="mean">
@@ -1295,7 +1361,7 @@ z &amp;= \frac{\overline{X} - \mu}{\sigma/\sqrt{N}} \\
 <li><p>Determine categories</p>
 <ul class="simple">
 <li><p>for diurnal cycle, use time of day</p></li>
-<li><p>impacts of ENSO, warm/cold SSTs</p></li>
+<li><p>impactsof ENSO, warm/cold SSTs</p></li>
 <li><p>impacts of sea ice loss, high and low September sea ice years</p></li>
 </ul>
 <p>You should have an a priori hypothesis as to why the variable being composited should depend on the category</p>
@@ -1358,7 +1424,7 @@ z &amp;= \frac{\overline{X} - \mu}{\sigma/\sqrt{N}} \\
 <div class="math notranslate nohighlight">
 \[F = \frac{s_1^2/\sigma_1^2}{s_2^2/\sigma_2^2}\]</div>
 <p><span class="math notranslate nohighlight">\(F\)</span> is a random variable that follows an F-distribution with parameters <span class="math notranslate nohighlight">\(\nu_1 = N_1 - 1\)</span> and <span class="math notranslate nohighlight">\(\nu_2 = N_2 - 1\)</span>. Note that the F-statistic is the ratio of two chi-squared random variables (scaled appropriately due to the <span class="math notranslate nohighlight">\(N-1\)</span>).</p>
-<p>Note that if both <span class="math notranslate nohighlight">\(s_1\)</span> and <span class="math notranslate nohighlight">\(s_2\)</span> come from Normal populations with the same variances, i.e.<span class="math notranslate nohighlight">\(\sigma_1 = \sigma_2\)</span> then the F-statistic simplifies to:</p>
+<p>Note that if both <span class="math notranslate nohighlight">\(s_1\)</span> and <span class="math notranslate nohighlight">\(s_2\)</span> come from Normal populations with the same variances, i.e. <span class="math notranslate nohighlight">\(\sigma_1 = \sigma_2\)</span> then the F-statistic simplifies to:</p>
 <div class="math notranslate nohighlight">
 \[F = \frac{s_1^2}{s_2^2}\]</div>
 <p>The F-distribution has the following properties:</p>
@@ -1554,6 +1620,13 @@ y_i &lt; x_i &amp;\rightarrow -1
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-origin-of-statistics-why-the-bell-curve">The origin of statistics: why the bell curve?</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#a-practical-problem-combining-noisy-measurements">A practical problem: combining noisy measurements</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#setting-up-the-likelihood">Setting up the likelihood</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-key-constraint-forcing-the-mean-to-be-optimal">The key constraint: forcing the mean to be optimal</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#from-the-constraint-to-an-ode">From the constraint to an ODE</a></li>
+</ul>
+</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mean-variance-and-higher-moments">Mean, variance and higher moments</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mean">Mean</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#median">Median</a></li>

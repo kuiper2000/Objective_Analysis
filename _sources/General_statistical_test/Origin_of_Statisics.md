@@ -1,6 +1,77 @@
 (Origin_of_Statisics)=
 # Week 1: Rule101
 
+## The origin of statistics: why the bell curve?
+
+Before diving into means and variances, it's worth asking a more basic question: why does so much of statistics revolve around one particular curve, the Gaussian? The answer has a clean historical and mathematical origin, and walking through it will motivate almost everything else in this section.
+
+### A practical problem: combining noisy measurements
+
+Imagine an early 19th-century astronomer repeatedly measuring the position of a star. Every observation gives a slightly different number,
+
+$$x_1, x_2, x_3, \dots, x_N,$$
+
+due to measurement error, yet everyone agrees there is a single true position, $\mu$. Astronomers and geodesists had long used the arithmetic mean $\overline{x}$ as their best estimate of $\mu$, but until the early 1800s, nobody had shown *why* the mean should be the right choice rather than, say, the median or some other combination of the data.
+
+This is the problem Carl Friedrich Gauss tackled in *Theoria Motus* (1809), and his solution is what ties the normal distribution directly to an ordinary differential equation.
+
+### Setting up the likelihood
+
+Suppose measurement errors follow some (unknown) probability density $f(e)$, symmetric about zero. Then, given a candidate true value $\mu$, the probability (likelihood) of observing the data you actually got is
+
+$$L(\mu) = \prod_{i=1}^{N} f(x_i - \mu)$$
+
+The best estimate of $\mu$ is the one that maximizes $L(\mu)$ --- the value that makes the observed data most probable. Taking logs (to turn the product into a sum, which is easier to differentiate) gives the log-likelihood
+
+$$\ln L(\mu) = \sum_{i=1}^{N}\ln f(x_i - \mu)$$
+
+Differentiating with respect to $\mu$ and setting the result to zero (the usual condition for a maximum) gives
+
+$$\sum_{i=1}^{N}\varphi(x_i - \mu) = 0, \qquad \text{where } \varphi(e) \equiv \frac{f'(e)}{f(e)}$$
+
+Note that this condition holds for *any* error density $f$ --- nothing Gaussian has been assumed yet.
+
+### The key constraint: forcing the mean to be optimal
+
+Gauss then imposed the requirement he was really after: whatever $f$ turns out to be, the solution to the equation above should always be $\mu = \overline{x}$, no matter which sample was drawn. This is a strong demand --- it is not automatically true for an arbitrary $f$, and it is exactly the extra assumption needed to pin down the shape of $f$.
+
+It turns out this holds for every possible sample only if $\varphi$ is a straight line through the origin,
+
+$$\varphi(e) = -he, \qquad h > 0$$
+
+:::{admonition} Why linearity is required
+:class: tip
+If $\varphi(e) = -he$, then
+
+$$\sum_{i=1}^N \varphi(x_i-\mu) = -h\sum_{i=1}^N (x_i - \mu) = -h(N\overline{x} - N\mu)$$
+
+Setting this to zero gives $\mu = \overline{x}$ automatically, for *any* sample. Try any nonlinear $\varphi$ and this stops being true in general --- linearity is what makes the mean universally optimal.
+:::
+
+### From the constraint to an ODE
+
+Recalling that $\varphi(e) = f'(e)/f(e)$, the constraint becomes a first-order, separable ordinary differential equation:
+
+$$\frac{f'(e)}{f(e)} = -he$$
+
+Separating variables and integrating both sides,
+
+$$\int \frac{df}{f} = -h\int e\,de \quad\Longrightarrow\quad \ln f(e) = -\frac{h}{2}e^2 + C$$
+
+Exponentiating,
+
+$$f(e) = A\,e^{-\frac{h}{2}e^2}$$
+
+This is the Gaussian shape --- it falls directly out of the single requirement that the sample mean be the maximum-likelihood estimate of $\mu$. The constants $A$ and $h$ are then fixed by requiring $f$ to be a valid probability density (i.e. $\int_{-\infty}^{\infty} f = 1$) and by identifying the spread parameter with the variance ($h = 1/\sigma^2$), which recovers the familiar form used throughout the rest of these notes:
+
+$$f(x) = \frac{1}{\sigma\sqrt{2\pi}}\exp\left(-\frac{(x-\mu)^2}{2\sigma^2}\right)$$
+
+:::{admonition} A note on priority
+:class: note
+Gauss was not first to derive this curve --- Abraham de Moivre had already arrived at essentially the same density in 1733, but from a completely different direction: as a limiting approximation to the binomial distribution for large $N$. That result is the historical seed of the Central Limit Theorem, discussed later in this section. Pierre-Simon Laplace subsequently unified and extended both lines of reasoning. Gauss's derivation is worth walking through in detail here because it is short, self-contained, and directly motivates why we build so much of statistical inference (z-scores, standard errors, the CLT, the t-test) on top of this one particular curve.
+:::
+
+So the normal distribution is not simply an empirical curve that happens to fit a lot of data well --- it is, in a precise sense, *the* density implied by treating the arithmetic mean as the optimal summary of noisy, repeated measurements. With that motivation in hand, we can now turn to how we actually characterize samples drawn from (approximately) this kind of distribution, starting with the most basic summary statistics: the mean, variance, and higher moments.
 
 ## Mean, variance and higher moments
 
@@ -1116,7 +1187,7 @@ The idea is by averaging the data in a smart way, you can isolate the signal and
 
     -   for diurnal cycle, use time of day
 
-    -   impacts of ENSO, warm/cold SSTs
+    -   impactsof ENSO, warm/cold SSTs
 
     -   impacts of sea ice loss, high and low September sea ice years
 
@@ -1201,7 +1272,7 @@ $$F = \frac{s_1^2/\sigma_1^2}{s_2^2/\sigma_2^2}$$
 
 $F$ is a random variable that follows an F-distribution with parameters $\nu_1 = N_1 - 1$ and $\nu_2 = N_2 - 1$. Note that the F-statistic is the ratio of two chi-squared random variables (scaled appropriately due to the $N-1$).
 
-Note that if both $s_1$ and $s_2$ come from Normal populations with the same variances, i.e.$\sigma_1 = \sigma_2$ then the F-statistic simplifies to:
+Note that if both $s_1$ and $s_2$ come from Normal populations with the same variances, i.e. $\sigma_1 = \sigma_2$ then the F-statistic simplifies to:
 
 $$F = \frac{s_1^2}{s_2^2}$$
 
