@@ -855,24 +855,29 @@ E_2 &amp;= \tilde{C} = \text{the chemical is not present}
 <tr class="row-odd"><th class="head"><p>Term</p></th>
 <th class="head"><p>Name</p></th>
 <th class="head"><p>Role</p></th>
+<th class="head"><p>Atmospheric example</p></th>
 </tr>
 </thead>
 <tbody>
 <tr class="row-even"><td><p><span class="math notranslate nohighlight">\(f(x)\)</span></p></td>
 <td><p><strong>Prior</strong></p></td>
 <td><p>belief about <span class="math notranslate nohighlight">\(X\)</span> before seeing the data</p></td>
+<td><p>Yesterday’s model forecast says the 500 hPa temperature over Colorado is probably around <span class="math notranslate nohighlight">\(-20°\)</span>C, with some uncertainty</p></td>
 </tr>
 <tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(f(y \mid x)\)</span></p></td>
 <td><p><strong>Likelihood</strong></p></td>
 <td><p>how probable observation <span class="math notranslate nohighlight">\(y\)</span> is, given <span class="math notranslate nohighlight">\(X=x\)</span></p></td>
+<td><p>A radiosonde is launched and reads <span class="math notranslate nohighlight">\(-17°\)</span>C; the instrument has a known measurement error of ±2°C, so readings near the true temperature are much more likely than readings far from it</p></td>
 </tr>
 <tr class="row-even"><td><p><span class="math notranslate nohighlight">\(f(x \mid y)\)</span></p></td>
 <td><p><strong>Posterior</strong></p></td>
 <td><p>updated belief after observing <span class="math notranslate nohighlight">\(Y=y\)</span></p></td>
+<td><p>Combining the forecast and the sounding gives a refined estimate — somewhere between <span class="math notranslate nohighlight">\(-20°\)</span>C and <span class="math notranslate nohighlight">\(-17°\)</span>C, weighted by how much we trust each source</p></td>
 </tr>
 <tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(f(y)\)</span></p></td>
 <td><p><strong>Evidence</strong></p></td>
 <td><p>normalising constant ensuring the posterior integrates to 1</p></td>
+<td><p>The overall probability of getting a <span class="math notranslate nohighlight">\(-17°\)</span>C reading, averaging over all temperatures the atmosphere could plausibly be at; keeps the posterior a proper probability distribution</p></td>
 </tr>
 </tbody>
 </table>

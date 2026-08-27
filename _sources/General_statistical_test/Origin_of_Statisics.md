@@ -491,12 +491,12 @@ $$\boxed{f(x \mid y) = \frac{f(y \mid x)\;f(x)}{f(y)}, \qquad f(y) = \int_{-\inf
 
 The four terms map directly onto the Bayesian language introduced above:
 
-| Term | Name | Role |
-|------|------|------|
-| $f(x)$ | **Prior** | belief about $X$ before seeing the data |
-| $f(y \mid x)$ | **Likelihood** | how probable observation $y$ is, given $X=x$ |
-| $f(x \mid y)$ | **Posterior** | updated belief after observing $Y=y$ |
-| $f(y)$ | **Evidence** | normalising constant ensuring the posterior integrates to 1 |
+| Term | Name | Role | Atmospheric example |
+|------|------|------|---------------------|
+| $f(x)$ | **Prior** | belief about $X$ before seeing the data | Yesterday's model forecast says the 500 hPa temperature over Colorado is probably around $-20°$C, with some uncertainty |
+| $f(y \mid x)$ | **Likelihood** | how probable observation $y$ is, given $X=x$ | A radiosonde is launched and reads $-17°$C; the instrument has a known measurement error of ±2°C, so readings near the true temperature are much more likely than readings far from it |
+| $f(x \mid y)$ | **Posterior** | updated belief after observing $Y=y$ | Combining the forecast and the sounding gives a refined estimate — somewhere between $-20°$C and $-17°$C, weighted by how much we trust each source |
+| $f(y)$ | **Evidence** | normalising constant ensuring the posterior integrates to 1 | The overall probability of getting a $-17°$C reading, averaging over all temperatures the atmosphere could plausibly be at; keeps the posterior a proper probability distribution |
 
 :::{admonition} Connecting the continuous and discrete forms
 :class: note
