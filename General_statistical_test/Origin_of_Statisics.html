@@ -1,0 +1,1674 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Week 1: Rule101 &#8212; Numerical Method</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=a3416100" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css?v=be8a1c11" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js?v=4a39c7ea"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="../_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'General_statistical_test/Origin_of_Statisics';</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="prev" title="Syllabus" href="../intro.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../intro.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/logo.png" class="logo__image only-light" alt="Numerical Method - Home"/>
+    <img src="../_static/logo.png" class="logo__image only-dark pst-js-only" alt="Numerical Method - Home"/>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../intro.html">
+                    Syllabus
+                </a>
+            </li>
+        </ul>
+        <ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Week 1: Rule101</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/executablebooks/jupyter-book" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/executablebooks/jupyter-book/issues/new?title=Issue%20on%20page%20%2FGeneral_statistical_test/Origin_of_Statisics.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/General_statistical_test/Origin_of_Statisics.md" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.md</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
+
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Week 1: Rule101</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mean-variance-and-higher-moments">Mean, variance and higher moments</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mean">Mean</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#median">Median</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#variance">Variance</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#higher-moments">Higher moments</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#basic-probabilities-unions-intersections-conditional-probabilities-bayes-theorem">Basic probabilities; unions; intersections; conditional probabilities; Bayes theorem</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#probabilities-unions-intersections">Probabilities: Unions &amp; Intersections</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#bayes-theorem">Bayes Theorem</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#probability-philosophy">Probability philosophy</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#statistical-significance-testing">Statistical Significance Testing</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#normal-distribution">Normal distribution</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#statistical-significance-testing-the-t-statistic-and-z-statistic">Statistical Significance Testing: the t-statistic and z-statistic</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#using-the-z-score">Using the z-score</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#estimating-the-statistical-significance-of-the-sample-mean-with-the-z-statistic">Estimating the statistical significance of the sample mean with the z-statistic</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#confidence-interval">Confidence Interval</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#central-limit-theorem">Central Limit Theorem</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-t-statistic-when-the-sample-size-is-small">The t-statistic: when the sample size is small</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#when-to-use-and-not-use-the-t-test">When to use (and not use) the t-test</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#a-note-on-the-independence-on-n">A note on the independence on N</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#hypothesis-testing">Hypothesis Testing</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#terminology-and-symbology">Terminology and symbology</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#setting-up-the-problem">Setting-up the problem</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#comparison-of-means-hypothesis-testing">Comparison of Means &amp; Hypothesis Testing</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#type-i-and-type-ii-errors">Type I and Type II errors</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#a-priori-vs-a-posteriori">A priori vs. A posteriori</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#bayesian-vs-frequentist-approach">Bayesian vs Frequentist approach</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#monte-carlo-and-resampling-techniques">Monte Carlo and Resampling techniques</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#why-use-resampling-and-monte-carlo-techniques">Why use resampling and Monte Carlo techniques?</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#resampling-bootstrap">Resampling: bootstrap</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#resampling-jackknife">Resampling: jackknife</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#monte-carlo">Monte Carlo</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#compositing">Compositing</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#significance-of-composites">Significance of composites</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#other-common-distributions">Other Common Distributions</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#chi-square-distribution-tests-of-variance">Chi-square Distribution: tests of variance</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#f-statistic">F-statistic</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#binomial">Binomial</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#normal-approximation-to-the-binomial">Normal Approximation to the Binomial</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#non-parametric-tests">Non-parametric Tests</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#signs-test">Signs Test</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#runs-test-wald-wolfowitz-runs-test">Runs Test (Wald–Wolfowitz runs test)</a></li>
+</ul>
+</li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="week-1-rule101">
+<span id="origin-of-statisics"></span><h1>Week 1: Rule101<a class="headerlink" href="#week-1-rule101" title="Link to this heading">#</a></h1>
+<section id="mean-variance-and-higher-moments">
+<h2>Mean, variance and higher moments<a class="headerlink" href="#mean-variance-and-higher-moments" title="Link to this heading">#</a></h2>
+<section id="mean">
+<h3>Mean<a class="headerlink" href="#mean" title="Link to this heading">#</a></h3>
+<p>You have a random variable, let’s call it <span class="math notranslate nohighlight">\(X\)</span>, and you draw individual values of <span class="math notranslate nohighlight">\(X\)</span>, denoted <span class="math notranslate nohighlight">\([x_1, x_2, x_3, \dots x_N]\)</span>.</p>
+<p>We define</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{aligned}
+\mu &amp;= \text{the population mean} \\
+\sigma &amp;= \text{the population standard deviation} \\
+\overline{x} &amp;= \text{the sample mean} \\
+s &amp;= \text{the sample standard deviation}
+\end{aligned}\end{split}\]</div>
+<p>The sample mean is defined as</p>
+<div class="math notranslate nohighlight">
+\[\overline{x} = \frac{1}{N}\sum_{i=1}^{N} x_i\]</div>
+<p>where the bar denotes the time mean and the subscript <span class="math notranslate nohighlight">\(i\)</span> denotes the time step (we will be working mainly with time series here).</p>
+<p>The sample mean <span class="math notranslate nohighlight">\(\overline{x}\)</span> is an unbiased estimate of the true mean <span class="math notranslate nohighlight">\(\mu\)</span>.</p>
+<p>In other words: if you draw an infinite number of samples from the same time series, then the actual population mean of all of the sample means (<span class="math notranslate nohighlight">\(\mu_{\overline{x}}\)</span>) is equal to the population mean (<span class="math notranslate nohighlight">\(\mu\)</span>).</p>
+<p>The mean is the first moment about zero.</p>
+</section>
+<section id="median">
+<h3>Median<a class="headerlink" href="#median" title="Link to this heading">#</a></h3>
+<p>The median is the value in the center of the population. Useful when you have large outliers in the distribution (e.g. house prices, salaries, rain rate).</p>
+</section>
+<section id="variance">
+<h3>Variance<a class="headerlink" href="#variance" title="Link to this heading">#</a></h3>
+<p>The sample variance is defined as:</p>
+<div class="math notranslate nohighlight">
+\[\overline{x'^2} = \frac{1}{N-1}\sum_{i=1}^{N}(x_i - \overline{x})^2\]</div>
+<p>where the prime denotes departures from the mean.</p>
+<div class="tip admonition">
+<p class="admonition-title">Figure / in-class demonstration</p>
+<p><em>Figure Example: variance definition</em></p>
+</div>
+<p>The sample standard deviation is defined as:</p>
+<div class="math notranslate nohighlight">
+\[s = \sqrt{\overline{x'^2}}\]</div>
+<p>The variance is the second moment about the mean.</p>
+<p>The division by <span class="math notranslate nohighlight">\(N-1\)</span> is required to obtain an unbiased estimate of the true population variance. The bias creeps in because we have to estimate the sample mean to get the sample variance, and so we lose one of our degrees of freedom (more on this later). Another way to see this is:</p>
+<div class="math notranslate nohighlight">
+\[\frac{1}{N}\sum_{i=1}^{N}(x_i - \overline{x})^2 = \frac{1}{N}\sum_{i=1}^{N}\big((x_i - \mu) - (\overline{x} - \mu)\big)^2\]</div>
+<p>What we want is the first term, and the second term is our bias. You can show that adding the <span class="math notranslate nohighlight">\(N-1\)</span> gets rid of the low bias of the variance, but we don’t go into that derivation here. In practice, if using <span class="math notranslate nohighlight">\(N\)</span> or <span class="math notranslate nohighlight">\(N-1\)</span> matters in your analysis, you are in trouble anyway.</p>
+<p>The mean is the average picture (stationary picture), while the variance describes all the interesting wiggles and variability about the mean.</p>
+<p>The estimate of the variance depends greatly on the sample rate (e.g. if you are using daily data, monthly data, yearly data, etc).</p>
+<div class="tip admonition">
+<p class="admonition-title">Figure / in-class demonstration</p>
+<p><em>Figure Example: Run variance <a class="reference external" href="http://example.py">example.py</a></em></p>
+</div>
+<p>Also, one can show that two time series with the same variance (say, of 1) but with different persistences can give different answers depending on the sample window (how long of the record you look).</p>
+</section>
+<section id="higher-moments">
+<h3>Higher moments<a class="headerlink" href="#higher-moments" title="Link to this heading">#</a></h3>
+<p>In general, all moments are defined as:</p>
+<div class="math notranslate nohighlight">
+\[m_r = \frac{1}{N}\sum_{i=1}^{N}(x_i - \overline{x})^r\]</div>
+<p><span class="math notranslate nohighlight">\(m_2\)</span> is the variance; <span class="math notranslate nohighlight">\(m_3\)</span> is the skewness; <span class="math notranslate nohighlight">\(m_4\)</span> is the kurtosis.</p>
+<p>These can also be given in non-dimensional form as:</p>
+<div class="math notranslate nohighlight">
+\[a_r = m_r / s^r\]</div>
+<p>where <span class="math notranslate nohighlight">\(s\)</span> is the sample standard deviation.</p>
+<p>The skewness indicates the degree of asymmetry of the distribution about the mean. <span class="math notranslate nohighlight">\(a_3 &gt; 0\)</span> indicates a long tail on the positive side of the mean (a Gaussian has <span class="math notranslate nohighlight">\(a_3 = 0\)</span>).</p>
+<div class="tip admonition">
+<p class="admonition-title">Figure / in-class demonstration</p>
+<p><em>Figure Example: skewness sketch</em></p>
+</div>
+<p>The kurtosis indicates the degree of peakedness of the distribution. <span class="math notranslate nohighlight">\(a_4 &gt; 3\)</span> indicates a more peaked distribution compared to a Gaussian, which has <span class="math notranslate nohighlight">\(a_4 = 3\)</span>.</p>
+<div class="tip admonition">
+<p class="admonition-title">Figure / in-class demonstration</p>
+<p><em>Figure Example: kurtosis sketch</em></p>
+</div>
+<p>Typically, higher order moments are given in terms of the standardized units, for ease of comparison (and so units don’t matter).</p>
+</section>
+</section>
+<section id="basic-probabilities-unions-intersections-conditional-probabilities-bayes-theorem">
+<h2>Basic probabilities; unions; intersections; conditional probabilities; Bayes theorem<a class="headerlink" href="#basic-probabilities-unions-intersections-conditional-probabilities-bayes-theorem" title="Link to this heading">#</a></h2>
+<section id="probabilities-unions-intersections">
+<h3>Probabilities: Unions &amp; Intersections<a class="headerlink" href="#probabilities-unions-intersections" title="Link to this heading">#</a></h3>
+<p>Define some event, <span class="math notranslate nohighlight">\(E\)</span>, for example, <span class="math notranslate nohighlight">\(E\)</span> is that you roll a die and get a 2.</p>
+<p>For a fair die, we write that the probability of <span class="math notranslate nohighlight">\(E\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[\Pr(E) = \frac{1}{6}\]</div>
+<p>The probability of not <span class="math notranslate nohighlight">\(E\)</span> happening, or,</p>
+<div class="math notranslate nohighlight">
+\[\Pr(\tilde{E}) = 1 - \Pr(E)\]</div>
+<p>For the case of rolling the die,</p>
+<div class="math notranslate nohighlight">
+\[\Pr(\tilde{E}) = 1 - \frac{1}{6} = \frac{5}{6}\]</div>
+<p>The probability that two events, <span class="math notranslate nohighlight">\(E_1\)</span> (rolling a 5) and <span class="math notranslate nohighlight">\(E_2\)</span> (rolling a 6) will both occur is called the intersection of the two probabilities and is written</p>
+<div class="math notranslate nohighlight">
+\[\Pr(E_1 \cap E_2)\]</div>
+<p>The probability that either or both of two events, <span class="math notranslate nohighlight">\(E_1\)</span> (rolling a 5) and <span class="math notranslate nohighlight">\(E_2\)</span> (rolling a 6) will occur is called the union of the two probabilities. This is written</p>
+<div class="math notranslate nohighlight">
+\[\Pr(E_1 \cup E_2) = \Pr(E_1) + \Pr(E_2) - \Pr(E_1 \cap E_2)\]</div>
+<p>One can see why the intersection term comes into the union equation by drawing a Venn Diagram.</p>
+<div class="tip admonition">
+<p class="admonition-title">Figure / in-class demonstration</p>
+<p><em>Figure Example: Venn Diagram</em></p>
+</div>
+<p>In this diagram the area in the rectangle represents the total probability of one, and the area inside the two event circles indicates the probability of the two events. The intersection between them gets counted twice when you add the two areas and so must be subtracted to calculate the union of the probabilities. If the two events are mutually exclusive, then no intersection occurs, i.e., if one happens, we know the other did not happen at that time.</p>
+<p>Another important concept is conditional probability,</p>
+<div class="math notranslate nohighlight">
+\[\Pr(E_2 \mid E_1) = \frac{\Pr(E_1 \cap E_2)}{\Pr(E_1)}\]</div>
+<p>read “<span class="math notranslate nohighlight">\(E_2\)</span> given <span class="math notranslate nohighlight">\(E_1\)</span>”.</p>
+<p>Changing this conditional probability relationship around a little yields a formula for the probability that both events will occur, called the multiplicative law of probability:</p>
+<div class="math notranslate nohighlight">
+\[\Pr(E_1 \cap E_2) = \Pr(E_2 \mid E_1) \cdot \Pr(E_1) = \Pr(E_1 \mid E_2) \cdot \Pr(E_2)\]</div>
+<p>If <span class="math notranslate nohighlight">\(E_1\)</span> and <span class="math notranslate nohighlight">\(E_2\)</span> are independent events (their probabilities don’t depend on one another, like rolling a die), then</p>
+<div class="math notranslate nohighlight">
+\[\Pr(E_2 \mid E_1) = \Pr(E_2)\]</div>
+<p>and thus</p>
+<div class="math notranslate nohighlight">
+\[\Pr(E_1 \cap E_2) = \Pr(E_2) \cdot \Pr(E_1)\]</div>
+<p>This is the definition of statistically independent.</p>
+<p>Rolling a fair die yields statistically independent events, and thus, the probability of rolling both a 5 and a 6 is equal to <span class="math notranslate nohighlight">\(\frac{1}{6} \cdot \frac{1}{6} = \frac{1}{36}\)</span>.</p>
+<p>Note, if the two events are not independent, multiplying the probabilities will give the wrong answer!</p>
+<div class="note admonition">
+<p class="admonition-title">Example of conditional probability</p>
+<p>Say the probability of it raining on Monday is 60%. But, you know from looking at historical records that the probability of it raining the day after it rains is 80% (it is more likely than not to rain the day after it rains). So, whether it rains on Tuesday is dependent on whether it rains on Monday. What is the probability it will rain Monday and Tuesday?</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{aligned}
+M &amp;= \text{event: it rains Monday} \\
+T &amp;= \text{event: it rains Tuesday} \\
+\Pr(M \cap T) &amp;= \Pr(T \mid M) \cdot \Pr(M) = 0.8 \cdot 0.6 = 48\%
+\end{aligned}\end{split}\]</div>
+</div>
+</section>
+<section id="bayes-theorem">
+<h3>Bayes Theorem<a class="headerlink" href="#bayes-theorem" title="Link to this heading">#</a></h3>
+<p>Let <span class="math notranslate nohighlight">\(E_i, i = 1,2,3\dots N\)</span> be a set of <span class="math notranslate nohighlight">\(N\)</span> events such that the set <span class="math notranslate nohighlight">\(E_i\)</span> includes all possible possibilities in a set <span class="math notranslate nohighlight">\(S\)</span> and the events are mutually exclusive. Then, for any event <span class="math notranslate nohighlight">\(B\)</span>, with <span class="math notranslate nohighlight">\(\Pr(B) &gt; 0\)</span></p>
+<div class="math notranslate nohighlight">
+\[\Pr(E_j \mid B) = \frac{\Pr(B \mid E_j)\Pr(E_j)}{\sum_{i=1}^{N} \Pr(B \mid E_i)\Pr(E_i)}\]</div>
+<p>Note that since the <span class="math notranslate nohighlight">\(E_i\)</span>’s cover all possible outcomes, the following is true:</p>
+<div class="math notranslate nohighlight">
+\[\Pr(B) = \sum_{i=1}^{N} \Pr(B \mid E_i)\Pr(E_i)\]</div>
+<p>Note that this is the denominator in Bayes theorem.</p>
+<p>A useful relation when doing Bayes Theorem problems is the following:</p>
+<div class="math notranslate nohighlight">
+\[\Pr(E_2 \mid E_1) = 1 - \Pr(\tilde{E}_2 \mid E_1)\]</div>
+<p>In general, Bayes’ Theorem takes <span class="math notranslate nohighlight">\(\Pr(A \mid B)\)</span> and turns it into <span class="math notranslate nohighlight">\(\Pr(B \mid A)\)</span>.</p>
+<p>Let’s do an example.</p>
+<div class="note admonition">
+<p class="admonition-title">Example of Bayes Theorem: testing for a chemical</p>
+<p>You have designed a test which tells whether a sample of air has a harmful airborne chemical or not. The probability that any individual sample has the chemical is 1/1000. The test never gives a false negative result (saying that the sample does not have the chemical, when in fact it does). The chance of a false positive is also small, say 5%. If you test a sample of air today and the test comes back positive, what is the probability that the chemical was actually in the sample?</p>
+<p>Your instincts might tell you 95%, since the false positive rate is 5%. However, this is not correct, since you need to take into account all of the information. To do these problems, it is good to follow these steps:</p>
+<ol class="arabic simple">
+<li><p>Define your variables</p></li>
+<li><p>Clearly state what you want to know</p></li>
+<li><p>List all of the information the problem gives you</p></li>
+<li><p>Check the assumptions for your method of solving</p></li>
+<li><p>Then, solve for what you listed in Step 2</p></li>
+</ol>
+<p><strong>(1) Define the variables:</strong></p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{aligned}
+\Pr(C) &amp;= \text{probability the chemical is present} \\
+\Pr(\tilde{C}) &amp;= \text{probability the chemical is not present} \\
+\Pr(+) &amp;= \text{probability the test is positive} \\
+\Pr(\tilde{+}) &amp;= \text{probability the test is negative}
+\end{aligned}\end{split}\]</div>
+<p><strong>(2) State what we want to know:</strong></p>
+<div class="math notranslate nohighlight">
+\[\Pr(C \mid +)\]</div>
+<p><strong>(3) List what we know:</strong></p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{aligned}
+\Pr(C) &amp;= 0.001 \\
+\Pr(\tilde{+} \mid C) &amp;= 0 \\
+\Pr(+ \mid \tilde{C}) &amp;= 0.05
+\end{aligned}\end{split}\]</div>
+<p><strong>(4) Check assumptions.</strong> Here, the set <span class="math notranslate nohighlight">\(S\)</span> is made of two possibilities that span all possibilities,</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{aligned}
+E_1 &amp;= C = \text{the chemical is present} \\
+E_2 &amp;= \tilde{C} = \text{the chemical is not present}
+\end{aligned}\end{split}\]</div>
+<p><strong>(5) We can now apply Bayes Theorem.</strong></p>
+<div class="math notranslate nohighlight">
+\[\Pr(C \mid +) = \frac{\Pr(+ \mid C)\Pr(C)}{\Pr(+ \mid C)\Pr(C) + \Pr(+ \mid \tilde{C})\Pr(\tilde{C})}\]</div>
+<p>We know all values, except <span class="math notranslate nohighlight">\(\Pr(+ \mid C)\)</span>. However, this is equal to</p>
+<div class="math notranslate nohighlight">
+\[1 - \Pr(\tilde{+} \mid C) = 1 - 0 = 1\]</div>
+<p>Plugging in the values leads to <span class="math notranslate nohighlight">\(\Pr(C \mid +) = \frac{1}{51} \approx 2\%\)</span>. This result shows how important it is to take into account the background rate — otherwise, you may have thought the probability was 95%, not 2%.</p>
+</div>
+<div class="note admonition">
+<p class="admonition-title">Example of Bayes Theorem: cab accidents</p>
+<p>The next problem comes from Chapter 16 of <em>“Thinking Fast and Slow”</em> by Daniel Kahneman, a popular science book on how our brains process information.</p>
+<p>A cab was involved in a hit and run accident at night. Two cab companies, the Green and the Blue, operate in the city. You are given the following data:</p>
+<ul class="simple">
+<li><p>85% of the cabs in the city are Green and 15% are Blue.</p></li>
+<li><p>A witness identified the cab as Blue. The court tested the reliability of the witness under the circumstances that existed the night of the accident and concluded that the witness correctly identified each one of the two colors 80% of the time and failed 20% of the time.</p></li>
+</ul>
+<p>What is the probability that the cab involved in the accident was Blue rather than Green?</p>
+<p>Your instincts might tell you 80% — but then you wouldn’t be taking into account the background rate of the cabs in the city.</p>
+<p>Note that if there hadn’t been a witness, your answer would have been 15% (this is a frequentist approach — more on this later).</p>
+<p><strong>(1) Define the variables:</strong></p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{aligned}
+\Pr(B) &amp;= \text{probability the cab was Blue} \\
+\Pr(\tilde{B}) &amp;= \text{probability the cab was not Blue (i.e.\ the cab was Green)} \\
+\Pr(W) &amp;= \text{probability the witness witnessed a Blue cab}
+\end{aligned}\end{split}\]</div>
+<p><strong>(2) State what we want to know:</strong></p>
+<div class="math notranslate nohighlight">
+\[\Pr(B \mid W)\]</div>
+<p><strong>(3) List what we know:</strong></p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{aligned}
+\Pr(B) &amp;= 0.15 \\
+\Pr(\tilde{B}) &amp;= 0.85 \\
+\Pr(W \mid B) &amp;= 0.8 \\
+\Pr(W \mid \tilde{B}) &amp;= 0.2
+\end{aligned}\end{split}\]</div>
+<p><strong>(4) Check assumptions:</strong> OK.</p>
+<p><strong>(5) Solve for what you listed in Step (2):</strong> Apply Bayes Theorem for <span class="math notranslate nohighlight">\(\Pr(B \mid W)\)</span>.</p>
+<div class="math notranslate nohighlight">
+\[\Pr(B \mid W) = \frac{\Pr(W \mid B)\Pr(B)}{\Pr(W \mid B)\Pr(B) + \Pr(W \mid \tilde{B})\Pr(\tilde{B})}\]</div>
+<div class="math notranslate nohighlight">
+\[\Pr(B \mid W) = \frac{0.8 \cdot 0.15}{0.8 \cdot 0.15 + 0.2 \cdot 0.85} = 0.41\]</div>
+</div>
+<div class="note admonition">
+<p class="admonition-title">Example of Bayes Theorem: Monty Hall problem</p>
+<p>This is a famous one, called the Monty Hall Problem and loosely based on a gameshow called “Let’s Make A Deal” with host Monty Hall.</p>
+<p>Suppose you’re on a game show, and you’re given the choice of three doors (A, B, C): Behind one door is a car; behind the others, goats (and you don’t like goats). You pick a door, say door A, and the host, who knows what’s behind the doors, opens another door, say door B, which has a goat.</p>
+<p>Monty then says to you, “Do you want to switch your choice and pick door C?” Is it to your advantage to switch your choice?</p>
+<p>To start, imagine there is no host, and you have to choose the door with the car. You choose door A, what is the probability that you are correct? Easy — <span class="math notranslate nohighlight">\(\frac{1}{3}\)</span>.</p>
+<p>Monty showing you what is behind one of the doors is extra information. This should tell you, perhaps use Bayes Theorem! (Drawing pictures can help too.) The hardest part of this problem is figuring out how to set it up.</p>
+<p>Without loss of generality, we will assume that you have chosen door A.</p>
+<p><strong>(1) Define the variables:</strong></p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{aligned}
+\Pr(A) &amp;= \text{probability the car is behind door A} \\
+\Pr(B) &amp;= \text{probability the car is behind door B} \\
+\Pr(C) &amp;= \text{probability the car is behind door C} \\
+\Pr(M) &amp;= \text{probability Monty Hall opens door B}
+\end{aligned}\end{split}\]</div>
+<p><strong>(2) State what we want to know:</strong></p>
+<div class="math notranslate nohighlight">
+\[\Pr(C \mid M)\]</div>
+<p><strong>(3) List what we know:</strong></p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{aligned}
+\Pr(A) = \Pr(B) = \Pr(C) &amp;= \frac{1}{3} \\
+\Pr(M \mid A) &amp;= \frac{1}{2} \quad \text{(he could open B or C, since the prize is behind A)} \\
+\Pr(M \mid B) &amp;= 0 \\
+\Pr(M \mid C) &amp;= 1 \\
+&amp;\rightarrow \text{You chose door A}
+\end{aligned}\end{split}\]</div>
+<p><strong>(4) Check assumptions.</strong> OK.</p>
+<p><strong>(5) We can now apply Bayes Theorem.</strong></p>
+<div class="math notranslate nohighlight">
+\[\Pr(C \mid M) = \frac{\Pr(M \mid C)\Pr(C)}{\Pr(M \mid C)\Pr(C) + \Pr(M \mid B)\Pr(B) + \Pr(M \mid A)\Pr(A)}\]</div>
+<div class="math notranslate nohighlight">
+\[\Pr(C \mid M) = \frac{1 \cdot 1/3}{1 \cdot 1/3 + 0 \cdot 1/3 + 1/2 \cdot 1/3} = \frac{1/3}{1/3 + 1/6} = \frac{1/3}{1/2} = \frac{2}{3}\]</div>
+<p>So, if you switch your choice, you have a higher probability of winning the car!</p>
+</div>
+</section>
+<section id="probability-philosophy">
+<h3>Probability philosophy<a class="headerlink" href="#probability-philosophy" title="Link to this heading">#</a></h3>
+<p>There are two general philosophies of thought on statistics: (a) frequentist approach, and (b) the Bayesian approach.</p>
+<p><strong>Frequentist:</strong> if you give an event many opportunities to occur, the probability of occurrence is the</p>
+<div class="math notranslate nohighlight">
+\[\frac{\text{\# of occurrences}}{\text{\# of opportunities}}\]</div>
+<p>This approach works well when you can repeat an experiment many, many times.</p>
+<p><strong>Bayesian:</strong> this approach is named after the frequent use of Bayes theorem, which takes into account a priori information that may not be useable by a frequentist.</p>
+<p>Often, these two approaches can give different answers:</p>
+<p>For example, in the Monty Hall problem, we wanted to know the probability that the car was behind a certain door, say door C. A frequentist approach would be to say, if I run this experiment thousands of times, how often will the car be behind door C? The answer is <span class="math notranslate nohighlight">\(1/3\)</span> of the time.</p>
+<p>In our Bayesian formulation, we used additional a priori information, namely, that Monty Hall showed us that it wasn’t behind a certain door. A frequentist approach does not use this information, while a Bayesian approach does.</p>
+<p>For the cab accident example, a frequentist would say the probability of the cab in the accident being Blue is 80%, the probability the witness was correct. The Bayesian approach, however, also took into account the background rate of the number of cars in the city, information that the frequentist approach couldn’t use.</p>
+<p>Bayes Theorem is actually used quite often in atmospheric science in the form of the Kalman Filter, for example, for forecasts. At its base level, the Kalman Filter is an iterative application of Bayes Theorem which uses uncertainties in measurements to weigh their use when updating the next time step.</p>
+</section>
+</section>
+<section id="statistical-significance-testing">
+<h2>Statistical Significance Testing<a class="headerlink" href="#statistical-significance-testing" title="Link to this heading">#</a></h2>
+<section id="normal-distribution">
+<h3>Normal distribution<a class="headerlink" href="#normal-distribution" title="Link to this heading">#</a></h3>
+<p>The probability of an event occurring between <span class="math notranslate nohighlight">\(a\)</span> and <span class="math notranslate nohighlight">\(b\)</span> is:</p>
+<div class="math notranslate nohighlight">
+\[\Pr(a \leq x \leq b) = \int_a^b f(x)\,dx,\]</div>
+<p>where <span class="math notranslate nohighlight">\(f(x)\)</span> is the probability density function (PDF). Note that for continuous <span class="math notranslate nohighlight">\(f(x)\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[\Pr(x = c) = 0\]</div>
+<p><span class="math notranslate nohighlight">\(f(x)\)</span> must have the following characteristics to be a probability density function:</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(f(x) \geq 0\)</span> for all <span class="math notranslate nohighlight">\(x\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\int_{-\infty}^{\infty} f(x) = 1\)</span></p></li>
+</ul>
+<p>The cumulative density function (CDF) at value <span class="math notranslate nohighlight">\(b\)</span> is denoted <span class="math notranslate nohighlight">\(F(b)\)</span> and is the probability that <span class="math notranslate nohighlight">\(x\)</span> assumes a value less than <span class="math notranslate nohighlight">\(b\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[F(b) = \int_{-\infty}^{b} f(x)\,dx\]</div>
+<p>hence,</p>
+<div class="math notranslate nohighlight">
+\[\Pr(a \leq x \leq b) = F(b) - F(a).\]</div>
+<div class="tip admonition">
+<p class="admonition-title">Figure / in-class demonstration</p>
+<p><em>Figure Example: run what is <a class="reference external" href="http://pdf.py">pdf.py</a></em></p>
+</div>
+<p>The probability density function for a variable <span class="math notranslate nohighlight">\(x\)</span> that is normally distributed about its mean is given by:</p>
+<div class="math notranslate nohighlight">
+\[f(x) = \frac{1}{\sigma\sqrt{2\pi}} e^{\left(\frac{-(x-\mu)^2}{2\sigma^2}\right)}\]</div>
+<p>The associated cumulative distribution function is given as:</p>
+<div class="math notranslate nohighlight">
+\[F(b) = \int_{-\infty}^{b} \frac{1}{\sigma\sqrt{2\pi}} e^{\left(\frac{-(x-\mu)^2}{2\sigma^2}\right)}\,dx\]</div>
+<p>The probability that <span class="math notranslate nohighlight">\(x\)</span> will fall between two values <span class="math notranslate nohighlight">\(a\)</span> and <span class="math notranslate nohighlight">\(b\)</span> is thus:</p>
+<div class="math notranslate nohighlight">
+\[F(b) - F(a) = \int_a^b \frac{1}{\sigma\sqrt{2\pi}} e^{\left(\frac{-(x-\mu)^2}{2\sigma^2}\right)}\,dx\]</div>
+<p>Often, one standardizes the normal distribution by defining a variable <span class="math notranslate nohighlight">\(z\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[z = \frac{x - \mu}{\sigma}\]</div>
+<p>Note that in this case, the mean of <span class="math notranslate nohighlight">\(z = 0\)</span> and the standard deviation of <span class="math notranslate nohighlight">\(z = 1\)</span>. This is very useful for discussing properties of the normal distribution with others who may have variables with different means and standard deviations. For example, recall in the discussion of skewness and kurtosis, the standard normal has a skewness of 0 and a kurtosis of 3.</p>
+<p>If one standardizes to <span class="math notranslate nohighlight">\(z\)</span>, then</p>
+<div class="math notranslate nohighlight">
+\[f(z) = \frac{1}{\sqrt{2\pi}}\exp\left(\frac{-z^2}{2}\right)\]</div>
+<p>(note that the <span class="math notranslate nohighlight">\(\sigma\)</span> no longer appears in the denominator due to the transformation of <span class="math notranslate nohighlight">\(F(z)\)</span> using <span class="math notranslate nohighlight">\(z = (x-\mu)/\sigma\)</span> and needing to replace <span class="math notranslate nohighlight">\(dx\)</span> with <span class="math notranslate nohighlight">\(\sigma \cdot dz\)</span>)</p>
+<div class="tip admonition">
+<p class="admonition-title">Figure / in-class demonstration</p>
+<p><em>Figure Example: Draw normal distribution — discuss histograms</em></p>
+</div>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{aligned}
+\Pr(-1 \leq z \leq 1) &amp;= 68.27\% \\
+\Pr(-2 \leq z \leq 2) &amp;= 95.45\% \\
+\Pr(-3 \leq z \leq 3) &amp;= 99.73\%
+\end{aligned}\end{split}\]</div>
+<p>Recall that <span class="math notranslate nohighlight">\(z\)</span> is a standardized normal variable, and so, <span class="math notranslate nohighlight">\(z=2\)</span> is <span class="math notranslate nohighlight">\(z=2\)</span> standard deviations. Thus, there is a 4.55% probability that <span class="math notranslate nohighlight">\(z\)</span> will fall outside of 2 standard deviations of its mean (two-tailed probability) and a 2.275% chance it will exceed <span class="math notranslate nohighlight">\(+2\)</span> standard deviations (one-tailed probability).</p>
+<div class="tip admonition">
+<p class="admonition-title">Figure / in-class demonstration</p>
+<p><em>Figure Example: Draw meaning of one-tailed and two-tailed probabilities.</em><br />
+<em>Figure Example: show uniform distribution example, integrate a rectangle</em></p>
+</div>
+</section>
+<section id="statistical-significance-testing-the-t-statistic-and-z-statistic">
+<h3>Statistical Significance Testing: the t-statistic and z-statistic<a class="headerlink" href="#statistical-significance-testing-the-t-statistic-and-z-statistic" title="Link to this heading">#</a></h3>
+<p>Many geophysical variables are normally distributed — so often we can use the normal distribution to test if our sample is different from the population mean. However, always check that our data is normal! Rain rate, for example, is not!</p>
+<div class="tip admonition">
+<p class="admonition-title">Figure / in-class demonstration</p>
+<p><em>Figure Example: Introduce z-table — hand-out table to class</em></p>
+</div>
+<section id="using-the-z-score">
+<h4>Using the z-score<a class="headerlink" href="#using-the-z-score" title="Link to this heading">#</a></h4>
+<div class="note admonition">
+<p class="admonition-title">Example</p>
+<p>Assume you have 50 years of monthly ENSO indices (<span class="math notranslate nohighlight">\(Z\)</span>), and that the index is well approximated by a standard normal:</p>
+<ol class="arabic simple">
+<li><p>Using the table, what is the probability that a randomly chosen month has an ENSO index of exactly <span class="math notranslate nohighlight">\(+2\)</span>?<br />
+<em>0%</em></p></li>
+<li><p>Using the table, what is the probability that a randomly chosen month has an ENSO index of <span class="math notranslate nohighlight">\(+2\)</span> or greater?<br />
+<em><span class="math notranslate nohighlight">\(1-.9772 = 2.08\%\)</span></em></p></li>
+<li><p>What is the probability the ENSO index is 1.23 or smaller?<br />
+<em><span class="math notranslate nohighlight">\(0.8907 = 89.07\%\)</span></em></p></li>
+<li><p>What is the probability the ENSO index is 1.23 or greater?<br />
+<em><span class="math notranslate nohighlight">\(1-0.8907 = 10.93\%\)</span></em></p></li>
+<li><p>What ENSO index gives <span class="math notranslate nohighlight">\(\Pr(Z &gt; \cdot) = 0.1\)</span>?<br />
+<em>1.285</em></p></li>
+<li><p>What ENSO index gives <span class="math notranslate nohighlight">\(\Pr(Z \leq \cdot) = 0.9\)</span>?<br />
+<em>1.285</em></p></li>
+<li><p>What ENSO index gives <span class="math notranslate nohighlight">\(\Pr(Z \leq \cdot) = 0.1\)</span>?<br />
+<em><span class="math notranslate nohighlight">\(-1.285\)</span>, use symmetry</em></p></li>
+<li><p>What ENSO index gives <span class="math notranslate nohighlight">\(\Pr(|Z| &gt; \cdot) = 0.1\)</span>?<br />
+<em>1.645 and <span class="math notranslate nohighlight">\(-1.645\)</span></em></p></li>
+</ol>
+</div>
+<p>Some useful values,</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{aligned}
+\Pr(-1.96 \leq z \leq 1.96) &amp;= 95\% \\
+\Pr(-2.58 \leq z \leq 2.58) &amp;= 99\%
+\end{aligned}\end{split}\]</div>
+<p>In Matlab, you can use</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{aligned}
+&amp;P = \texttt{normcdf(X,MU,SIGMA)} \\
+&amp;X = \texttt{norminv(P,MU,SIGMA)}
+\end{aligned}\end{split}\]</div>
+<p>In IDL, for the standardized normal, you can use</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{aligned}
+&amp;P = \texttt{GAUSS\_PDF(X)} \\
+&amp;X = \texttt{GAUSS\_CVF(P)}
+\end{aligned}\end{split}\]</div>
+<p>In python, for the standardized normal, you can use</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{aligned}
+&amp;\texttt{norm.pdf} \\
+&amp;\texttt{norm.ppf} \quad \text{(percent point function, inverse of cdf)}
+\end{aligned}\end{split}\]</div>
+</section>
+</section>
+<section id="estimating-the-statistical-significance-of-the-sample-mean-with-the-z-statistic">
+<h3>Estimating the statistical significance of the sample mean with the z-statistic<a class="headerlink" href="#estimating-the-statistical-significance-of-the-sample-mean-with-the-z-statistic" title="Link to this heading">#</a></h3>
+<p>Thus far, we have covered how to determine the probability of getting a value <span class="math notranslate nohighlight">\(x_i\)</span> within a range <span class="math notranslate nohighlight">\([a,b]\)</span>, however, in geophysics, we tend to be more interested in the difference between a sample mean and an underlying population.</p>
+<p>We rarely ask, “what is the probability the ENSO index was its value or greater this month?” Instead, we might ask, “Was the ENSO index in 2013 consistent with the climatological behaviour?”</p>
+<p>Let <span class="math notranslate nohighlight">\(X = [x_1, x_2, x_3, x_4, \dots, x_N]\)</span> be a random sample of size <span class="math notranslate nohighlight">\(N\)</span> drawn from a normal distribution with population mean <span class="math notranslate nohighlight">\(\mu\)</span> and standard deviation <span class="math notranslate nohighlight">\(\sigma\)</span>.</p>
+<p>For <span class="math notranslate nohighlight">\(N &gt; 30\)</span>, <span class="math notranslate nohighlight">\(\overline{X}\)</span> is normally distributed with,</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{aligned}
+\mu_{\overline{X}} &amp;= \mu \quad \text{(mean)} \\
+\sigma_{\overline{X}} &amp;= \frac{\sigma}{\sqrt{N}} \quad \text{(standard deviation)}
+\end{aligned}\end{split}\]</div>
+<p>In other words, the sample mean is an estimate of the population mean, and the error of your estimate (the variance of the distribution of <span class="math notranslate nohighlight">\(\overline{X}\)</span>) decreases as <span class="math notranslate nohighlight">\(N\)</span> increases (as it should). <span class="math notranslate nohighlight">\(\sigma_{\overline{X}}\)</span> is known as the standard error of the mean.</p>
+<p>So, how do we test whether the mean of the sample is different from the mean of the population? We can use the z-statistic!</p>
+<p>Recall,</p>
+<div class="math notranslate nohighlight">
+\[z = \frac{x - \mu}{\sigma}\]</div>
+<p>Now, we want to test <span class="math notranslate nohighlight">\(\overline{X}\)</span>, not <span class="math notranslate nohighlight">\(x\)</span>. So, replace <span class="math notranslate nohighlight">\(\mu\)</span> with the population mean of <span class="math notranslate nohighlight">\(\overline{X}\)</span> and <span class="math notranslate nohighlight">\(\sigma\)</span> with the population standard deviation of <span class="math notranslate nohighlight">\(\overline{X}\)</span>.</p>
+<p>Plugging things in leads to</p>
+<div class="math notranslate nohighlight">
+\[z = \frac{\overline{X} - \mu_{\overline{X}}}{\sigma_{\overline{X}}} = \frac{\overline{X} - \mu}{\sigma/\sqrt{N}}\]</div>
+<p>The z-statistic is now the number of standard errors that the sample mean deviates from the population mean.</p>
+<p>We can easily manipulate the equation for the z-statistic to obtain an equation for the difference of two means (as opposed to the difference between a sample mean and the population), where <span class="math notranslate nohighlight">\(\sigma_1\)</span> can be different from <span class="math notranslate nohighlight">\(\sigma_2\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[z = \frac{(\overline{x}_1 - \overline{x}_2) - \Delta_{1,2}}{\sqrt{\dfrac{\sigma_1^2}{N_1} + \dfrac{\sigma_2^2}{N_2}}}\]</div>
+<p><span class="math notranslate nohighlight">\(\Delta_{1,2}\)</span> is the hypothesized difference between the two means, which is typically 0 in practice.</p>
+<div class="note admonition">
+<p class="admonition-title">Statistical significance of the mean</p>
+<ol class="arabic simple">
+<li><p>What is the probability that December 2013 had an ENSO index of 0.50 or greater?</p></li>
+<li><p>What is the probability that the average 2011–2013 monthly ENSO index was 0.50 or greater assuming that ENSO dynamics have not changed?</p></li>
+</ol>
+<p><strong>(a)</strong> Assume the ENSO index is standard normal. <span class="math notranslate nohighlight">\(\mu = 0\)</span>, <span class="math notranslate nohighlight">\(\sigma = 1\)</span>. Look at table for <span class="math notranslate nohighlight">\(z = 0.50\)</span>. <span class="math notranslate nohighlight">\(1-.69 = 31.0\%\)</span>. So, not very rare.</p>
+<p><strong>(b)</strong> Here, we are testing for the sample mean.</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{aligned}
+\overline{X} &amp;= 0.5 \\
+\sigma_{\overline{X}} &amp;= \frac{\sigma}{\sqrt{N}} = \frac{1}{\sqrt{36}} \\
+z &amp;= \frac{\overline{X} - \mu_{\overline{X}}}{\sigma_{\overline{X}}} = \frac{0.50 - 0}{.1667} = 3.0
+\end{aligned}\end{split}\]</div>
+<p>The <span class="math notranslate nohighlight">\(\Pr(z &gt; 3.0) \approx 1 - 0.9987 = 0.1\%\)</span>.</p>
+<p>Such a low probability implies that we had either a very rare event, or, that the dynamics of ENSO changed in 2011–2013 compared to climatological ENSO variability.</p>
+</div>
+</section>
+<section id="confidence-interval">
+<h3>Confidence Interval<a class="headerlink" href="#confidence-interval" title="Link to this heading">#</a></h3>
+<div class="note admonition">
+<p class="admonition-title">Calculating confidence limits</p>
+<p>Say we have temperatures for 30 winters with a mean of <span class="math notranslate nohighlight">\(10^{\circ}\)</span>C and a standard deviation of <span class="math notranslate nohighlight">\(5^{\circ}\)</span>C. What is the 95% confidence interval on the true population mean? You may assume that the temperatures are normally distributed.</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{aligned}
+z &amp;= \frac{\overline{X} - \mu}{\sigma/\sqrt{N}} \\
+\mu &amp;= \overline{x} - z\frac{\sigma}{\sqrt{N}}
+\end{aligned}\end{split}\]</div>
+<p>Since we are interested in the spread about the mean, and since the normal distribution is symmetric about the mean, this can be rewritten as,</p>
+<div class="math notranslate nohighlight">
+\[\mu = \overline{x} \pm z_{\alpha/2}\frac{\sigma}{\sqrt{N}}\]</div>
+<p>Since 95% of the population lies within <span class="math notranslate nohighlight">\(z_{\alpha/2} = \pm 1.96\)</span>, it follows that the confidence limit for <span class="math notranslate nohighlight">\(\mu\)</span> is</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{aligned}
+\mu &amp;= 10.0 \pm 1.96\frac{5.0}{\sqrt{30}} = 10.0^{\circ} \pm 1.7^{\circ} \\
+8.3^{\circ} &amp;\leq \mu \leq 11.7^{\circ}
+\end{aligned}\end{split}\]</div>
+</div>
+<p>The 95% confidence interval is defined as the interval that contains the true parameter 95% of the time.</p>
+<div class="tip admonition">
+<p class="admonition-title">Figure / in-class demonstration</p>
+<p><em>Figure Example: Pass-out handout called Confidence intervals.pdf</em></p>
+</div>
+</section>
+<section id="central-limit-theorem">
+<h3>Central Limit Theorem<a class="headerlink" href="#central-limit-theorem" title="Link to this heading">#</a></h3>
+<p>The arithmetic mean of a sufficiently large number of iterates of independent random variables, each with a well-defined expected value and well-defined variance, will be approximately normally distributed, with standard error of <span class="math notranslate nohighlight">\(\sigma/\sqrt{N}\)</span>, where <span class="math notranslate nohighlight">\(N\)</span> is the length of each sample.</p>
+<p>This theorem is the basis of most of what we do in statistics, and most of what we do when assessing the significance of geophysical signals.</p>
+<div class="tip admonition">
+<p class="admonition-title">Figure / in-class demonstration</p>
+<p><em>Figure Example: Run Matlab simulation: central limit theorem.m</em></p>
+</div>
+<p>What the central limit theorem says is that if you have a sample that is large enough, you can use the normally distributed z-statistic to estimate probabilities of getting that mean — no matter the distribution of the underlying data.</p>
+<div class="note admonition">
+<p class="admonition-title">Rain rate</p>
+<p>Rain rates are lognormal (black curve in the Matlab example). Thus, you cannot use the z-statistic to determine, say, the probability of getting a rain rate at any given time of 2 mm/sec. or higher. However, if you want to know the probability of having a monthly average rain-rate of 2 mm/sec. or higher, you can use the z-statistic!</p>
+<p>Note, because of the Central Limit Theorem, this is often all people remember from their statistics course — however, be careful, it does not always apply.</p>
+</div>
+</section>
+<section id="the-t-statistic-when-the-sample-size-is-small">
+<h3>The t-statistic: when the sample size is small<a class="headerlink" href="#the-t-statistic-when-the-sample-size-is-small" title="Link to this heading">#</a></h3>
+<p>Consider the z-statistic for the sample mean:</p>
+<div class="math notranslate nohighlight">
+\[z = \frac{\overline{X} - \mu}{\sigma/\sqrt{N}}\]</div>
+<p>To apply this formula, we need to know the <span class="math notranslate nohighlight">\(\sigma\)</span> of the underlying distribution. But often, we don’t know what the underlying distribution is. As we showed in the previous example, if we have a large enough sample, the sample standard deviation <span class="math notranslate nohighlight">\(s\)</span> is a good approximation of the true population <span class="math notranslate nohighlight">\(\sigma\)</span>.</p>
+<p>However, if <span class="math notranslate nohighlight">\(N &lt; 30\)</span>, this is not the case, and the z-statistic does not apply!</p>
+<p>In this case, one must use the Student’s t-statistic, introduced by William Sealy Gosset in 1908 to monitor Guinness quality at the brewery in Dublin, Ireland. At the time, he was not allowed to publish anything that he developed while at Guinness, so he used the pseudonym “Student”.</p>
+<p>The t-statistic is analogous to the z-score, except it also requires:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{aligned}
+\nu &amp;= \text{degrees of freedom} \\
+\sqrt{N} &amp;\rightarrow \sqrt{N-1}
+\end{aligned}\end{split}\]</div>
+<p>The t-statistic is defined as</p>
+<div class="math notranslate nohighlight">
+\[t = \frac{\overline{x} - \mu}{\sqrt{s^2/(N-1)}},\]</div>
+<p>where <span class="math notranslate nohighlight">\(s\)</span> is the sample standard deviation.</p>
+<p>Recall from the Central Limit Theorem example that when <span class="math notranslate nohighlight">\(N \gtrsim 30\)</span>, the true standard deviation of the sample means is well approximated by <span class="math notranslate nohighlight">\(s/\sqrt{N}\)</span>, and so we can write <span class="math notranslate nohighlight">\(\sigma\)</span>. However, in this case, we keep the nomenclature <span class="math notranslate nohighlight">\(s\)</span> since it is unknown what the true <span class="math notranslate nohighlight">\(\sigma\)</span> is.</p>
+<p>Note the similarity with the z-statistic:</p>
+<div class="math notranslate nohighlight">
+\[t = \frac{\overline{x} - \mu}{\sqrt{s^2/(N-1)}} = \frac{\overline{x} - \mu}{\hat{s}/\sqrt{N}}\]</div>
+<div class="math notranslate nohighlight">
+\[\hat{s} = s\sqrt{\frac{N}{N-1}}\]</div>
+<p><span class="math notranslate nohighlight">\(\hat{s}\)</span> is the estimate of the standard deviation based on a limited sample.</p>
+<p>If we draw a sample of size <span class="math notranslate nohighlight">\(N\)</span> from a normally distributed population of mean <span class="math notranslate nohighlight">\(\mu\)</span>, we find that <span class="math notranslate nohighlight">\(t\)</span> is distributed with the following population density:</p>
+<div class="math notranslate nohighlight">
+\[f(t) = f_0(\nu)\left(1 + \frac{t^2}{\nu}\right)^{-\left(\frac{\nu+1}{2}\right)},\]</div>
+<p><span class="math notranslate nohighlight">\(f_0(\nu)\)</span> is chosen as a normalization factor to make <span class="math notranslate nohighlight">\(\int_{-\infty}^{\infty} f(t)\,dt = 1\)</span>.</p>
+<p><span class="math notranslate nohighlight">\(\nu\)</span> is the number of degrees of freedom <span class="math notranslate nohighlight">\(= N-1\)</span>. It is the number of independent samples (<span class="math notranslate nohighlight">\(N\)</span>) minus the number of parameters that must be estimated. In the case of the t-statistic, we calculate <span class="math notranslate nohighlight">\(\overline{x}\)</span> and <span class="math notranslate nohighlight">\(s\)</span> but must estimate <span class="math notranslate nohighlight">\(\mu\)</span>. Hence, <span class="math notranslate nohighlight">\(\nu = N-1\)</span>. More on independent samples later.</p>
+<div class="tip admonition">
+<p class="admonition-title">Figure / in-class demonstration</p>
+<p><em>Figure Example: Run Matlab tstat vs zstat.m</em></p>
+</div>
+<p>Comparisons between the t-statistic and z-statistic:</p>
+<ul class="simple">
+<li><p>most often, the t-distribution is the PDF of the sample means drawn from a normal distribution, but with small <span class="math notranslate nohighlight">\(N\)</span></p></li>
+<li><p>unlike the z-stat, the t-stat depends on <span class="math notranslate nohighlight">\(N\)</span> through the degrees of freedom <span class="math notranslate nohighlight">\(\nu\)</span></p></li>
+<li><p>smaller values of <span class="math notranslate nohighlight">\(N\)</span> lead to longer tails for the t-stat</p></li>
+<li><p>as <span class="math notranslate nohighlight">\(N\)</span> increases, the t-stat approaches the z-stat</p></li>
+<li><p>the key difference is that the t-stat uses an estimate of the standard error based on the sample standard deviation <span class="math notranslate nohighlight">\(s\)</span>, instead of the true standard error <span class="math notranslate nohighlight">\(\sigma\)</span></p></li>
+</ul>
+<p>Confidence intervals for the t-statistic work similarly to the z-statistic,</p>
+<div class="math notranslate nohighlight">
+\[\mu = \overline{x} \pm t_c \frac{s}{\sqrt{N-1}}\]</div>
+<p><span class="math notranslate nohighlight">\(t_c\)</span> is the critical value for <span class="math notranslate nohighlight">\(t\)</span>. It depends on the sample size and the significance level desired. You can see values of this statistic in the t-table. Note that it is set up differently than the z-table since it requires a column for <span class="math notranslate nohighlight">\(\nu\)</span>.</p>
+<p>The difference of means for the t-stat. is very similar to that for the z-stat, but with slight modifications. Assume two samples <span class="math notranslate nohighlight">\(N_1\)</span> and <span class="math notranslate nohighlight">\(N_2\)</span> are drawn from normal distributions whose standard deviations are equal (<span class="math notranslate nohighlight">\(\sigma_1 = \sigma_2\)</span>).</p>
+<div class="math notranslate nohighlight">
+\[t = \frac{(\overline{x}_1 - \overline{x}_2) - \Delta_{1,2}}{\hat{\sigma}\sqrt{\dfrac{1}{N_1} + \dfrac{1}{N_2}}}\]</div>
+<div class="math notranslate nohighlight">
+\[\hat{\sigma} = \sqrt{\frac{N_1 s_1^2 + N_2 s_2^2}{N_1 + N_2 - 2}}\]</div>
+<p>where <span class="math notranslate nohighlight">\(\nu = N_1 + N_2 - 2\)</span> and <span class="math notranslate nohighlight">\(\Delta_{1,2}\)</span> is the hypothesized difference.</p>
+<p>The pooled variance <span class="math notranslate nohighlight">\(\hat{\sigma}^2\)</span> is a weighted average of the sample variances.</p>
+<p>A similar statistic applies for the z-score, but we use the true sample variances instead:</p>
+<div class="math notranslate nohighlight">
+\[z = \frac{(\overline{x}_1 - \overline{x}_2) - \Delta_{1,2}}{\sqrt{\dfrac{\sigma_1^2}{N_1} + \dfrac{\sigma_2^2}{N_2}}}\]</div>
+<div class="note admonition">
+<p class="admonition-title">Comparing the z-stat and t-stat</p>
+<p>You have 5 years of monthly-mean temperature data derived from the MSU4 satellite. The mean temperature along 60N during January is <span class="math notranslate nohighlight">\(\sim -60^{\circ}\)</span>C and the standard deviation is <span class="math notranslate nohighlight">\(\sim 8^{\circ}\)</span>C. What are the 95% confidence limits on the true population mean?</p>
+<p><strong>z-statistic</strong></p>
+<p>The critical value <span class="math notranslate nohighlight">\(z_c = \pm 1.96\)</span> for 95% confidence. Thus, the population mean <span class="math notranslate nohighlight">\(\mu\)</span> is expected to lie within</p>
+<div class="math notranslate nohighlight">
+\[-60 \pm 1.96\frac{8}{\sqrt{5}} = -60 \pm 7.0 \rightarrow -67.0 \leq \mu \leq -53.0\]</div>
+<p><strong>t-statistic</strong></p>
+<p>The critical value <span class="math notranslate nohighlight">\(t_c = \pm 2.78\)</span> for <span class="math notranslate nohighlight">\(\nu = 5-1=4\)</span>. (Note: we want to use 0.025 since a two-tailed test.) Thus, the population mean <span class="math notranslate nohighlight">\(\mu\)</span> is expected to lie within</p>
+<div class="math notranslate nohighlight">
+\[-60 \pm 2.78\frac{8}{\sqrt{4}} = -60 \pm 11.1 \rightarrow -71.1 \leq \mu \leq -48.9\]</div>
+<p>Thus, using the t-statistic gives a wider confidence range than the z-statistic, reflecting the additional uncertainty associated with a small <span class="math notranslate nohighlight">\(N\)</span>.</p>
+<p>If we erroneously used the z-stat instead of the t-stat, we would underestimate the 95% confidence bounds by 35%.</p>
+</div>
+</section>
+<section id="when-to-use-and-not-use-the-t-test">
+<h3>When to use (and not use) the t-test<a class="headerlink" href="#when-to-use-and-not-use-the-t-test" title="Link to this heading">#</a></h3>
+<p>If you are choosing between the z-test and t-test, use the t-statistic! It converges to the z-test for large <span class="math notranslate nohighlight">\(N\)</span>.</p>
+<p>When applying the t-test, you are implicitly making a very strong assumption: that the underlying distribution is normal.</p>
+<p><strong>Always check your normality assumption:</strong> plot your data, look at the skewness, kurtosis, etc. There are fancy tests to check for normality, e.g. the Kolmogorov–Smirnov test (<code class="docutils literal notranslate"><span class="pre">kstest</span></code> in Matlab).</p>
+<p>Now, we previously discussed the Central Limit Theorem (CLT), which tells us that for a “large enough” sample size, the distribution of sample means is normal. <strong>However</strong>, note that the t-test applies for small <span class="math notranslate nohighlight">\(N\)</span> but for underlying normal distributions, whereas the CLT only applies for large <span class="math notranslate nohighlight">\(N\)</span>.</p>
+<p>Thus, you cannot blindly apply the t-test to test differences in sample means if the underlying distributions are not already normal! This is a common mistake made in our field.</p>
+<div class="tip admonition">
+<p class="admonition-title">Figure / in-class demonstration</p>
+<p><em>Figure Example: Back to Central Limit Theorem Matlab example</em></p>
+</div>
+</section>
+<section id="a-note-on-the-independence-on-n">
+<h3>A note on the independence on N<a class="headerlink" href="#a-note-on-the-independence-on-n" title="Link to this heading">#</a></h3>
+<p>In all of the cases thus far, it has been assumed that the <span class="math notranslate nohighlight">\(N\)</span> samples are independent samples. Often, <span class="math notranslate nohighlight">\(N\)</span> observations of a geophysical variable are not independent, for example, they exhibit either spatial or temporal correlations.</p>
+<p>For example, the geopotential height is highly auto-correlated so that each day’s value is not independent from the previous or following days. You cannot improve your ability to know a 5-day wave by sampling every 3 hours instead of every 6. We will discuss this more later on in the course.</p>
+</section>
+</section>
+<section id="hypothesis-testing">
+<h2>Hypothesis Testing<a class="headerlink" href="#hypothesis-testing" title="Link to this heading">#</a></h2>
+<section id="terminology-and-symbology">
+<h3>Terminology and symbology<a class="headerlink" href="#terminology-and-symbology" title="Link to this heading">#</a></h3>
+<div class="tip admonition">
+<p class="admonition-title">Figure / in-class demonstration</p>
+<p><em>Figure Example: draw picture of <span class="math notranslate nohighlight">\(\alpha\)</span>, p-value, <span class="math notranslate nohighlight">\(t_c\)</span>, etc.</em></p>
+</div>
+<ul class="simple">
+<li><p>significance/confidence level: <span class="math notranslate nohighlight">\(\alpha\)</span>, typically 5% (0.05), often reported as <span class="math notranslate nohighlight">\(1-\alpha\)</span></p></li>
+<li><p>critical value: <span class="math notranslate nohighlight">\(t_c\)</span> or <span class="math notranslate nohighlight">\(z_c\)</span>, the value that must be exceeded to reject the null hypothesis, one-sided <span class="math notranslate nohighlight">\(t_\alpha\)</span>, two-sided <span class="math notranslate nohighlight">\(t_{\alpha/2}\)</span></p></li>
+<li><p>p-value: probability of observing an effect given that the null hypothesis is true (probability of your <span class="math notranslate nohighlight">\(t\)</span>-score or <span class="math notranslate nohighlight">\(z\)</span>-score)</p></li>
+</ul>
+</section>
+<section id="setting-up-the-problem">
+<h3>Setting-up the problem<a class="headerlink" href="#setting-up-the-problem" title="Link to this heading">#</a></h3>
+<p>In using statistical significance tests, there are 5 basic steps that should be followed, in order.</p>
+<ol class="arabic simple">
+<li><p>State the significance level (<span class="math notranslate nohighlight">\(\alpha\)</span>)</p></li>
+<li><p>State the null hypothesis <span class="math notranslate nohighlight">\(H_0\)</span> and the alternative <span class="math notranslate nohighlight">\(H_1\)</span></p></li>
+<li><p>State the statistic to be used, and the assumptions required to use it</p></li>
+<li><p>State the critical region</p></li>
+<li><p>Evaluate the statistic and state the conclusion</p></li>
+</ol>
+<p>Proper construction of the null hypothesis and its alternative is critical to the meaning of statistical significance testing.</p>
+<p>Usually the null hypothesis is a rigorous statement of the conventional wisdom or a zero information conclusion, and its alternative is an interesting conclusion that follows directly and uniquely from the rejection of the null hypothesis.</p>
+<p>Some examples:</p>
+<p><span class="math notranslate nohighlight">\(H_0\)</span>: The means of two samples are equal.<br />
+<span class="math notranslate nohighlight">\(H_1\)</span>: The means of two samples are not equal.</p>
+<p><span class="math notranslate nohighlight">\(H_0\)</span>: The anomaly is zero.<br />
+<span class="math notranslate nohighlight">\(H_1\)</span>: The anomaly is not zero.</p>
+<p><span class="math notranslate nohighlight">\(H_0\)</span>: The correlation coefficient is zero.<br />
+<span class="math notranslate nohighlight">\(H_1\)</span>: The correlation coefficient is not zero.</p>
+<p>Hypothesis testing is much weaker than Bayesian statistics (discussed at the beginning of this course). All you are really doing is stating whether the data is consistent with the null hypothesis or not.</p>
+<p>You are not saying that the null hypothesis is true, or that the alternative is true, or that either is false.</p>
+<div class="note admonition">
+<p class="admonition-title">Example of Hypothesis Testing</p>
+<p>Sam went skiing 10 times at Vail this winter. The average temperature on these 10 days was 35F, and their standard deviation was 5F. Sam knows that the climatological mean winter temperature for Vail is 32F. Is this a sign of climate change?</p>
+<p>Let’s suppose by a “sign of climate change”, we mean, are the 10 days Sam went skiing sampled from a warmer population than the climatological values? Let’s walk through the 5-steps to answer this question.</p>
+<p>Let <span class="math notranslate nohighlight">\(\mu\)</span> be the true mean of the population from which the 10 days Sam went skiing were sampled.</p>
+<ol class="arabic">
+<li><p>Let’s use 95% confidence (<span class="math notranslate nohighlight">\(\alpha = 0.05\)</span>)</p></li>
+<li><p><span class="math notranslate nohighlight">\(H_0\)</span>: <span class="math notranslate nohighlight">\(\mu = 32^{\circ}\)</span>; <span class="math notranslate nohighlight">\(H_1\)</span>: <span class="math notranslate nohighlight">\(\mu \neq 32^{\circ}\)</span></p></li>
+<li><p>For this problem, we will assume that the temperatures at Vail are normally distributed. Since we have <span class="math notranslate nohighlight">\(N=10\)</span> samples to estimate the true standard deviation (<span class="math notranslate nohighlight">\(\sigma\)</span>) from the sample standard deviation (<span class="math notranslate nohighlight">\(s\)</span>), we must use the t-test.</p></li>
+<li><p>We will use a two-sided t-test (before he went skiing, Sam didn’t know what to expect from the temperatures). Thus, to reject the null hypothesis we must have <span class="math notranslate nohighlight">\(t &gt; t_{0.025} = 2.262\)</span> (for <span class="math notranslate nohighlight">\(\nu = 9\)</span>)</p></li>
+<li><p><span class="math notranslate nohighlight">\(t = \dfrac{35-32}{\sqrt{5^2/(10-1)}} = 1.80\)</span></p>
+<p><span class="math notranslate nohighlight">\(t = 1.80 &lt; t_{0.025}\)</span>, so we cannot reject the null hypothesis that the underlying population is different for the days Sam went skiing.</p>
+</li>
+</ol>
+<p>Note, we should not say:</p>
+<p>“There was nothing different about the temperatures on the day Sam went skiing.”</p>
+<p>…nor…</p>
+<p>“There has not been a change in temperatures at Vail over the past few decades.”</p>
+<p>We can only say</p>
+<p>“The data is consistent with the null hypothesis that the mean of the underlying population on the days Sam went skiing was the same as the climatology.”</p>
+<p>…or…</p>
+<p>“The higher temperatures present when Sam went skiing are consistent with natural variability.”</p>
+</div>
+<section id="comparison-of-means-hypothesis-testing">
+<h4>Comparison of Means &amp; Hypothesis Testing<a class="headerlink" href="#comparison-of-means-hypothesis-testing" title="Link to this heading">#</a></h4>
+<div class="note admonition">
+<p class="admonition-title">Example</p>
+<p>In 2000, you and your science team went into Rocky Mountain National Park to measure the Nitrogen deposition there. You took 17 samples and found they had a sample mean of 30 mg <span class="math notranslate nohighlight">\(\cdot\)</span> N/m<span class="math notranslate nohighlight">\(^2\)</span>, and a sample standard deviation of 10 mg <span class="math notranslate nohighlight">\(\cdot\)</span> N/m<span class="math notranslate nohighlight">\(^2\)</span>.</p>
+<p>In 2014, you repeat your measurements, but this time, due to budget cuts, you are only able to take 7 samples, resulting in a sample mean of 45 mg <span class="math notranslate nohighlight">\(\cdot\)</span> N/m<span class="math notranslate nohighlight">\(^2\)</span> and a sample standard deviation of 20 mg <span class="math notranslate nohighlight">\(\cdot\)</span> N/m<span class="math notranslate nohighlight">\(^2\)</span>.</p>
+<p>Has Nitrogen deposition significantly increased between 2000 and 2014?</p>
+<p>This problem is different than one we have done before, since we are not comparing our sample to a long-term average (or climatology), but we are comparing two sample means to each other. Thus, we need to use a “comparison of sample means” test. The good news is that it is similar to what we have been doing thus far.</p>
+<p>Assume two samples <span class="math notranslate nohighlight">\(N_1\)</span> and <span class="math notranslate nohighlight">\(N_2\)</span> are drawn from normal distributions whose true standard deviations are equal (<span class="math notranslate nohighlight">\(\sigma_1 = \sigma_2\)</span>). Then, the t-statistic for sample means is</p>
+<div class="math notranslate nohighlight">
+\[t = \frac{(\overline{x}_1 - \overline{x}_2) - \Delta_{1,2}}{\hat{\sigma}\sqrt{\dfrac{1}{N_1} + \dfrac{1}{N_2}}}\]</div>
+<div class="math notranslate nohighlight">
+\[\hat{\sigma} = \sqrt{\frac{N_1 s_1^2 + N_2 s_2^2}{N_1 + N_2 - 2}}\]</div>
+<p>where <span class="math notranslate nohighlight">\(\nu = N_1 + N_2 - 2\)</span> and <span class="math notranslate nohighlight">\(\Delta_{1,2}\)</span> is the hypothesized difference. The “pooled variance” <span class="math notranslate nohighlight">\(\hat{\sigma}^2\)</span> is a weighted average of the sample variances.</p>
+<p>A similar statistic applies for the z-score, but we use the true sample variances instead and they do not have to be equal to each other:</p>
+<div class="math notranslate nohighlight">
+\[z = \frac{(\overline{x}_1 - \overline{x}_2) - \Delta_{1,2}}{\sqrt{\dfrac{\sigma_1^2}{N_1} + \dfrac{\sigma_2^2}{N_2}}}\]</div>
+<p>Now, let’s answer the question using hypothesis testing:</p>
+<ol class="arabic">
+<li><p>95% confidence (<span class="math notranslate nohighlight">\(\alpha = 0.05\)</span>)</p></li>
+<li><p><span class="math notranslate nohighlight">\(H_0\)</span>: <span class="math notranslate nohighlight">\(\mu_{2000} = \mu_{2014}\)</span>; <span class="math notranslate nohighlight">\(H_1\)</span>: <span class="math notranslate nohighlight">\(\mu_{2000} \neq \mu_{2014}\)</span></p></li>
+<li><p>We will use the t-statistic for the comparison of means and we will assume the variance of Nitrogen deposition has not changed, and that it follows a normal distribution (we can check this). We will use a two-sided test since we didn’t know a priori if the difference would be positive or negative.</p></li>
+<li><p>We will reject the null hypothesis if <span class="math notranslate nohighlight">\(t &gt; t_c = t_{0.025} = 2.0739\)</span> (for <span class="math notranslate nohighlight">\(\nu = 17+7-2=22\)</span>).</p></li>
+<li><p>Evaluate</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{aligned}
+    \hat{\sigma} &amp;= \sqrt{\frac{17 \cdot 10^2 + 7 \cdot 20^2}{17+7-2}} = 14.3 \\
+    t &amp;= \frac{45 - 30 - 0}{14.3\sqrt{\dfrac{1}{17}+\dfrac{1}{7}}} = 2.36
+    \end{aligned}\end{split}\]</div>
+<p>Since <span class="math notranslate nohighlight">\(t = 2.36 &gt; t_c\)</span>, we can reject the null hypothesis that the sample means in the two years are equal.</p>
+</li>
+</ol>
+</div>
+</section>
+</section>
+<section id="type-i-and-type-ii-errors">
+<h3>Type I and Type II errors<a class="headerlink" href="#type-i-and-type-ii-errors" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p></p></th>
+<th class="head"><p><span class="math notranslate nohighlight">\(H_0\)</span> is true</p></th>
+<th class="head"><p><span class="math notranslate nohighlight">\(H_0\)</span> is false</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Fail to Reject <span class="math notranslate nohighlight">\(H_0\)</span></p></td>
+<td><p>No Error</p></td>
+<td><p>Type II Error (false negative)</p></td>
+</tr>
+<tr class="row-odd"><td><p>Reject <span class="math notranslate nohighlight">\(H_0\)</span></p></td>
+<td><p>Type I Error (false positive)</p></td>
+<td><p>No Error</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>The way typical hypothesis tests (frequentist approach) are set up, a 95% confidence level means you have a 5% chance of making a Type I Error, that is, you reject the null hypothesis (think you found something interesting) when you should not have. It is much more difficult to assess the Type II Error — the probability you “play it safe and fail to reject <span class="math notranslate nohighlight">\(H_0\)</span> when something interesting was there”. For typical hypothesis testing, the probability of a Type II error can be very large.</p>
+<p>In engineering, you often care about the differences between Type I and Type II errors, and you design your statistics to reflect your judgements. For example, if <span class="math notranslate nohighlight">\(H_0\)</span> is that the bridge will hold up if 10 semi-trucks cross at the same time, and <span class="math notranslate nohighlight">\(H_1\)</span> is that the bridge will not hold up, you might be happier with a Type I Error, which requires that you redesign the bridge, rather than a Type II Error, where you think the bridge will be fine, and it won’t be.</p>
+</section>
+<section id="a-priori-vs-a-posteriori">
+<h3>A priori vs. A posteriori<a class="headerlink" href="#a-priori-vs-a-posteriori" title="Link to this heading">#</a></h3>
+<p><strong>A priori:</strong> you have a reason to expect a relationship ahead of time.</p>
+<p><strong>A posteriori:</strong> you don’t. This distinction is critical for hypothesis testing.</p>
+<p><strong>One-tailed vs. Two-tailed tests:</strong></p>
+<p>If you have an “a priori” expectation of the sign of the result, you can use a 1-tailed test. Otherwise, you should use a two-tailed test.</p>
+<p>So far, the specific significance levels we have discussed rely on a priori statistics.</p>
+<div class="tip admonition">
+<p class="admonition-title">Figure / in-class demonstration</p>
+<p><em>Figure Example: Map of correlations with 29040 data points</em></p>
+</div>
+<div class="note admonition">
+<p class="admonition-title">Gone fishin’ I: a priori vs a posteriori statistics</p>
+<p>The jelly bean example on the syllabus (xkcd) shows students testing whether 20 different colors of jelly beans may cause acne, with a significance level of 95% confidence.</p>
+<p>Let <span class="math notranslate nohighlight">\(H_0\)</span>: jelly beans do not cause acne. What is the probability that 1 jelly-bean color would incorrectly reject <span class="math notranslate nohighlight">\(H_0\)</span> and find a “significant result” by chance alone?</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{aligned}
+\Pr(\text{correctly reject } H_0 \text{ when true, 1 test}) &amp;= 0.95 \\
+\Pr(\text{correctly reject } H_0 \text{ when true, 20 tests}) &amp;= 0.95^{20} = 36\%
+\end{aligned}\end{split}\]</div>
+<p>So, our 95% test is really a 36% — we have a 64% chance of finding at least one relationship by chance!</p>
+</div>
+<div class="note admonition">
+<p class="admonition-title">Gone fishin’ II: a priori vs a posteriori statistics</p>
+<p>You think that Arctic warming has caused blocking to increase in frequency between the 1980’s and today. You look over the 4 seasons, two latitude bins (north of <span class="math notranslate nohighlight">\(45^{\circ}\)</span>N and south of <span class="math notranslate nohighlight">\(45^{\circ}\)</span>N), and 6 different longitude bins. You test for changes in mean blocking frequency at the 95% confidence level. How many “significant changes” in blocking should you expect by chance alone? How might you apply a posteriori statistics?</p>
+<p>You have no a priori knowledge which season or longitude bin should exhibit changes in blocking due to sea ice — thus, you are giving the test <span class="math notranslate nohighlight">\(4 \times 6 \times 2 = 48\)</span> chances to succeed. The number of chances you expect to show significant trends is <span class="math notranslate nohighlight">\(0.05 \times 48 = 2.4\)</span>, so, you should find 2.4 “significant changes” by chance alone.</p>
+<p>Let <span class="math notranslate nohighlight">\(H_0\)</span>: the mean in blocking frequency has not changed.</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{aligned}
+\Pr(\text{correctly reject } H_0 \text{ when true, one test}) &amp;= 0.95 \\
+\Pr(\text{correctly reject } H_0 \text{ when true, all 48 tests}) &amp;= 0.95^{48} \approx 9\%
+\end{aligned}\end{split}\]</div>
+<p>Thus, your 95% confidence level is really a 9% confidence level!</p>
+<p>By trial and error, we can calculate the significance level <span class="math notranslate nohighlight">\(\beta\)</span> for which <span class="math notranslate nohighlight">\(\beta^{48} \approx 0.95\)</span> (our a posteriori statistic). In this case, <span class="math notranslate nohighlight">\(\beta \approx 0.999\)</span>. Thus, if we require the blocking changes for each chance to pass at the 99.9% confidence level, then the probability of correctly rejecting the null hypothesis for all chances will be 95%.</p>
+</div>
+<section id="bayesian-vs-frequentist-approach">
+<h4>Bayesian vs Frequentist approach<a class="headerlink" href="#bayesian-vs-frequentist-approach" title="Link to this heading">#</a></h4>
+<p><strong>Bayesian probability:</strong></p>
+<ul class="simple">
+<li><p>the evidence about the true state of the world is expressed in terms of degrees of belief</p></li>
+<li><p>any probability is a conditional probability given what one knows (varies from person to person)</p></li>
+<li><p>probability is seen as the “plausibility of an outcome”</p></li>
+<li><p>“updates” a prior hypothesis when new information comes to light</p></li>
+<li><p>often answers the question of “how likely is it that a hypothesis is true given my data?”, that is, <span class="math notranslate nohighlight">\(\Pr(\text{hypothesis} \mid \text{data})\)</span></p></li>
+</ul>
+<p><strong>Frequentist probability/hypothesis testing:</strong></p>
+<ul class="simple">
+<li><p>any given experiment can be considered as one of an infinite sequence of possible repetitions</p></li>
+<li><p>result of a frequentist approach is often a “true or false” conclusion from a significance test</p></li>
+<li><p>probability is seen as the “potential frequency of an outcome”</p></li>
+<li><p>often answers the question “how likely is my data if the null hypothesis is true?”, that is, <span class="math notranslate nohighlight">\(\Pr(\text{data} \mid \text{null hypothesis})\)</span></p></li>
+</ul>
+<div class="note admonition">
+<p class="admonition-title">Bayesian vs Frequentist approach cont.</p>
+<p>You’ve heard the hypothesis that variations in cosmic rays are driving the increase in global-mean temperatures we’ve seen over the last century, but you are very skeptical. You’ve been to a lot of seminars by experts in the field suggesting there is little evidence for this hypothesis. You calculate the correlation between incoming cosmic ray intensity and global-mean temperature and the resulting correlation has a p-value of 0.05. Should you now accept that cosmic rays are the answer and forget about CO<span class="math notranslate nohighlight">\(_2\)</span>?</p>
+<p><strong>Frequentist</strong></p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(H_0\)</span>: there is no real relationship between cosmic rays and global temperature increases</p></li>
+<li><p><span class="math notranslate nohighlight">\(H_a\)</span>: there is a real relationship between cosmic rays and global temperature increases</p></li>
+<li><p>p-value <span class="math notranslate nohighlight">\(= 0.05\)</span></p></li>
+<li><p>conclusion: if your confidence level is <span class="math notranslate nohighlight">\(\alpha = 0.05\)</span>, then you conclude that you can “reject the null hypothesis” that there is no relationship between cosmic rays and the global temperature increase. Note that this approach doesn’t care about <span class="math notranslate nohighlight">\(H_a\)</span>, nor does it care about all the evidence against cosmic rays.</p></li>
+</ul>
+<p><strong>Bayesian</strong></p>
+<ul>
+<li><p><span class="math notranslate nohighlight">\(R\)</span>: cosmic rays are driving the increase in global mean temperature</p></li>
+<li><p><span class="math notranslate nohighlight">\(\tilde{R}\)</span>: cosmic rays are not</p></li>
+<li><p><span class="math notranslate nohighlight">\(E\)</span>: the evidence obtained from the data, e.g. the correlation</p></li>
+<li><p>Want: <span class="math notranslate nohighlight">\(\Pr(R \mid E)\)</span></p></li>
+<li><p>Know: <span class="math notranslate nohighlight">\(\Pr(E \mid \tilde{R}) = 0.05\)</span></p></li>
+<li><p>Bayes’ Theorem:</p>
+<div class="math notranslate nohighlight">
+\[\Pr(R \mid E) = \frac{\Pr(E \mid R)\Pr(R)}{\Pr(E \mid R)\Pr(R) + \Pr(E \mid \tilde{R})\Pr(\tilde{R})}\]</div>
+</li>
+<li><p>Need to know: <span class="math notranslate nohighlight">\(\Pr(E \mid R)\)</span>, <span class="math notranslate nohighlight">\(\Pr(R)\)</span> (note that <span class="math notranslate nohighlight">\(\Pr(\tilde{R}) = 1 - \Pr(R)\)</span>)</p></li>
+<li><p>Expert Opinion: <span class="math notranslate nohighlight">\(\Pr(R)\)</span> is your prior probability, what you thought the likelihood that cosmic rays were driving the temperature changes before you analyzed the data. Since you were pretty skeptical due to expert opinion, let’s say <span class="math notranslate nohighlight">\(\Pr(R) = 0.01\)</span> so <span class="math notranslate nohighlight">\(\Pr(\tilde{R}) = 1-.01=.99\)</span>.</p></li>
+<li><p>Expert Opinion: We also need to know <span class="math notranslate nohighlight">\(\Pr(E \mid R)\)</span>, that is, the probability of getting the correlation you did if cosmic rays are causing the temperature changes. This one is tricky. For now, let’s say that <span class="math notranslate nohighlight">\(\Pr(E \mid R) = 0.95\)</span>, that is, you believe if there was an influence of cosmic rays, you would very likely calculate a correlation as big (or bigger) than what you actually did.</p></li>
+<li><p>Bayes’ Theorem:</p>
+<div class="math notranslate nohighlight">
+\[\Pr(R \mid E) = \frac{\Pr(E \mid R)\Pr(R)}{\Pr(E \mid R)\Pr(R) + \Pr(E \mid \tilde{R})\Pr(\tilde{R})} = \frac{0.95 \cdot 0.01}{0.95 \cdot 0.01 + 0.05 \cdot 0.99} = 0.16\]</div>
+</li>
+<li><p>Conclusion: you give it a 16% likelihood that cosmic rays are driving the global temperature increase. Put another way, the probability of your null hypothesis being true started off at 99% and now it is still 84% (not 5%)! The likelihood is lower than your p-value because you’ve allowed your prior knowledge to come into the calculation — you thought that the hypothesis was unbelievable (a “rare event”) to begin with. Note that as <span class="math notranslate nohighlight">\(\Pr(E \mid R)\)</span> decreases, <span class="math notranslate nohighlight">\(\Pr(R \mid E)\)</span> decreases as well. For example, if <span class="math notranslate nohighlight">\(\Pr(E \mid R) = 0.5\)</span> (instead of 0.95) you get a likelihood of 9%. If you had no prior knowledge, you would let <span class="math notranslate nohighlight">\(\Pr(R) = \Pr(\tilde{R}) = 0.5\)</span>, and you get what you would expect — 95%!</p></li>
+</ul>
+</div>
+<div class="note admonition">
+<p class="admonition-title">Another Bayesian example</p>
+<p>You are interested in measuring the sea-surface temperature off of the Washington coast to within 0.1 units. You know from previous years that the distribution of anomalous sea-surface temperature (denoted as random variable <span class="math notranslate nohighlight">\(X\)</span>) follows a uniform distribution with bounds <span class="math notranslate nohighlight">\((-2,2)\)</span>. The problem is that the instrument you use to measure the temperature is known to introduce an additive error. While the exact error during each measurement is unknown, you know from calibration that the error follows a normal distribution with <span class="math notranslate nohighlight">\(\mu=0\)</span> and <span class="math notranslate nohighlight">\(\sigma=0.75\)</span>, denoted as <span class="math notranslate nohighlight">\(W\)</span>. That is, you measure a random variable <span class="math notranslate nohighlight">\(Y\)</span> that is the sum of the two random variables <span class="math notranslate nohighlight">\(X\)</span> and <span class="math notranslate nohighlight">\(W\)</span>: <span class="math notranslate nohighlight">\(Y = X + W\)</span>.</p>
+<p>You go out and take a measurement and the instrument says that the anomalous sea-surface temperature is <span class="math notranslate nohighlight">\(y = 2.1\)</span>. (a) What is the probability that <span class="math notranslate nohighlight">\(X=x\)</span> given that you measured <span class="math notranslate nohighlight">\(y\)</span>, or in math, <span class="math notranslate nohighlight">\(\Pr(X=x \mid Y=2.1)\)</span>? (b) For each possible value of <span class="math notranslate nohighlight">\(y\)</span>, what is your best estimate of <span class="math notranslate nohighlight">\(x\)</span>?</p>
+<p><strong>Frequentist</strong></p>
+<p>A frequentist would respond to this information using only the prior distribution, that is, they would respond that the most likely value of <span class="math notranslate nohighlight">\(x\)</span> is the value detected, <span class="math notranslate nohighlight">\(x=y\)</span>. They would not take into account the additional information of the known distribution of <span class="math notranslate nohighlight">\(X\)</span> or how <span class="math notranslate nohighlight">\(W\)</span> may modify the signal.</p>
+<p><strong>Bayesian</strong></p>
+<p><strong>(a)</strong> Fig. <a class="reference internal" href="#fig:pdfs"><span class="xref myst">Figure PDFs</span></a> shows the distributions of <span class="math notranslate nohighlight">\(X\)</span>, <span class="math notranslate nohighlight">\(W\)</span> and <span class="math notranslate nohighlight">\(Y\)</span>. Using Bayes’ Theorem, you want to compute the following:</p>
+<div class="math notranslate nohighlight">
+\[f(X=x \mid Y=y=2.1) = \frac{f(Y=y \mid X=x)f(X=x)}{f(Y=y)}\]</div>
+<p>where <span class="math notranslate nohighlight">\(f\)</span> denotes the probability density function.</p>
+<p>You know that <span class="math notranslate nohighlight">\(f(X=x)\)</span> follows a uniform distribution, and <span class="math notranslate nohighlight">\(f(Y=y \mid X=x)\)</span> follows the normal distribution of <span class="math notranslate nohighlight">\(W\)</span> but centered on <span class="math notranslate nohighlight">\(\mu=x\)</span> instead of zero. Determining <span class="math notranslate nohighlight">\(f(Y=y)\)</span> is a bit trickier. What you want to know is the distribution of the sum of a normal distribution and a uniform distribution — however, this is not simple to write down analytically. One can determine this distribution using convolution (to be discussed later in the course), model it empirically, or use a built-in software package (e.g. python’s PaCAL). The distribution of <span class="math notranslate nohighlight">\(Y\)</span> is shown in Fig. <a class="reference internal" href="#fig:pdfs"><span class="xref myst">Figure PDFs</span></a>. Plugging values into Bayes’ Formula leads to our solution, which is shown in Fig. <a class="reference internal" href="#fig:condpdf"><span class="xref myst">conditional-PDF figure</span></a>.</p>
+<p><strong>(b)</strong> To answer this, you must decide what you mean by “best estimate”. Here, you will define the best estimate based on the posteriori mean. That is, the best estimate of <span class="math notranslate nohighlight">\(X\)</span> given <span class="math notranslate nohighlight">\(Y=y\)</span> is defined by the minimum mean squared error estimate, which is just the expected value of <span class="math notranslate nohighlight">\(X\)</span> given <span class="math notranslate nohighlight">\(Y=y\)</span>. In the case of <span class="math notranslate nohighlight">\(Y=y=2.2\)</span>, the best estimate is shown as a dashed gray line in Fig. <a class="reference internal" href="#fig:condpdf"><span class="xref myst">conditional-PDF figure</span></a>.</p>
+<p>Performing this calculation for all possible values of <span class="math notranslate nohighlight">\(y\)</span> leads to Fig. <a class="reference internal" href="#fig:expectation"><span class="xref myst">conditional-expectation figure</span></a>, which shows the most likely sea-surface temperature given that you measure a particular value of <span class="math notranslate nohighlight">\(y\)</span>. Note how the curve slowly approaches <span class="math notranslate nohighlight">\(-2\)</span> and <span class="math notranslate nohighlight">\(2\)</span> since <span class="math notranslate nohighlight">\(X\)</span> is bounded by these two values.</p>
+</div>
+<div class="tip admonition">
+<p class="admonition-title">Figure / in-class demonstration</p>
+<p><em>Figure <a class="reference internal" href="#fig:pdfs"><span class="xref myst">Figure PDFs</span></a>: Probability density functions of <span class="math notranslate nohighlight">\(X\)</span>, <span class="math notranslate nohighlight">\(W\)</span> and <span class="math notranslate nohighlight">\(Y = X+W\)</span>.</em><br />
+<em>Figure <a class="reference internal" href="#fig:condpdf"><span class="xref myst">conditional-PDF figure</span></a>: The probability density function of <span class="math notranslate nohighlight">\(X\)</span> given that <span class="math notranslate nohighlight">\(Y=y=2.2\)</span>. The dashed gray line denotes the conditional expectation of <span class="math notranslate nohighlight">\(X\)</span> based on <span class="math notranslate nohighlight">\(Y\)</span>.</em><br />
+<em>Figure <a class="reference internal" href="#fig:expectation"><span class="xref myst">conditional-expectation figure</span></a>: The conditional expectation of <span class="math notranslate nohighlight">\(X\)</span> given <span class="math notranslate nohighlight">\(Y=y\)</span>.</em><br />
+<a id="fig:pdfs"></a>
+<a id="fig:condpdf"></a>
+<a id="fig:expectation"></a></p>
+<p>(Insert figures from original handout: PDF plots of X, W, Y; conditional PDF; conditional expectation curve.)</p>
+</div>
+</section>
+</section>
+</section>
+<section id="monte-carlo-and-resampling-techniques">
+<h2>Monte Carlo and Resampling techniques<a class="headerlink" href="#monte-carlo-and-resampling-techniques" title="Link to this heading">#</a></h2>
+<p>Monte Carlo and resampling techniques haven’t historically been discussed or used as often because of computational constraints. These days, computer time is cheap and everyone has some, so these techniques can be found more regularly in the peer-reviewed literature.</p>
+<p><strong>Resampling techniques:</strong> best used when you have a long climatology or control run.</p>
+<p><strong>Monte Carlo:</strong> useful when you think you know the underlying distribution or behaviour, but you don’t have a long control or climatology — thus, you create many synthetic “realities” to determine the probabilities of certain events.</p>
+<section id="why-use-resampling-and-monte-carlo-techniques">
+<h3>Why use resampling and Monte Carlo techniques?<a class="headerlink" href="#why-use-resampling-and-monte-carlo-techniques" title="Link to this heading">#</a></h3>
+<ol class="arabic simple">
+<li><p>when spatial and temporal correlations are hard to estimate</p></li>
+<li><p>it is unclear which statistical assumptions are appropriate (e.g. your underlying population is not Gaussian, and the central limit theorem does not apply) — this is when resampling techniques are useful</p></li>
+<li><p>the statistic of interest does not have a straightforward theory for estimation, but you know the underlying population’s distribution — this is when Monte Carlo simulations are useful</p></li>
+</ol>
+</section>
+<section id="resampling-bootstrap">
+<h3>Resampling: bootstrap<a class="headerlink" href="#resampling-bootstrap" title="Link to this heading">#</a></h3>
+<p>Bootstrapping involves constructing a number of resamples of the original dataset (of equal size to the observed sample of interest) by random sampling with replacement from the original dataset. In this way, you never need to assume anything about the underlying distribution of the data since it is already built into the original dataset. In essence, you ask, by random chance, what is the probability that a particular event (or sample statistic) occurred?</p>
+<p>This method is also useful when you are determining statistics other than the mean (e.g. extrema, median, skewness) when we don’t have simple statistics for these variables.</p>
+<p>A reference to the bootstrap method is: Efron, B., “Bootstrap Methods: Another Look at the Jackknife”, <em>The Annals of Statistics</em>, Vol. 7, No. 1, pp. 1–26.</p>
+<p>The technique is called “bootstrapping” because it almost appears you get something out without putting something in. This is a phrase often used in computer programming to refer to a small amount of simple software that can load more complex software that loads more complex software (etc., etc.), almost as if the program is “pulling itself up by its bootstraps.”</p>
+</section>
+<section id="resampling-jackknife">
+<h3>Resampling: jackknife<a class="headerlink" href="#resampling-jackknife" title="Link to this heading">#</a></h3>
+<p>The jackknife method predates the bootstrap method. It is a way of getting error bars (or measuring the variance) of your sample. You systematically remove one value from your sample, and calculate the statistic, then put the value back into the sample and remove the next value, calculate the statistic…and on and on. Then, following a simple formula, you can estimate the variance of the parameter by using the mean of the jackknife estimates of your sample parameter of interest.</p>
+<p>You will find the jackknife approach often used to estimate the slope of a line through multiple points, or the y-intercept, etc.</p>
+<div class="tip admonition">
+<p class="admonition-title">Figure / in-class demonstration</p>
+<p><em>Figure Example: Run Matlab example jackknife_example.m</em></p>
+</div>
+</section>
+<section id="monte-carlo">
+<h3>Monte Carlo<a class="headerlink" href="#monte-carlo" title="Link to this heading">#</a></h3>
+<p>Monte Carlo simulations require that you make an assumption about the underlying distribution. This is useful when you don’t have a large enough base population to perform the bootstrap approach.</p>
+<p>The idea is that you create a bunch of synthetic (i.e. fake) data according to your distribution — you create many “realities” based on the same underlying distribution, and then you perform your analysis on these realities to determine the distribution of the statistical parameters of interest.</p>
+<p>For example, in Homework 1, you wrote Monte Carlo simulations using the underlying normal distribution.</p>
+<div class="note admonition">
+<p class="admonition-title">Resampling: bootstrap</p>
+<p>You believe that aerosols grow the most when you have high geopotential heights nearby. You composite the 500 hPa geopotential height on the 20 August days when you have aerosol formation and growth over a site in Egbert, Canada, and you find that the average geopotential on these days is 5900 m. The mean at this station is 5886 m, so the heights are higher. Are these results significant? Or is this just random chance?</p>
+<p>Run 2,500 experiments; within each experiment, randomly grab 20 days from the historical geopotential height data, and take the mean of the 20 days. After 2,500 iterations, you will have a distribution of the <span class="math notranslate nohighlight">\(N=20\)</span> sample means under the null hypothesis of random chance. Now, you can look at this distribution and determine the 95% confidence bounds on the <span class="math notranslate nohighlight">\(N=20\)</span> sample means — if the observed value of 5900 m is outside of this range, you have reason to believe it may be more than random chance.</p>
+</div>
+<div class="tip admonition">
+<p class="admonition-title">Figure / in-class demonstration</p>
+<p><em>Figure Example: run subsampling_example.m</em></p>
+</div>
+<div class="note admonition">
+<p class="admonition-title">Monte Carlo simulation</p>
+<p>In January (31 days), the maximum daily temperature was 2.2 standard deviations from the climatological mean temperature. If we assume that the daily temperature is normally distributed, how rare is it to have a maximum of <span class="math notranslate nohighlight">\(2.2\sigma\)</span> or greater in 31 daily samples?</p>
+<p>We do not have a test for the maximum of a distribution — note, this is not the mean.</p>
+<p>We can’t use the bootstrap approach, since we don’t have the population to resample from; we only have our 31 points.</p>
+<p>However, since our null hypothesis is that the values come from a standard normal, we can create synthetic data to determine the confidence interval on the maximum in a sample of <span class="math notranslate nohighlight">\(N=31\)</span>.</p>
+<p>If we had the climatological data (say 50 years of data), we could instead follow a bootstrap approach and resample the full time series many times to get the distribution of the maximum value for samples of length <span class="math notranslate nohighlight">\(N=31\)</span>. In this case, the underlying distribution would not need to be normal (as in the bootstrap example).</p>
+</div>
+<div class="tip admonition">
+<p class="admonition-title">Figure / in-class demonstration</p>
+<p><em>Figure Example: RUN: monte_carlo_example.m</em></p>
+</div>
+</section>
+</section>
+<section id="compositing">
+<h2>Compositing<a class="headerlink" href="#compositing" title="Link to this heading">#</a></h2>
+<p>Compositing, also sometimes called superposed epoch analysis when applied to time series, is one of the simplest analysis techniques imaginable. It is very powerful, but can also be misused.</p>
+<p><strong>Compositing:</strong> sorting data into categories and comparing the statistics for different categories.</p>
+<p>The idea is by averaging the data in a smart way, you can isolate the signal and remove the background “noise” (unwanted/not interesting signals).</p>
+<p><strong>Steps to Compositing:</strong></p>
+<ol class="arabic">
+<li><p>Determine categories</p>
+<ul class="simple">
+<li><p>for diurnal cycle, use time of day</p></li>
+<li><p>impacts of ENSO, warm/cold SSTs</p></li>
+<li><p>impacts of sea ice loss, high and low September sea ice years</p></li>
+</ul>
+<p>You should have an a priori hypothesis as to why the variable being composited should depend on the category</p>
+</li>
+<li><p>compute the statistics for each category</p></li>
+<li><p>display results</p></li>
+<li><p>validate results</p>
+<ul class="simple">
+<li><p>calculate relevant statistics (most often z-test using a comparison of means), if <span class="math notranslate nohighlight">\(N\)</span> is big enough (i.e. enough data in each category to use the Central Limit Theorem)</p></li>
+<li><p>OR, perform Monte Carlo or sub-sampling techniques</p></li>
+<li><p>subdivide the data and show relationship exists in sub-samples of the data</p></li>
+</ul>
+</li>
+</ol>
+<p><strong>Advantages over regression</strong> (fitting a line): can isolate nonlinear relationships, don’t need to make assumptions about the underlying distributions.</p>
+<p><strong>Disadvantages:</strong> does not use all of the data (more susceptible to sampling errors), tends to focus on “extremes” of each category.</p>
+<div class="tip admonition">
+<p class="admonition-title">Figure / in-class demonstration</p>
+<p><em>Figure Example: Slides on compositing: sea ice and ENSO/PSDI</em></p>
+</div>
+<section id="significance-of-composites">
+<h3>Significance of composites<a class="headerlink" href="#significance-of-composites" title="Link to this heading">#</a></h3>
+<p>With composites, you often compare your composited field to its background (climatological) field. If the data is normally distributed, then you can use the t-test when your composite sample is small.</p>
+<p>For example, monthly-mean temperatures are relatively normally distributed across the globe. So, in our sea ice example, the composite for low sea ice only had 5 years, so a t-test with <span class="math notranslate nohighlight">\(\nu = 5-1=4\)</span> will be fine.</p>
+<p>When your composites are much larger, then of course, a z-test is just fine.</p>
+<p>As mentioned, analyzing only a subset of the data is a good way to make sure your result is robust. However, if <span class="math notranslate nohighlight">\(N=5\)</span>, you probably don’t have enough data to subdivide the data. If <span class="math notranslate nohighlight">\(N=50\)</span>, you could do the analysis in two random <span class="math notranslate nohighlight">\(N=25\)</span> chunks, and confirm you get similar results.</p>
+<p>However, what if the underlying distribution isn’t normal, or you don’t have enough data to subdivide? At this point, you can run into problems. Furthermore, atmospheric data is spatially and temporally correlated, so you can still get “significant results” according to a t-test by random chance (recall the example from the first lecture).</p>
+</section>
+</section>
+<section id="other-common-distributions">
+<h2>Other Common Distributions<a class="headerlink" href="#other-common-distributions" title="Link to this heading">#</a></h2>
+<section id="chi-square-distribution-tests-of-variance">
+<h3>Chi-square Distribution: tests of variance<a class="headerlink" href="#chi-square-distribution-tests-of-variance" title="Link to this heading">#</a></h3>
+<p>Sometimes we want to test if the sample variances are truly different. For this we cannot use the t-test or z-test, but we can use the Chi-square distribution.</p>
+<p>Before we get to the distribution, let’s define a random variable <span class="math notranslate nohighlight">\(\chi^2\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[\chi^2 = (N-1)\frac{s^2}{\sigma^2}\]</div>
+<p>This quantity can be used to test if the sample variance <span class="math notranslate nohighlight">\(s^2\)</span> is different from the population variance <span class="math notranslate nohighlight">\(\sigma^2\)</span>. Note we are using a ratio, rather than a difference, since a difference ends up being very complicated.</p>
+<p>If the underlying distribution from which we draw <span class="math notranslate nohighlight">\(N\)</span> values to compute <span class="math notranslate nohighlight">\(\chi^2\)</span> is a normally distributed population with standard deviation <span class="math notranslate nohighlight">\(\sigma\)</span>, then the <span class="math notranslate nohighlight">\(\chi^2\)</span> values will be distributed as follows:</p>
+<div class="math notranslate nohighlight">
+\[f(\chi^2) = f_0(\nu)(\chi^2)^{\left(\frac{1}{2}\nu - 1\right)}\exp\left(-\frac{1}{2}\chi^2\right),\]</div>
+<p>where <span class="math notranslate nohighlight">\(f_0\)</span> is a normalization factor. This is the Chi-square distribution. The Chi-square distribution is a member of the Gamma family of continuous probability functions.</p>
+<p>The Chi-square distribution can be used to estimate the significance of the ratio <span class="math notranslate nohighlight">\(s^2/\sigma^2\)</span>.</p>
+<p>If you are trying to determine the “true” variance, you can move things around to get the confidence limits for the true variance given your sample variance. That is,</p>
+<div class="math notranslate nohighlight">
+\[\frac{s^2(N-1)}{\chi^2_{0.975}} \leq \sigma^2 \leq \frac{s^2(N-1)}{\chi^2_{0.025}}\]</div>
+<p><strong>Notes on Chi-square:</strong></p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(\chi^2\)</span> is used to assess the confidence limits on <span class="math notranslate nohighlight">\(\sigma\)</span></p></li>
+<li><p>like the t-distribution, the Chi-square distribution is a function of <span class="math notranslate nohighlight">\(\nu\)</span></p></li>
+<li><p>the Chi-square distribution is not symmetric about its mean: <span class="math notranslate nohighlight">\(\chi^2_{0.025} \neq \chi^2_{0.975}\)</span></p></li>
+<li><p>for <span class="math notranslate nohighlight">\(\nu &gt; 30\)</span>, the Chi-square distribution approaches the Normal distribution</p></li>
+<li><p><a class="reference external" href="https://en.wikipedia.org/wiki/Chi-squared_distribution">https://en.wikipedia.org/wiki/Chi-squared_distribution</a></p></li>
+</ul>
+</section>
+<section id="f-statistic">
+<h3>F-statistic<a class="headerlink" href="#f-statistic" title="Link to this heading">#</a></h3>
+<p>The F-statistic is used to assess the ratio between two sample standard deviations <span class="math notranslate nohighlight">\(s_1\)</span> and <span class="math notranslate nohighlight">\(s_2\)</span> — whereas the Chi-square is used when you have one sample and you are comparing it to a known population variance <span class="math notranslate nohighlight">\(\sigma\)</span>. In other words, the Chi-square only has a small sample <span class="math notranslate nohighlight">\(N_1\)</span>, while the F-statistic has small samples <span class="math notranslate nohighlight">\(N_1\)</span> and <span class="math notranslate nohighlight">\(N_2\)</span>.</p>
+<p>If <span class="math notranslate nohighlight">\(s_1\)</span> and <span class="math notranslate nohighlight">\(s_2\)</span> are the variances of independent random samples of size <span class="math notranslate nohighlight">\(N_1\)</span> and <span class="math notranslate nohighlight">\(N_2\)</span>, taken from two Normal populations having true variances <span class="math notranslate nohighlight">\(\sigma_1^2\)</span> and <span class="math notranslate nohighlight">\(\sigma_2^2\)</span>, respectively, then we can define a random variable <span class="math notranslate nohighlight">\(F\)</span> as:</p>
+<div class="math notranslate nohighlight">
+\[F = \frac{s_1^2/\sigma_1^2}{s_2^2/\sigma_2^2}\]</div>
+<p><span class="math notranslate nohighlight">\(F\)</span> is a random variable that follows an F-distribution with parameters <span class="math notranslate nohighlight">\(\nu_1 = N_1 - 1\)</span> and <span class="math notranslate nohighlight">\(\nu_2 = N_2 - 1\)</span>. Note that the F-statistic is the ratio of two chi-squared random variables (scaled appropriately due to the <span class="math notranslate nohighlight">\(N-1\)</span>).</p>
+<p>Note that if both <span class="math notranslate nohighlight">\(s_1\)</span> and <span class="math notranslate nohighlight">\(s_2\)</span> come from Normal populations with the same variances, i.e.<span class="math notranslate nohighlight">\(\sigma_1 = \sigma_2\)</span> then the F-statistic simplifies to:</p>
+<div class="math notranslate nohighlight">
+\[F = \frac{s_1^2}{s_2^2}\]</div>
+<p>The F-distribution has the following properties:</p>
+<ul class="simple">
+<li><p>the mean is <span class="math notranslate nohighlight">\(\dfrac{\nu_1}{(\nu_2-2)}\)</span></p></li>
+<li><p>the variance is <span class="math notranslate nohighlight">\(\dfrac{2\nu_2^2(\nu_1+2)}{\nu_1(\nu_2-2)(\nu_2-4)}\)</span></p></li>
+</ul>
+<p>Note that the F-statistic will be used extensively when testing the significance of peaks in frequency spectra (Part III of this course).</p>
+</section>
+<section id="binomial">
+<h3>Binomial<a class="headerlink" href="#binomial" title="Link to this heading">#</a></h3>
+<p>The binomial distribution is often one of the first taught in college statistics. Suppose you have a set of <span class="math notranslate nohighlight">\(N\)</span> trials where the outcome of each trial is either a “success” or “failure”. These trials are called “Bernoulli trials”.</p>
+<p>The probability of a success in one trial is <span class="math notranslate nohighlight">\(p = \Pr(\text{success})\)</span>. If <span class="math notranslate nohighlight">\(X\)</span> is the total number of successes in <span class="math notranslate nohighlight">\(N\)</span> trials, then</p>
+<div class="math notranslate nohighlight">
+\[\Pr(X=k) = \binom{N}{k}p^k(1-p)^{N-k}\]</div>
+<p>Recall that</p>
+<div class="math notranslate nohighlight">
+\[\binom{N}{k} = \frac{N!}{k!(N-k)!}\]</div>
+<p>Note that the right-hand side looks complicated, but really is the probability of a certain number of successes times the probability of a certain number of failures, with a special factor in front to account for the fact that order does not matter.</p>
+<div class="tip admonition">
+<p class="admonition-title">Figure / in-class demonstration</p>
+<p><em>Figure Example: Binomial examples</em></p>
+</div>
+</section>
+<section id="normal-approximation-to-the-binomial">
+<h3>Normal Approximation to the Binomial<a class="headerlink" href="#normal-approximation-to-the-binomial" title="Link to this heading">#</a></h3>
+<p>You can probably imagine the problems getting much more tedious as you have to sum more and more. However, there is a normal approximation to the Binomial distribution in the case of</p>
+<ol class="arabic simple">
+<li><p>large <span class="math notranslate nohighlight">\(N\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(Np &gt; 10\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(N(1-p) &gt; 10\)</span></p></li>
+</ol>
+<p>In this case, the statistic</p>
+<div class="math notranslate nohighlight">
+\[z = \frac{X - Np}{\sqrt{Np(1-p)}}\]</div>
+<p>follows a Normal distribution with <span class="math notranslate nohighlight">\(\mu = Np\)</span> and <span class="math notranslate nohighlight">\(\sigma = \sqrt{Np(1-p)}\)</span>.</p>
+<p>An approximate two-tailed 95% confidence interval for the number of successes <span class="math notranslate nohighlight">\(X\)</span> is then,</p>
+<div class="math notranslate nohighlight">
+\[Np - 1.96 \cdot \sqrt{Np(1-p)} \leq X \leq Np + 1.96 \cdot \sqrt{Np(1-p)}\]</div>
+<div class="note admonition">
+<p class="admonition-title">Binomial Distribution I</p>
+<p>What is the probability of rolling exactly 4 sixes out of 20 rolls of a fair 6-sided die?</p>
+<p>Let’s define a success as rolling a six.</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{aligned}
+\Pr(\text{success}) &amp;= 1/6 \\
+\Pr(\text{failure}) &amp;= 1 - \Pr(\text{success}) = 5/6 \\
+\Pr(X=4) &amp;= \binom{20}{4}\left(\frac{1}{6}\right)^4\left(\frac{5}{6}\right)^{20-4} = 0.2 = 20\%
+\end{aligned}\end{split}\]</div>
+</div>
+<div class="note admonition">
+<p class="admonition-title">Binomial Distribution II</p>
+<p>What is the probability of getting a score of 12 or more on a test of 30 true-false questions?</p>
+<p>Let’s define a success as getting the question right.</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{aligned}
+\Pr(\text{success}) &amp;= 1/2 \\
+\Pr(\text{failure}) &amp;= 1 - \Pr(\text{success}) = 1/2
+\end{aligned}\end{split}\]</div>
+<p>Now, the problem is a bit more tedious, because we have to add up the probabilities for <span class="math notranslate nohighlight">\(k = 12, 13, 14, \dots, 29, 30\)</span>. Instead, we can calculate the probability of getting <span class="math notranslate nohighlight">\(k = 0, 1, 2, 3, \dots, 11\)</span> questions right, and then 1 minus this probability is the probability we want. Thus,</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{aligned}
+\Pr(X \geq 12) &amp;= 1 - \Pr(X &lt; 12) \\
+&amp;= 1 - \sum_{k=0}^{11}\binom{30}{k}(0.5)^k(0.5)^{30-k} \\
+&amp;= 1 - 0.1 = 90\%
+\end{aligned}\end{split}\]</div>
+</div>
+<div class="note admonition">
+<p class="admonition-title">Normal Approximation to the Binomial</p>
+<p>48 CMIP5 models are discussed in the IPCC 5th Assessment Report. How many models must agree that global temperatures will increase by 2100 so that we can say with 95% certainty that the models do not agree purely by chance? What is the 95% confidence interval on the number of models with increasing temperatures under the null hypothesis?</p>
+<p>Here, let a success be that the model says global temperatures will increase. Our null hypothesis is that the models randomly guess whether global temperatures will increase — thus, there is a 50% chance that any one model will predict a temperature increase (<span class="math notranslate nohighlight">\(p=0.5\)</span>). We want to know</p>
+<div class="math notranslate nohighlight">
+\[\Pr(X \geq k^* \mid H_0) \leq 0.05\]</div>
+<p>Where <span class="math notranslate nohighlight">\(k^*\)</span> is the number of models required to show an increase in order for us to believe it is more than chance (that the null hypothesis can be rejected).</p>
+<div class="math notranslate nohighlight">
+\[\sum_{k=k^*}^{48}\binom{48}{k}(0.5)^k(1-0.5)^{48-k} \leq 0.05\]</div>
+<p>This would take a long time by hand, however, let’s check if the Normal approximation to the Binomial applies.</p>
+<ol class="arabic simple">
+<li><p><span class="math notranslate nohighlight">\(n\)</span> is large (<span class="math notranslate nohighlight">\(n=48\)</span>)</p></li>
+<li><p><span class="math notranslate nohighlight">\(np = 24 &gt; 10\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(n(1-p) = 24 &gt; 10\)</span></p></li>
+</ol>
+<p>So, we can use the Normal approximation for large <span class="math notranslate nohighlight">\(N\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[\Pr\left(Z &gt; \frac{k^* - 48 \cdot 0.5}{\sqrt{48 \cdot 0.5 \cdot (1-0.5)}}\right) &lt; 0.025\]</div>
+<div class="math notranslate nohighlight">
+\[\Pr(Z &gt; 1.64) = 0.05\]</div>
+<div class="math notranslate nohighlight">
+\[\frac{k^* - 48 \cdot 0.5}{\sqrt{48 \cdot 0.5 \cdot (1-0.5)}} = 1.96\]</div>
+<div class="math notranslate nohighlight">
+\[k^* \geq 31.\]</div>
+<p>So, at least 31 models are needed to predict increases — to reject the null hypothesis that it was due to random chance. As expected, more than half of the models must show an increase.</p>
+<p>The 95% confidence interval under the null hypothesis is:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{aligned}
+np &amp;\pm 1.96 \cdot \sqrt{np(1-p)} \\
+24 &amp;\pm 1.96 \cdot \sqrt{24(1-.5)} = 24 \pm 6.8 \\
+17.2 &amp;\leq X \leq 30.8
+\end{aligned}\end{split}\]</div>
+</div>
+</section>
+</section>
+<section id="non-parametric-tests">
+<h2>Non-parametric Tests<a class="headerlink" href="#non-parametric-tests" title="Link to this heading">#</a></h2>
+<p>Thus far, most of the statistics we have used assume an underlying distribution (typically normal). However, there may be instances where you do not think that the data is normally distributed — in which case, you might want to use a non-parametric statistical test.</p>
+<section id="signs-test">
+<h3>Signs Test<a class="headerlink" href="#signs-test" title="Link to this heading">#</a></h3>
+<p>For example, say you want to test the null hypothesis that the means of two data sets <span class="math notranslate nohighlight">\(x_i, y_i\)</span> are identical. In this case, one could use the Signs Test, also known as the Wilcoxon Test.</p>
+<p>Instead of testing the means, this test uses the medians (<span class="math notranslate nohighlight">\(\tilde{\mu}\)</span>) of the two distributions to determine if they are equal. We formulate the hypothesis in the following way.</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{aligned}
+H_0&amp;: \Pr(y_i &gt; x_i) = 0.5 \\
+H_1&amp;: \Pr(y_i &gt; x_i) \neq 0.5
+\end{aligned}\end{split}\]</div>
+<p>To do this test, you replace each pair with a signed integer in the following manner:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{aligned}
+y_i &gt; x_i &amp;\rightarrow +1 \\
+y_i &lt; x_i &amp;\rightarrow -1
+\end{aligned}\end{split}\]</div>
+<p>The null hypothesis would suggest that there are a similar number of <span class="math notranslate nohighlight">\(+1\)</span> and <span class="math notranslate nohighlight">\(-1\)</span>. With this setup, we now have a bunch of Bernoulli trials with a success (<span class="math notranslate nohighlight">\(+1\)</span>) and a failure (<span class="math notranslate nohighlight">\(-1\)</span>). Thus, we can use the Binomial Distribution to determine the probability of getting a certain number of <span class="math notranslate nohighlight">\(+1\)</span> versus <span class="math notranslate nohighlight">\(-1\)</span>. Prof. Dennis Hartmann gives a nice example in Chapter 1.</p>
+</section>
+<section id="runs-test-wald-wolfowitz-runs-test">
+<h3>Runs Test (Wald–Wolfowitz runs test)<a class="headerlink" href="#runs-test-wald-wolfowitz-runs-test" title="Link to this heading">#</a></h3>
+<p>The runs test is a non-parametric test to check whether a data set is random or not. For example (taken from Wikipedia), imagine a time series on anomalies as shown below, where “+” denotes a positive anomaly and “<span class="math notranslate nohighlight">\(-\)</span>” denotes a negative anomaly:</p>
+<div style="text-align: center;">
+<p><code class="docutils literal notranslate"><span class="pre">+</span> <span class="pre">+</span> <span class="pre">+</span> <span class="pre">+</span> <span class="pre">-</span> <span class="pre">-</span> <span class="pre">-</span> <span class="pre">+</span> <span class="pre">+</span> <span class="pre">+</span> <span class="pre">-</span> <span class="pre">-</span> <span class="pre">+</span> <span class="pre">+</span> <span class="pre">+</span> <span class="pre">+</span> <span class="pre">+</span> <span class="pre">+</span> <span class="pre">-</span> <span class="pre">-</span> <span class="pre">-</span> <span class="pre">-</span></code></p>
+</div>
+<p>We now separate this series into “runs”…specifically, there are <span class="math notranslate nohighlight">\(R=6\)</span> runs, 3 of which consist of “+” and the others of “<span class="math notranslate nohighlight">\(-\)</span>”. The runs test uses a null hypothesis that the data is random. Under this null hypothesis, the number of runs (<span class="math notranslate nohighlight">\(R\)</span>) in a sequence of <span class="math notranslate nohighlight">\(N\)</span> elements is a random variable whose conditional distribution given the observation of <span class="math notranslate nohighlight">\(N_+\)</span> positive values and <span class="math notranslate nohighlight">\(N_-\)</span> negative values (<span class="math notranslate nohighlight">\(N = N_+ + N_-\)</span>) has the following properties:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{aligned}
+\mu &amp;= 1 + \frac{2N_+N_-}{N} \\
+\sigma^2 &amp;= \frac{2N_+N_-(2N_+N_- - N)}{N^2(N-1)} = \frac{(\mu-1)(\mu-2)}{N-1}
+\end{aligned}\end{split}\]</div>
+<p>If <span class="math notranslate nohighlight">\(N_+\)</span> and <span class="math notranslate nohighlight">\(N_-\)</span> are sufficiently large (say, greater than 30) then the number of runs <span class="math notranslate nohighlight">\(R\)</span> is well modeled by a Normal distribution with parameters <span class="math notranslate nohighlight">\(\mu\)</span> and <span class="math notranslate nohighlight">\(\sigma\)</span> given above.</p>
+</section>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./General_statistical_test"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="../intro.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Syllabus</p>
+      </div>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mean-variance-and-higher-moments">Mean, variance and higher moments</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mean">Mean</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#median">Median</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#variance">Variance</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#higher-moments">Higher moments</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#basic-probabilities-unions-intersections-conditional-probabilities-bayes-theorem">Basic probabilities; unions; intersections; conditional probabilities; Bayes theorem</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#probabilities-unions-intersections">Probabilities: Unions &amp; Intersections</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#bayes-theorem">Bayes Theorem</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#probability-philosophy">Probability philosophy</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#statistical-significance-testing">Statistical Significance Testing</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#normal-distribution">Normal distribution</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#statistical-significance-testing-the-t-statistic-and-z-statistic">Statistical Significance Testing: the t-statistic and z-statistic</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#using-the-z-score">Using the z-score</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#estimating-the-statistical-significance-of-the-sample-mean-with-the-z-statistic">Estimating the statistical significance of the sample mean with the z-statistic</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#confidence-interval">Confidence Interval</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#central-limit-theorem">Central Limit Theorem</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-t-statistic-when-the-sample-size-is-small">The t-statistic: when the sample size is small</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#when-to-use-and-not-use-the-t-test">When to use (and not use) the t-test</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#a-note-on-the-independence-on-n">A note on the independence on N</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#hypothesis-testing">Hypothesis Testing</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#terminology-and-symbology">Terminology and symbology</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#setting-up-the-problem">Setting-up the problem</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#comparison-of-means-hypothesis-testing">Comparison of Means &amp; Hypothesis Testing</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#type-i-and-type-ii-errors">Type I and Type II errors</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#a-priori-vs-a-posteriori">A priori vs. A posteriori</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#bayesian-vs-frequentist-approach">Bayesian vs Frequentist approach</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#monte-carlo-and-resampling-techniques">Monte Carlo and Resampling techniques</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#why-use-resampling-and-monte-carlo-techniques">Why use resampling and Monte Carlo techniques?</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#resampling-bootstrap">Resampling: bootstrap</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#resampling-jackknife">Resampling: jackknife</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#monte-carlo">Monte Carlo</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#compositing">Compositing</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#significance-of-composites">Significance of composites</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#other-common-distributions">Other Common Distributions</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#chi-square-distribution-tests-of-variance">Chi-square Distribution: tests of variance</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#f-statistic">F-statistic</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#binomial">Binomial</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#normal-approximation-to-the-binomial">Normal Approximation to the Binomial</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#non-parametric-tests">Non-parametric Tests</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#signs-test">Signs Test</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#runs-test-wald-wolfowitz-runs-test">Runs Test (Wald–Wolfowitz runs test)</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By The Jupyter Book Community
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2023.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
