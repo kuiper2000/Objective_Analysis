@@ -377,12 +377,6 @@
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#higher-moments">Higher moments</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#from-moments-and-pdfs-to-bayes-theorem-the-mathematical-link">From Moments and PDFs to Bayes’ Theorem: the Mathematical Link</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#moments-as-expectations-over-a-pdf">Moments as expectations over a PDF</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#joint-pdfs-and-the-product-rule">Joint PDFs and the product rule</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#worked-example-two-gaussians-gaussian-posterior">Worked example: two Gaussians → Gaussian posterior</a></li>
-</ul>
-</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#basic-probabilities-unions-intersections-conditional-probabilities-bayes-theorem">Basic probabilities; unions; intersections; conditional probabilities; Bayes theorem</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#probabilities-unions-intersections">Probabilities: Unions &amp; Intersections</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#bayes-theorem">Bayes Theorem</a></li>
@@ -600,128 +594,6 @@ s &amp;= \text{the sample standard deviation}
 <p><em>Figure Example: kurtosis sketch</em></p>
 </div>
 <p>Typically, higher order moments are given in terms of the standardized units, for ease of comparison (and so units don’t matter).</p>
-</section>
-</section>
-<section id="from-moments-and-pdfs-to-bayes-theorem-the-mathematical-link">
-<h2>From Moments and PDFs to Bayes’ Theorem: the Mathematical Link<a class="headerlink" href="#from-moments-and-pdfs-to-bayes-theorem-the-mathematical-link" title="Link to this heading">#</a></h2>
-<section id="moments-as-expectations-over-a-pdf">
-<h3>Moments as expectations over a PDF<a class="headerlink" href="#moments-as-expectations-over-a-pdf" title="Link to this heading">#</a></h3>
-<p>So far we defined moments using the sample formula <span class="math notranslate nohighlight">\(m_r = \frac{1}{N}\sum_i (x_i-\overline{x})^r\)</span>.
-In the population (continuous) limit, every moment is simply an <strong>expectation</strong> weighted by the probability density function <span class="math notranslate nohighlight">\(f(x)\)</span>:</p>
-<div class="math notranslate nohighlight">
-\[\boxed{m_r \;=\; \mathbb{E}\!\left[(X-\mu)^r\right] \;=\; \int_{-\infty}^{\infty}(x-\mu)^r\,f(x)\,dx}\]</div>
-<p>The table below shows how the familiar statistics you already know fall out of this single formula:</p>
-<div class="pst-scrollable-table-container"><table class="table">
-<thead>
-<tr class="row-odd"><th class="head"><p><span class="math notranslate nohighlight">\(r\)</span></p></th>
-<th class="head"><p>Moment</p></th>
-<th class="head"><p>Expression</p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p>1</p></td>
-<td><p>Mean (about zero)</p></td>
-<td><p><span class="math notranslate nohighlight">\(\mu = \int x\,f(x)\,dx\)</span></p></td>
-</tr>
-<tr class="row-odd"><td><p>2</p></td>
-<td><p>Variance</p></td>
-<td><p><span class="math notranslate nohighlight">\(\sigma^2 = \int (x-\mu)^2 f(x)\,dx\)</span></p></td>
-</tr>
-<tr class="row-even"><td><p>3</p></td>
-<td><p>Skewness (non-dim.)</p></td>
-<td><p><span class="math notranslate nohighlight">\(a_3 = \int (x-\mu)^3 f(x)\,dx \;/\;\sigma^3\)</span></p></td>
-</tr>
-<tr class="row-odd"><td><p>4</p></td>
-<td><p>Kurtosis (non-dim.)</p></td>
-<td><p><span class="math notranslate nohighlight">\(a_4 = \int (x-\mu)^4 f(x)\,dx \;/\;\sigma^4\)</span></p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<p><strong>Key takeaway:</strong> the PDF <span class="math notranslate nohighlight">\(f(x)\)</span> <em>encodes all information</em> about a distribution; every moment is a specific weighted integral of it. The Gaussian has the special property that knowing only <span class="math notranslate nohighlight">\(\mu\)</span> and <span class="math notranslate nohighlight">\(\sigma^2\)</span> (its first two moments) completely determines <span class="math notranslate nohighlight">\(f(x)\)</span>.</p>
-</section>
-<section id="joint-pdfs-and-the-product-rule">
-<h3>Joint PDFs and the product rule<a class="headerlink" href="#joint-pdfs-and-the-product-rule" title="Link to this heading">#</a></h3>
-<p>Now introduce a <strong>second</strong> random variable <span class="math notranslate nohighlight">\(Y\)</span> (e.g., an observation). The joint PDF <span class="math notranslate nohighlight">\(f(x,y)\)</span> describes the probability that <span class="math notranslate nohighlight">\(X\)</span> and <span class="math notranslate nohighlight">\(Y\)</span> take values simultaneously near <span class="math notranslate nohighlight">\(x\)</span> and <span class="math notranslate nohighlight">\(y\)</span>. It factors in two equivalent ways:</p>
-<div class="math notranslate nohighlight">
-\[f(x,y) = f(x \mid y)\,f(y) = f(y \mid x)\,f(x)\]</div>
-<p>Setting these equal and solving for <span class="math notranslate nohighlight">\(f(x \mid y)\)</span> gives <strong>Bayes’ theorem in continuous form</strong>:</p>
-<div class="math notranslate nohighlight">
-\[\boxed{f(x \mid y) = \frac{f(y \mid x)\;f(x)}{f(y)}}\]</div>
-<p>where the <strong>marginal</strong> (normalising denominator) is obtained by integrating out <span class="math notranslate nohighlight">\(x\)</span>:</p>
-<div class="math notranslate nohighlight">
-\[f(y) = \int_{-\infty}^{\infty} f(y \mid x)\,f(x)\,dx\]</div>
-<p>The four quantities have natural names:</p>
-<div class="pst-scrollable-table-container"><table class="table">
-<thead>
-<tr class="row-odd"><th class="head"><p>Term</p></th>
-<th class="head"><p>Name</p></th>
-<th class="head"><p>Role</p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(f(x)\)</span></p></td>
-<td><p><strong>Prior</strong></p></td>
-<td><p>what you believed about <span class="math notranslate nohighlight">\(X\)</span> before seeing <span class="math notranslate nohighlight">\(Y\)</span></p></td>
-</tr>
-<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(f(y \mid x)\)</span></p></td>
-<td><p><strong>Likelihood</strong></p></td>
-<td><p>how probable the observation <span class="math notranslate nohighlight">\(y\)</span> is, given <span class="math notranslate nohighlight">\(X=x\)</span></p></td>
-</tr>
-<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(f(x \mid y)\)</span></p></td>
-<td><p><strong>Posterior</strong></p></td>
-<td><p>updated belief about <span class="math notranslate nohighlight">\(X\)</span> after seeing <span class="math notranslate nohighlight">\(Y=y\)</span></p></td>
-</tr>
-<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(f(y)\)</span></p></td>
-<td><p><strong>Evidence</strong></p></td>
-<td><p>normalising constant (same for all <span class="math notranslate nohighlight">\(x\)</span>)</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-</section>
-<section id="worked-example-two-gaussians-gaussian-posterior">
-<h3>Worked example: two Gaussians → Gaussian posterior<a class="headerlink" href="#worked-example-two-gaussians-gaussian-posterior" title="Link to this heading">#</a></h3>
-<p>Suppose the true signal <span class="math notranslate nohighlight">\(X\)</span> and the observation <span class="math notranslate nohighlight">\(Y\)</span> are both Gaussian:</p>
-<div class="math notranslate nohighlight">
-\[f(x) = \mathcal{N}(\mu_0,\,\sigma_0^2) \qquad \text{(prior on the true value)}\]</div>
-<div class="math notranslate nohighlight">
-\[f(y \mid x) = \mathcal{N}(x,\,\sigma_w^2) \qquad \text{(observation = truth + Gaussian noise } W\sim\mathcal{N}(0,\sigma_w^2)\text{)}\]</div>
-<p>Because we only need the posterior <strong>up to a normalising constant</strong>, we can write</p>
-<div class="math notranslate nohighlight">
-\[f(x \mid y) \;\propto\; f(y \mid x)\,f(x)\]</div>
-<div class="math notranslate nohighlight">
-\[\propto \exp\!\left(-\frac{(y-x)^2}{2\sigma_w^2}\right) \cdot \exp\!\left(-\frac{(x-\mu_0)^2}{2\sigma_0^2}\right)\]</div>
-<p>Taking the log and collecting terms in <span class="math notranslate nohighlight">\(x\)</span>:</p>
-<div class="math notranslate nohighlight">
-\[\ln f(x\mid y) = -\frac{1}{2}\left[\frac{(y-x)^2}{\sigma_w^2}+\frac{(x-\mu_0)^2}{\sigma_0^2}\right] + \text{const}\]</div>
-<div class="math notranslate nohighlight">
-\[= -\frac{1}{2}\left[\left(\frac{1}{\sigma_w^2}+\frac{1}{\sigma_0^2}\right)x^2 - 2\left(\frac{y}{\sigma_w^2}+\frac{\mu_0}{\sigma_0^2}\right)x\right] + \text{const}\]</div>
-<p><strong>Completing the square</strong> in <span class="math notranslate nohighlight">\(x\)</span> identifies this as a Gaussian with posterior precision <span class="math notranslate nohighlight">\(1/\sigma_1^2\)</span> and posterior mean <span class="math notranslate nohighlight">\(\mu_1\)</span>:</p>
-<div class="math notranslate nohighlight">
-\[\boxed{\frac{1}{\sigma_1^2} = \frac{1}{\sigma_0^2}+\frac{1}{\sigma_w^2}, \qquad \mu_1 = \sigma_1^2\!\left(\frac{\mu_0}{\sigma_0^2}+\frac{y}{\sigma_w^2}\right)}\]</div>
-<div class="math notranslate nohighlight">
-\[f(x \mid y) = \mathcal{N}(\mu_1,\,\sigma_1^2)\]</div>
-<div class="note admonition">
-<p class="admonition-title">Physical interpretation of the two-Gaussian result</p>
-<p><strong>Precisions add.</strong> <span class="math notranslate nohighlight">\(1/\sigma_1^2 = 1/\sigma_0^2 + 1/\sigma_w^2\)</span>. Each piece of information (prior belief, observation) contributes its own precision; combining them always gives a sharper estimate than either alone (<span class="math notranslate nohighlight">\(\sigma_1 &lt; \sigma_0\)</span> and <span class="math notranslate nohighlight">\(\sigma_1 &lt; \sigma_w\)</span>).</p>
-<p><strong>Posterior mean is a precision-weighted average.</strong></p>
-<div class="math notranslate nohighlight">
-\[\mu_1 = \underbrace{\frac{1/\sigma_0^2}{1/\sigma_0^2+1/\sigma_w^2}}_{\text{weight on prior}}\mu_0 \;+\; \underbrace{\frac{1/\sigma_w^2}{1/\sigma_0^2+1/\sigma_w^2}}_{\text{weight on obs.}}y\]</div>
-<ul class="simple">
-<li><p>If the observation noise <span class="math notranslate nohighlight">\(\sigma_w \gg \sigma_0\)</span> (noisy instrument), the posterior mean stays close to the prior <span class="math notranslate nohighlight">\(\mu_0\)</span>.</p></li>
-<li><p>If the prior is diffuse <span class="math notranslate nohighlight">\(\sigma_0 \gg \sigma_w\)</span> (little prior knowledge), the posterior mean is pulled strongly toward the observation <span class="math notranslate nohighlight">\(y\)</span>.</p></li>
-</ul>
-<p><strong>Link to moments:</strong> because the posterior is Gaussian, the posterior mean <span class="math notranslate nohighlight">\(\mu_1\)</span> is simultaneously the mode (most likely value), the median, and the minimum-mean-squared-error estimate of <span class="math notranslate nohighlight">\(X\)</span>.</p>
-<p><strong>Link to the Kalman Filter.</strong> This two-Gaussian update is <em>exactly</em> one step of the Kalman Filter (mentioned earlier in the notes). The Kalman Filter iterates this update in time: the prior at step <span class="math notranslate nohighlight">\(k\)</span> is the Gaussian forecast from the dynamical model, the likelihood is the Gaussian observation error, and the posterior becomes the new “analysis” — which then propagates forward to become the prior at step <span class="math notranslate nohighlight">\(k+1\)</span>.</p>
-</div>
-<div class="note admonition">
-<p class="admonition-title">Connecting back to the discrete Bayes examples</p>
-<p>The chemical-detection and cab-accident examples earlier in the notes used the <strong>discrete</strong> form of Bayes’ theorem:</p>
-<div class="math notranslate nohighlight">
-\[\Pr(E_j \mid B) = \frac{\Pr(B \mid E_j)\Pr(E_j)}{\sum_i \Pr(B \mid E_i)\Pr(E_i)}\]</div>
-<p>This is precisely the continuous formula with integrals replaced by sums, and PDFs replaced by probability masses. The numerator <span class="math notranslate nohighlight">\(\Pr(B \mid E_j)\Pr(E_j)\)</span> is the discrete counterpart of <span class="math notranslate nohighlight">\(f(y \mid x)\,f(x)\)</span>, and the denominator <span class="math notranslate nohighlight">\(\sum_i\Pr(B \mid E_i)\Pr(E_i)\)</span> is the discrete counterpart of <span class="math notranslate nohighlight">\(\int f(y\mid x)\,f(x)\,dx\)</span> — the evidence <span class="math notranslate nohighlight">\(f(y)\)</span>.</p>
-</div>
 </section>
 </section>
 <section id="basic-probabilities-unions-intersections-conditional-probabilities-bayes-theorem">
@@ -1777,12 +1649,6 @@ y_i &lt; x_i &amp;\rightarrow -1
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#median">Median</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#variance">Variance</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#higher-moments">Higher moments</a></li>
-</ul>
-</li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#from-moments-and-pdfs-to-bayes-theorem-the-mathematical-link">From Moments and PDFs to Bayes’ Theorem: the Mathematical Link</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#moments-as-expectations-over-a-pdf">Moments as expectations over a PDF</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#joint-pdfs-and-the-product-rule">Joint PDFs and the product rule</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#worked-example-two-gaussians-gaussian-posterior">Worked example: two Gaussians → Gaussian posterior</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#basic-probabilities-unions-intersections-conditional-probabilities-bayes-theorem">Basic probabilities; unions; intersections; conditional probabilities; Bayes theorem</a><ul class="nav section-nav flex-column">
