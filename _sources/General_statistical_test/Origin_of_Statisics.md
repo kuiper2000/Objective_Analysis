@@ -485,6 +485,34 @@ For two continuous random variables $X$ and $Y$, the exact same factorisation ap
 
 $$f(x,y) = f(x \mid y)\,f(y) = f(y \mid x)\,f(x)$$
 
+:::{admonition} What does this equation actually say physically?
+:class: tip
+
+Both sides of $f(x \mid y)\,f(y) = f(y \mid x)\,f(x)$ are just two different ways to write the **same joint probability**: the chance that the true temperature is $x$ *and* the sounding reads $y$ simultaneously.
+
+Think of it like asking: *"what is the probability that it rains AND you carry an umbrella?"* You could compute it two ways:
+
+$$\underbrace{P(\text{umbrella} \mid \text{rain})}_{\text{if it rains, how often do you bring one?}} \times \underbrace{P(\text{rain})}_{\text{how often does it rain?}}$$
+
+$$= \underbrace{P(\text{rain} \mid \text{umbrella})}_{\text{if you brought one, how often is it raining?}} \times \underbrace{P(\text{umbrella})}_{\text{how often do you carry one?}}$$
+
+Both routes give the same joint probability — they are just different orderings of the same story.
+
+Back to the radiosonde example, $x$ = true temperature, $y$ = sounding reading:
+
+**Left side — $f(x \mid y)\,f(y)$: start from the observation, work toward the truth**
+- $f(y)$: how often does the sounding read $-17°$C? (averaged over all possible true temperatures)
+- $f(x \mid y)$: *given* the sounding read $-17°$C, what is the probability the true temperature is $x$?
+- Together: the chance that the sounding reads $-17°$C **and** the true temperature is $x$ = (evidence) × (posterior)
+
+**Right side — $f(y \mid x)\,f(x)$: start from the truth, work toward the observation**
+- $f(x)$: how probable is it that the true temperature is $x$? (the model forecast)
+- $f(y \mid x)$: *if* the true temperature were $x$, how likely would the instrument read $-17°$C?
+- Together: the chance that the true temperature is $x$ **and** the sounding reads $-17°$C = (prior) × (likelihood)
+
+The equation is therefore not saying anything deep — it is just the observation that **you can count joint occurrences in either order**. Bayes' theorem follows immediately by dividing both sides by $f(y)$ to isolate $f(x \mid y)$ — the posterior you actually want.
+:::
+
 Setting the two right-hand sides equal and solving for $f(x \mid y)$ immediately gives **Bayes' theorem in continuous form**:
 
 $$\boxed{f(x \mid y) = \frac{f(y \mid x)\;f(x)}{f(y)}, \qquad f(y) = \int_{-\infty}^{\infty} f(y \mid x)\,f(x)\,dx}$$
@@ -493,9 +521,9 @@ The four terms map directly onto the Bayesian language introduced above:
 
 | Term | Name | Role | Atmospheric example |
 |------|------|------|---------------------|
-| $f(x)$ | **Prior** | belief about $X$ before seeing the data | Yesterday's model forecast says the 500 hPa temperature over Colorado is probably around $-20°$C, with some uncertainty |
-| $f(y \mid x)$ | **Likelihood** | how probable observation $y$ is, given $X=x$ | A radiosonde is launched and reads $-17°$C; the instrument has a known measurement error of ±2°C, so readings near the true temperature are much more likely than readings far from it |
-| $f(x \mid y)$ | **Posterior** | updated belief after observing $Y=y$ | Combining the forecast and the sounding gives a refined estimate — somewhere between $-20°$C and $-17°$C, weighted by how much we trust each source |
+| $f(x)$ | **Prior** | belief about the true state $X$ before seeing any data | Yesterday's model forecast says the *true* 500 hPa temperature over Colorado is probably around $-20°$C, with some spread reflecting forecast uncertainty |
+| $f(y \mid x)$ | **Likelihood** | if the true state *were* $x$, how probable would it be to observe $y$? | The radiosonde has a known instrument error of ±2°C — so if the atmosphere truly is at $-20°$C, there is a high chance the sounding reads near $-20°$C and a low chance it reads far from it. We ask this for every possible true temperature $x$, not just the model value |
+| $f(x \mid y)$ | **Posterior** | updated belief about the true state after observing $Y=y$ | The sounding actually reads $-17°$C; combining this with the forecast gives a refined estimate of the *true* temperature — somewhere between $-20°$C and $-17°$C, weighted by how much we trust the model vs. the instrument |
 | $f(y)$ | **Evidence** | normalising constant ensuring the posterior integrates to 1 | The overall probability of getting a $-17°$C reading, averaging over all temperatures the atmosphere could plausibly be at; keeps the posterior a proper probability distribution |
 
 :::{admonition} Connecting the continuous and discrete forms
