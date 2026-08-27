@@ -48,6 +48,29 @@ $$\sum_{i=1}^N \varphi(x_i-\mu) = -h\sum_{i=1}^N (x_i - \mu) = -h(N\overline{x} 
 Setting this to zero gives $\mu = \overline{x}$ automatically, for *any* sample. Try any nonlinear $\varphi$ and this stops being true in general --- linearity is what makes the mean universally optimal.
 :::
 
+:::{admonition} Why is linearity the *only* option?
+:class: note
+Since everything here is shift-invariant, set $\overline{x}=0$ without loss of generality. The requirement becomes: for *any* deviations $e_1,\dots,e_N$ with $\sum_i e_i = 0$, we need $\sum_i \varphi(e_i) = 0$.
+
+**$N=2$ forces $\varphi$ to be odd.** Take $e_1=d,\ e_2=-d$:
+
+$$\varphi(d)+\varphi(-d)=0 \;\Rightarrow\; \varphi(-d)=-\varphi(d)$$
+
+**$N=3$ forces additivity.** Take $e_1,e_2,e_3=-(e_1+e_2)$:
+
+$$\varphi(e_1)+\varphi(e_2)+\varphi(-(e_1+e_2))=0$$
+
+Using oddness, $\varphi(-(e_1+e_2)) = -\varphi(e_1+e_2)$, so
+
+$$\varphi(e_1+e_2) = \varphi(e_1)+\varphi(e_2) \quad \text{for all real } e_1,e_2$$
+
+This is Cauchy's functional equation.
+
+**Solving Cauchy's equation.** Its solutions are linear, $\varphi(e)=ke$, *provided* $\varphi$ satisfies some mild regularity condition (continuity at a point, monotonicity, or boundedness on an interval) --- without such a condition, pathological non-linear solutions exist, but they require the axiom of choice and are nowhere continuous. Since $\varphi = f'/f$ for a smooth probability density $f$, continuity is a completely natural assumption, and it is what rules out the pathological solutions. Writing $k=-h$ (with $h>0$ so $f$ decays rather than blows up) recovers
+
+$$\varphi(e) = -he$$
+:::
+
 ### From the constraint to an ODE
 
 Recalling that $\varphi(e) = f'(e)/f(e)$, the constraint becomes a first-order, separable ordinary differential equation:
@@ -1187,7 +1210,7 @@ The idea is by averaging the data in a smart way, you can isolate the signal and
 
     -   for diurnal cycle, use time of day
 
-    -   impactsof ENSO, warm/cold SSTs
+    -   impacts of ENSO, warm/cold SSTs
 
     -   impacts of sea ice loss, high and low September sea ice years
 

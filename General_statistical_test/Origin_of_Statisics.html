@@ -483,6 +483,23 @@
 \[\sum_{i=1}^N \varphi(x_i-\mu) = -h\sum_{i=1}^N (x_i - \mu) = -h(N\overline{x} - N\mu)\]</div>
 <p>Setting this to zero gives <span class="math notranslate nohighlight">\(\mu = \overline{x}\)</span> automatically, for <em>any</em> sample. Try any nonlinear <span class="math notranslate nohighlight">\(\varphi\)</span> and this stops being true in general — linearity is what makes the mean universally optimal.</p>
 </div>
+<div class="note admonition">
+<p class="admonition-title">Why is linearity the <em>only</em> option?</p>
+<p>Since everything here is shift-invariant, set <span class="math notranslate nohighlight">\(\overline{x}=0\)</span> without loss of generality. The requirement becomes: for <em>any</em> deviations <span class="math notranslate nohighlight">\(e_1,\dots,e_N\)</span> with <span class="math notranslate nohighlight">\(\sum_i e_i = 0\)</span>, we need <span class="math notranslate nohighlight">\(\sum_i \varphi(e_i) = 0\)</span>.</p>
+<p><strong><span class="math notranslate nohighlight">\(N=2\)</span> forces <span class="math notranslate nohighlight">\(\varphi\)</span> to be odd.</strong> Take <span class="math notranslate nohighlight">\(e_1=d,\ e_2=-d\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[\varphi(d)+\varphi(-d)=0 \;\Rightarrow\; \varphi(-d)=-\varphi(d)\]</div>
+<p><strong><span class="math notranslate nohighlight">\(N=3\)</span> forces additivity.</strong> Take <span class="math notranslate nohighlight">\(e_1,e_2,e_3=-(e_1+e_2)\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[\varphi(e_1)+\varphi(e_2)+\varphi(-(e_1+e_2))=0\]</div>
+<p>Using oddness, <span class="math notranslate nohighlight">\(\varphi(-(e_1+e_2)) = -\varphi(e_1+e_2)\)</span>, so</p>
+<div class="math notranslate nohighlight">
+\[\varphi(e_1+e_2) = \varphi(e_1)+\varphi(e_2) \quad \text{for all real } e_1,e_2\]</div>
+<p>This is Cauchy’s functional equation.</p>
+<p><strong>Solving Cauchy’s equation.</strong> Its solutions are linear, <span class="math notranslate nohighlight">\(\varphi(e)=ke\)</span>, <em>provided</em> <span class="math notranslate nohighlight">\(\varphi\)</span> satisfies some mild regularity condition (continuity at a point, monotonicity, or boundedness on an interval) — without such a condition, pathological non-linear solutions exist, but they require the axiom of choice and are nowhere continuous. Since <span class="math notranslate nohighlight">\(\varphi = f'/f\)</span> for a smooth probability density <span class="math notranslate nohighlight">\(f\)</span>, continuity is a completely natural assumption, and it is what rules out the pathological solutions. Writing <span class="math notranslate nohighlight">\(k=-h\)</span> (with <span class="math notranslate nohighlight">\(h&gt;0\)</span> so <span class="math notranslate nohighlight">\(f\)</span> decays rather than blows up) recovers</p>
+<div class="math notranslate nohighlight">
+\[\varphi(e) = -he\]</div>
+</div>
 </section>
 <section id="from-the-constraint-to-an-ode">
 <h3>From the constraint to an ODE<a class="headerlink" href="#from-the-constraint-to-an-ode" title="Link to this heading">#</a></h3>
@@ -1361,7 +1378,7 @@ z &amp;= \frac{\overline{X} - \mu}{\sigma/\sqrt{N}} \\
 <li><p>Determine categories</p>
 <ul class="simple">
 <li><p>for diurnal cycle, use time of day</p></li>
-<li><p>impactsof ENSO, warm/cold SSTs</p></li>
+<li><p>impacts of ENSO, warm/cold SSTs</p></li>
 <li><p>impacts of sea ice loss, high and low September sea ice years</p></li>
 </ul>
 <p>You should have an a priori hypothesis as to why the variable being composited should depend on the category</p>
