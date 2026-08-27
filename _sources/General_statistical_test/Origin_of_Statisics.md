@@ -193,100 +193,6 @@ The kurtosis indicates the degree of peakedness of the distribution. $a_4 > 3$ i
 
 Typically, higher order moments are given in terms of the standardized units, for ease of comparison (and so units don't matter).
 
-## From Moments and PDFs to Bayes' Theorem: the Mathematical Link
-
-### Moments as expectations over a PDF
-
-So far we defined moments using the sample formula $m_r = \frac{1}{N}\sum_i (x_i-\overline{x})^r$.
-In the population (continuous) limit, every moment is simply an **expectation** weighted by the probability density function $f(x)$:
-
-$$\boxed{m_r \;=\; \mathbb{E}\!\left[(X-\mu)^r\right] \;=\; \int_{-\infty}^{\infty}(x-\mu)^r\,f(x)\,dx}$$
-
-The table below shows how the familiar statistics you already know fall out of this single formula:
-
-| $r$ | Moment | Expression |
-|-----|--------|------------|
-| 1 | Mean (about zero) | $\mu = \int x\,f(x)\,dx$ |
-| 2 | Variance | $\sigma^2 = \int (x-\mu)^2 f(x)\,dx$ |
-| 3 | Skewness (non-dim.) | $a_3 = \int (x-\mu)^3 f(x)\,dx \;/\;\sigma^3$ |
-| 4 | Kurtosis (non-dim.) | $a_4 = \int (x-\mu)^4 f(x)\,dx \;/\;\sigma^4$ |
-
-**Key takeaway:** the PDF $f(x)$ *encodes all information* about a distribution; every moment is a specific weighted integral of it. The Gaussian has the special property that knowing only $\mu$ and $\sigma^2$ (its first two moments) completely determines $f(x)$.
-
-### Joint PDFs and the product rule
-
-Now introduce a **second** random variable $Y$ (e.g., an observation). The joint PDF $f(x,y)$ describes the probability that $X$ and $Y$ take values simultaneously near $x$ and $y$. It factors in two equivalent ways:
-
-$$f(x,y) = f(x \mid y)\,f(y) = f(y \mid x)\,f(x)$$
-
-Setting these equal and solving for $f(x \mid y)$ gives **Bayes' theorem in continuous form**:
-
-$$\boxed{f(x \mid y) = \frac{f(y \mid x)\;f(x)}{f(y)}}$$
-
-where the **marginal** (normalising denominator) is obtained by integrating out $x$:
-
-$$f(y) = \int_{-\infty}^{\infty} f(y \mid x)\,f(x)\,dx$$
-
-The four quantities have natural names:
-
-| Term | Name | Role |
-|------|------|------|
-| $f(x)$ | **Prior** | what you believed about $X$ before seeing $Y$ |
-| $f(y \mid x)$ | **Likelihood** | how probable the observation $y$ is, given $X=x$ |
-| $f(x \mid y)$ | **Posterior** | updated belief about $X$ after seeing $Y=y$ |
-| $f(y)$ | **Evidence** | normalising constant (same for all $x$) |
-
-### Worked example: two Gaussians → Gaussian posterior
-
-Suppose the true signal $X$ and the observation $Y$ are both Gaussian:
-
-$$f(x) = \mathcal{N}(\mu_0,\,\sigma_0^2) \qquad \text{(prior on the true value)}$$
-$$f(y \mid x) = \mathcal{N}(x,\,\sigma_w^2) \qquad \text{(observation = truth + Gaussian noise } W\sim\mathcal{N}(0,\sigma_w^2)\text{)}$$
-
-Because we only need the posterior **up to a normalising constant**, we can write
-
-$$f(x \mid y) \;\propto\; f(y \mid x)\,f(x)$$
-
-$$\propto \exp\!\left(-\frac{(y-x)^2}{2\sigma_w^2}\right) \cdot \exp\!\left(-\frac{(x-\mu_0)^2}{2\sigma_0^2}\right)$$
-
-Taking the log and collecting terms in $x$:
-
-$$\ln f(x\mid y) = -\frac{1}{2}\left[\frac{(y-x)^2}{\sigma_w^2}+\frac{(x-\mu_0)^2}{\sigma_0^2}\right] + \text{const}$$
-
-$$= -\frac{1}{2}\left[\left(\frac{1}{\sigma_w^2}+\frac{1}{\sigma_0^2}\right)x^2 - 2\left(\frac{y}{\sigma_w^2}+\frac{\mu_0}{\sigma_0^2}\right)x\right] + \text{const}$$
-
-**Completing the square** in $x$ identifies this as a Gaussian with posterior precision $1/\sigma_1^2$ and posterior mean $\mu_1$:
-
-$$\boxed{\frac{1}{\sigma_1^2} = \frac{1}{\sigma_0^2}+\frac{1}{\sigma_w^2}, \qquad \mu_1 = \sigma_1^2\!\left(\frac{\mu_0}{\sigma_0^2}+\frac{y}{\sigma_w^2}\right)}$$
-
-$$f(x \mid y) = \mathcal{N}(\mu_1,\,\sigma_1^2)$$
-
-:::{admonition} Physical interpretation of the two-Gaussian result
-:class: note
-
-**Precisions add.** $1/\sigma_1^2 = 1/\sigma_0^2 + 1/\sigma_w^2$. Each piece of information (prior belief, observation) contributes its own precision; combining them always gives a sharper estimate than either alone ($\sigma_1 < \sigma_0$ and $\sigma_1 < \sigma_w$).
-
-**Posterior mean is a precision-weighted average.**
-
-$$\mu_1 = \underbrace{\frac{1/\sigma_0^2}{1/\sigma_0^2+1/\sigma_w^2}}_{\text{weight on prior}}\mu_0 \;+\; \underbrace{\frac{1/\sigma_w^2}{1/\sigma_0^2+1/\sigma_w^2}}_{\text{weight on obs.}}y$$
-
-- If the observation noise $\sigma_w \gg \sigma_0$ (noisy instrument), the posterior mean stays close to the prior $\mu_0$.
-- If the prior is diffuse $\sigma_0 \gg \sigma_w$ (little prior knowledge), the posterior mean is pulled strongly toward the observation $y$.
-
-**Link to moments:** because the posterior is Gaussian, the posterior mean $\mu_1$ is simultaneously the mode (most likely value), the median, and the minimum-mean-squared-error estimate of $X$.
-
-**Link to the Kalman Filter.** This two-Gaussian update is *exactly* one step of the Kalman Filter (mentioned earlier in the notes). The Kalman Filter iterates this update in time: the prior at step $k$ is the Gaussian forecast from the dynamical model, the likelihood is the Gaussian observation error, and the posterior becomes the new "analysis" — which then propagates forward to become the prior at step $k+1$.
-:::
-
-:::{admonition} Connecting back to the discrete Bayes examples
-:class: note
-The chemical-detection and cab-accident examples earlier in the notes used the **discrete** form of Bayes' theorem:
-
-$$\Pr(E_j \mid B) = \frac{\Pr(B \mid E_j)\Pr(E_j)}{\sum_i \Pr(B \mid E_i)\Pr(E_i)}$$
-
-This is precisely the continuous formula with integrals replaced by sums, and PDFs replaced by probability masses. The numerator $\Pr(B \mid E_j)\Pr(E_j)$ is the discrete counterpart of $f(y \mid x)\,f(x)$, and the denominator $\sum_i\Pr(B \mid E_i)\Pr(E_i)$ is the discrete counterpart of $\int f(y\mid x)\,f(x)\,dx$ — the evidence $f(y)$.
-:::
-
 ## Basic probabilities; unions; intersections; conditional probabilities; Bayes theorem
 
 ### Probabilities: Unions & Intersections
@@ -547,6 +453,97 @@ In our Bayesian formulation, we used additional a priori information, namely, th
 For the cab accident example, a frequentist would say the probability of the cab in the accident being Blue is 80%, the probability the witness was correct. The Bayesian approach, however, also took into account the background rate of the number of cars in the city, information that the frequentist approach couldn't use.
 
 Bayes Theorem is actually used quite often in atmospheric science in the form of the Kalman Filter, for example, for forecasts. At its base level, the Kalman Filter is an iterative application of Bayes Theorem which uses uncertainties in measurements to weigh their use when updating the next time step.
+
+## Tying it together: Moments, PDFs, and Bayes' Theorem
+
+With the rules of probability and Bayes' theorem now in hand, we can close the loop back to the moments introduced at the start of this section. The key insight is that the PDF $f(x)$ — which we have been using to define probabilities — is also the object that gives every moment its precise population definition.
+
+### Moments as expectations over a PDF
+
+Earlier we defined moments using the sample formula $m_r = \frac{1}{N}\sum_i (x_i-\overline{x})^r$. Now that we have introduced the probability density function $f(x)$, we can express the same quantity in population (continuous) form — every moment is simply an **expectation** weighted by $f(x)$:
+
+$$\boxed{m_r \;=\; \mathbb{E}\!\left[(X-\mu)^r\right] \;=\; \int_{-\infty}^{\infty}(x-\mu)^r\,f(x)\,dx}$$
+
+This integral is the continuous analogue of $\frac{1}{N}\sum_i(x_i-\mu)^r$: instead of averaging over a finite list of data points, we integrate over all possible values of $x$, weighted by how probable each value is under $f(x)$. The table below shows how the familiar statistics fall out of this single formula:
+
+| $r$ | Moment | Population expression |
+|-----|--------|-----------------------|
+| 1 | Mean (about zero) | $\mu = \int x\,f(x)\,dx$ |
+| 2 | Variance | $\sigma^2 = \int (x-\mu)^2 f(x)\,dx$ |
+| 3 | Skewness (non-dim.) | $a_3 = \int (x-\mu)^3 f(x)\,dx \;/\;\sigma^3$ |
+| 4 | Kurtosis (non-dim.) | $a_4 = \int (x-\mu)^4 f(x)\,dx \;/\;\sigma^4$ |
+
+**Key takeaway:** the PDF $f(x)$ *encodes all information* about a distribution; every moment is a specific weighted integral of it. The Gaussian is special in that knowing only $\mu$ and $\sigma^2$ (the first two moments) completely determines $f(x)$ — which is why so much of statistical inference focuses on these two quantities.
+
+### From the product rule of probability to Bayes' theorem
+
+We derived the multiplicative law of probability above:
+
+$$\Pr(E_1 \cap E_2) = \Pr(E_2 \mid E_1)\,\Pr(E_1) = \Pr(E_1 \mid E_2)\,\Pr(E_2)$$
+
+For two continuous random variables $X$ and $Y$, the exact same factorisation applies to their joint PDF:
+
+$$f(x,y) = f(x \mid y)\,f(y) = f(y \mid x)\,f(x)$$
+
+Setting the two right-hand sides equal and solving for $f(x \mid y)$ immediately gives **Bayes' theorem in continuous form**:
+
+$$\boxed{f(x \mid y) = \frac{f(y \mid x)\;f(x)}{f(y)}, \qquad f(y) = \int_{-\infty}^{\infty} f(y \mid x)\,f(x)\,dx}$$
+
+The four terms map directly onto the Bayesian language introduced above:
+
+| Term | Name | Role |
+|------|------|------|
+| $f(x)$ | **Prior** | belief about $X$ before seeing the data |
+| $f(y \mid x)$ | **Likelihood** | how probable observation $y$ is, given $X=x$ |
+| $f(x \mid y)$ | **Posterior** | updated belief after observing $Y=y$ |
+| $f(y)$ | **Evidence** | normalising constant ensuring the posterior integrates to 1 |
+
+:::{admonition} Connecting the continuous and discrete forms
+:class: note
+The discrete Bayes formula used throughout the examples above,
+
+$$\Pr(E_j \mid B) = \frac{\Pr(B \mid E_j)\Pr(E_j)}{\sum_i \Pr(B \mid E_i)\Pr(E_i)}$$
+
+is simply the continuous formula with integrals replaced by sums and PDFs replaced by probability masses. The numerator $\Pr(B \mid E_j)\Pr(E_j)$ is the discrete counterpart of $f(y \mid x)\,f(x)$, and the denominator is the discrete counterpart of $\int f(y\mid x)\,f(x)\,dx$ — the evidence $f(y)$.
+:::
+
+### Worked example: Gaussian prior × Gaussian likelihood → Gaussian posterior
+
+Suppose the true signal $X$ has a Gaussian prior and the observation $Y$ is the signal corrupted by Gaussian noise:
+
+$$f(x) = \mathcal{N}(\mu_0,\,\sigma_0^2) \qquad \text{(prior)}$$
+$$f(y \mid x) = \mathcal{N}(x,\,\sigma_w^2) \qquad \text{(likelihood: observation = truth + noise } W\sim\mathcal{N}(0,\sigma_w^2)\text{)}$$
+
+Since the evidence $f(y)$ does not depend on $x$, we only need the posterior **up to a normalising constant**:
+
+$$f(x \mid y) \;\propto\; f(y \mid x)\,f(x) \;\propto\; \exp\!\left(-\frac{(y-x)^2}{2\sigma_w^2}\right) \cdot \exp\!\left(-\frac{(x-\mu_0)^2}{2\sigma_0^2}\right)$$
+
+Taking the log and collecting all terms in $x$:
+
+$$\ln f(x\mid y) = -\frac{1}{2}\left[\left(\frac{1}{\sigma_w^2}+\frac{1}{\sigma_0^2}\right)x^2 - 2\left(\frac{y}{\sigma_w^2}+\frac{\mu_0}{\sigma_0^2}\right)x\right] + \text{const}$$
+
+**Completing the square** in $x$ identifies this as a Gaussian $\mathcal{N}(\mu_1, \sigma_1^2)$ with:
+
+$$\boxed{\frac{1}{\sigma_1^2} = \frac{1}{\sigma_0^2}+\frac{1}{\sigma_w^2}, \qquad \mu_1 = \sigma_1^2\!\left(\frac{\mu_0}{\sigma_0^2}+\frac{y}{\sigma_w^2}\right)}$$
+
+:::{admonition} Physical interpretation
+:class: note
+
+**Precisions add.** Each source of information (prior, observation) contributes its own precision $1/\sigma^2$; the posterior is always sharper than either input alone ($\sigma_1 < \sigma_0$ and $\sigma_1 < \sigma_w$).
+
+**Posterior mean is a precision-weighted average of the prior and the observation:**
+
+$$\mu_1 = \underbrace{\frac{1/\sigma_0^2}{1/\sigma_0^2+1/\sigma_w^2}}_{\text{weight on prior}}\mu_0 \;+\; \underbrace{\frac{1/\sigma_w^2}{1/\sigma_0^2+1/\sigma_w^2}}_{\text{weight on obs.}}y$$
+
+- Noisy instrument ($\sigma_w \gg \sigma_0$): posterior hugs the prior $\mu_0$.
+- Diffuse prior ($\sigma_0 \gg \sigma_w$): posterior is pulled strongly toward the observation $y$.
+
+**Link to moments:** because the posterior is Gaussian, $\mu_1$ is simultaneously the mean, mode, and median of the posterior — and it minimises the posterior mean-squared error. This connects Bayesian inference back to the sample statistics ($\overline{x}$, $s$) introduced at the start of this section.
+
+**Link to the Kalman Filter.** This two-Gaussian update is *exactly* one step of the Kalman Filter introduced above. The prior at step $k$ is the Gaussian model forecast; the likelihood is the Gaussian observation error; the posterior is the analysis that initialises the next forecast cycle.
+:::
+
+With moments expressed as PDF-weighted integrals and Bayes' theorem derived from the product rule of joint PDFs, we now have a unified probabilistic language. The next step is to use this language to ask a concrete question: given a sample, how do we decide whether its mean is statistically different from an expected population value?
 
 ## Statistical Significance Testing
 
