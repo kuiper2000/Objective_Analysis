@@ -1,5 +1,5 @@
 (Origin_of_Statisics)=
-# Week 1: Rule101
+# Week 1-4: Rule101
 
 ## The origin of statistics: why the bell curve?
 
