@@ -387,6 +387,7 @@
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#moments-as-expectations-over-a-pdf">Moments as expectations over a PDF</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#from-the-product-rule-of-probability-to-bayes-theorem">From the product rule of probability to Bayes’ theorem</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#worked-example-gaussian-prior-gaussian-likelihood-gaussian-posterior">Worked example: Gaussian prior × Gaussian likelihood → Gaussian posterior</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#data-assimilation-as-bayes-theorem">Data assimilation as Bayes’ theorem</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#statistical-significance-testing">Statistical Significance Testing</a><ul class="nav section-nav flex-column">
@@ -986,7 +987,114 @@ E_2 &amp;= \tilde{C} = \text{the chemical is not present}
 <p><strong>Link to moments:</strong> because the posterior is Gaussian, <span class="math notranslate nohighlight">\(\mu_1\)</span> is simultaneously the mean, mode, and median of the posterior — and it minimises the posterior mean-squared error. This connects Bayesian inference back to the sample statistics (<span class="math notranslate nohighlight">\(\overline{x}\)</span>, <span class="math notranslate nohighlight">\(s\)</span>) introduced at the start of this section.</p>
 <p><strong>Link to the Kalman Filter.</strong> This two-Gaussian update is <em>exactly</em> one step of the Kalman Filter introduced above. The prior at step <span class="math notranslate nohighlight">\(k\)</span> is the Gaussian model forecast; the likelihood is the Gaussian observation error; the posterior is the analysis that initialises the next forecast cycle.</p>
 </div>
-<p>With moments expressed as PDF-weighted integrals and Bayes’ theorem derived from the product rule of joint PDFs, we now have a unified probabilistic language. The next step is to use this language to ask a concrete question: given a sample, how do we decide whether its mean is statistically different from an expected population value?</p>
+<p>With moments expressed as PDF-weighted integrals and Bayes’ theorem derived from the product rule of joint PDFs, we now have a unified probabilistic language. Before moving to significance testing, it is worth making the connection to atmospheric data assimilation explicit — because the Gaussian × Gaussian result above <em>is</em> data assimilation, just written in statistician’s language.</p>
+</section>
+<section id="data-assimilation-as-bayes-theorem">
+<h3>Data assimilation as Bayes’ theorem<a class="headerlink" href="#data-assimilation-as-bayes-theorem" title="Link to this heading">#</a></h3>
+<p><strong>The scalar case.</strong> The worked example gave a posterior mean:</p>
+<div class="math notranslate nohighlight">
+\[\mu_1 = \frac{1/\sigma_0^2}{1/\sigma_0^2+1/\sigma_w^2}\,\mu_0 + \frac{1/\sigma_w^2}{1/\sigma_0^2+1/\sigma_w^2}\,y\]</div>
+<p>In data assimilation (DA), the identical equation is written as:</p>
+<div class="math notranslate nohighlight">
+\[x^a = x^b + \underbrace{\frac{\sigma_b^2}{\sigma_b^2 + \sigma_o^2}}_{K\ \text{(Kalman gain)}}\,(y^o - x^b)\]</div>
+<p>The term-by-term translation between the two languages is:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Bayes / stats</p></th>
+<th class="head"><p>DA notation</p></th>
+<th class="head"><p>Meaning</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Prior mean <span class="math notranslate nohighlight">\(\mu_0\)</span></p></td>
+<td><p>Background <span class="math notranslate nohighlight">\(x^b\)</span></p></td>
+<td><p>Model forecast</p></td>
+</tr>
+<tr class="row-odd"><td><p>Prior variance <span class="math notranslate nohighlight">\(\sigma_0^2\)</span></p></td>
+<td><p>Background error variance <span class="math notranslate nohighlight">\(\sigma_b^2\)</span></p></td>
+<td><p>Uncertainty in the forecast</p></td>
+</tr>
+<tr class="row-even"><td><p>Observation <span class="math notranslate nohighlight">\(y\)</span></p></td>
+<td><p>Observation <span class="math notranslate nohighlight">\(y^o\)</span></p></td>
+<td><p>What the instrument reads</p></td>
+</tr>
+<tr class="row-odd"><td><p>Obs. noise variance <span class="math notranslate nohighlight">\(\sigma_w^2\)</span></p></td>
+<td><p>Observation error variance <span class="math notranslate nohighlight">\(\sigma_o^2\)</span></p></td>
+<td><p>Uncertainty in the instrument</p></td>
+</tr>
+<tr class="row-even"><td><p>Posterior mean <span class="math notranslate nohighlight">\(\mu_1\)</span></p></td>
+<td><p><strong>Analysis</strong> <span class="math notranslate nohighlight">\(x^a\)</span></p></td>
+<td><p>Best estimate of the true state</p></td>
+</tr>
+<tr class="row-odd"><td><p>Posterior variance <span class="math notranslate nohighlight">\(\sigma_1^2\)</span></p></td>
+<td><p>Analysis error variance <span class="math notranslate nohighlight">\(\sigma_a^2\)</span></p></td>
+<td><p>Remaining uncertainty after assimilation</p></td>
+</tr>
+<tr class="row-even"><td><p>Precision-weighted blend</p></td>
+<td><p><strong>Kalman gain</strong> <span class="math notranslate nohighlight">\(K\in[0,1]\)</span></p></td>
+<td><p>How much to trust obs. vs. forecast</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>The Kalman gain controls the blend:</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(K \to 0\)</span> when <span class="math notranslate nohighlight">\(\sigma_o^2 \gg \sigma_b^2\)</span>: the instrument is noisy → stay close to the forecast.</p></li>
+<li><p><span class="math notranslate nohighlight">\(K \to 1\)</span> when <span class="math notranslate nohighlight">\(\sigma_b^2 \gg \sigma_o^2\)</span>: the forecast is uncertain → pull strongly toward the observation.</p></li>
+</ul>
+<p><strong>The multivariate extension.</strong> In practice the true state is a vector <span class="math notranslate nohighlight">\(\mathbf{x}\)</span> (millions of model grid points) and observations <span class="math notranslate nohighlight">\(\mathbf{y}^o\)</span> are scattered in space and may not sit on the model grid. The scalar Bayes update generalises directly to matrices:</p>
+<div class="math notranslate nohighlight">
+\[\mathbf{x}^a = \mathbf{x}^b + \mathbf{K}\,(\mathbf{y}^o - \mathbf{H}\mathbf{x}^b)\]</div>
+<div class="math notranslate nohighlight">
+\[\mathbf{K} = \mathbf{B}\mathbf{H}^\top\!\left(\mathbf{H}\mathbf{B}\mathbf{H}^\top + \mathbf{R}\right)^{-1}\]</div>
+<p>where:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Symbol</p></th>
+<th class="head"><p>Name</p></th>
+<th class="head"><p>Generalises</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(\mathbf{B}\)</span></p></td>
+<td><p>Background error covariance matrix</p></td>
+<td><p>scalar <span class="math notranslate nohighlight">\(\sigma_b^2\)</span></p></td>
+</tr>
+<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(\mathbf{R}\)</span></p></td>
+<td><p>Observation error covariance matrix</p></td>
+<td><p>scalar <span class="math notranslate nohighlight">\(\sigma_o^2\)</span></p></td>
+</tr>
+<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(\mathbf{H}\)</span></p></td>
+<td><p>Observation operator</p></td>
+<td><p>maps model state → what instrument would see (e.g. integrates a temperature profile to simulate a satellite radiance)</p></td>
+</tr>
+<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(\mathbf{y}^o - \mathbf{H}\mathbf{x}^b\)</span></p></td>
+<td><p><strong>Innovation</strong> (or departure)</p></td>
+<td><p>the “surprise” — how much the observation disagrees with the forecast</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>The iterative picture — Kalman Filter as sequential Bayes.</strong> Applying this update repeatedly in time gives the Kalman Filter:</p>
+<div class="math notranslate nohighlight">
+\[\underbrace{\text{Forecast step}}_{\text{prior}} \xrightarrow{\text{new obs.}} \underbrace{\text{Update step}}_{\text{posterior}} \xrightarrow{\text{model}} \underbrace{\text{Forecast step}}_{\text{new prior}} \to \cdots\]</div>
+<p>Each forecast–update cycle is one application of <span class="math notranslate nohighlight">\(f(x\mid y) \propto f(y\mid x)\,f(x)\)</span>. The posterior at step <span class="math notranslate nohighlight">\(k\)</span> becomes the prior at step <span class="math notranslate nohighlight">\(k+1\)</span>.</p>
+<p><strong>The cost-function view (3D-Var / 4D-Var).</strong> Instead of computing the full posterior, operational centres often find the <strong>maximum a posteriori (MAP)</strong> estimate — the state <span class="math notranslate nohighlight">\(\mathbf{x}\)</span> that maximises <span class="math notranslate nohighlight">\(f(\mathbf{x}\mid\mathbf{y}^o)\)</span>, equivalently minimises <span class="math notranslate nohighlight">\(-\ln f(\mathbf{x}\mid\mathbf{y}^o)\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[J(\mathbf{x}) = \underbrace{\frac{1}{2}(\mathbf{x}-\mathbf{x}^b)^\top \mathbf{B}^{-1}(\mathbf{x}-\mathbf{x}^b)}_{\text{background term }= -\ln f(\mathbf{x})\ \text{(prior)}} + \underbrace{\frac{1}{2}(\mathbf{y}^o - \mathbf{H}\mathbf{x})^\top \mathbf{R}^{-1}(\mathbf{y}^o - \mathbf{H}\mathbf{x})}_{\text{observation term }= -\ln f(\mathbf{y}^o\mid\mathbf{x})\ \text{(likelihood)}}\]</div>
+<p>Minimising <span class="math notranslate nohighlight">\(J\)</span> is the <strong>3D-Var</strong> problem used operationally at weather centres (ECMWF, NCEP, etc.). The two terms map directly onto the prior and likelihood in Bayes’ theorem — it is simply finding the mode of the posterior in log-space. <strong>4D-Var</strong> extends this by integrating the model forward in time inside the cost function, allowing observations at multiple times to constrain the initial state simultaneously.</p>
+<div class="tip admonition">
+<p class="admonition-title">Summary: Bayes → DA dictionary</p>
+<p>The progression from the scalar Gaussian example to operational data assimilation is one of generalisation, not of new ideas:</p>
+<ol class="arabic simple">
+<li><p><strong>Scalar Bayes</strong> (worked example above) → analysis of a single variable at one point</p></li>
+<li><p><strong>Kalman Filter</strong> → scalar Bayes applied repeatedly in time</p></li>
+<li><p><strong>Multivariate Kalman Filter</strong> → extends to full model state vector <span class="math notranslate nohighlight">\(\mathbf{x}\)</span></p></li>
+<li><p><strong>3D-Var / 4D-Var</strong> → finds the MAP estimate of <span class="math notranslate nohighlight">\(\mathbf{x}\)</span> by minimising the negative log-posterior <span class="math notranslate nohighlight">\(J(\mathbf{x})\)</span></p></li>
+<li><p><strong>Ensemble Kalman Filter (EnKF)</strong> → estimates <span class="math notranslate nohighlight">\(\mathbf{B}\)</span> from an ensemble of model runs rather than assuming it is fixed; widely used in atmospheric and oceanic data assimilation today</p></li>
+</ol>
+<p>All of these are Bayes’ theorem, applied to the problem of estimating the true atmospheric state from a combination of model forecasts and noisy observations.</p>
+</div>
 </section>
 </section>
 <section id="statistical-significance-testing">
@@ -1856,6 +1964,7 @@ y_i &lt; x_i &amp;\rightarrow -1
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#moments-as-expectations-over-a-pdf">Moments as expectations over a PDF</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#from-the-product-rule-of-probability-to-bayes-theorem">From the product rule of probability to Bayes’ theorem</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#worked-example-gaussian-prior-gaussian-likelihood-gaussian-posterior">Worked example: Gaussian prior × Gaussian likelihood → Gaussian posterior</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#data-assimilation-as-bayes-theorem">Data assimilation as Bayes’ theorem</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#statistical-significance-testing">Statistical Significance Testing</a><ul class="nav section-nav flex-column">

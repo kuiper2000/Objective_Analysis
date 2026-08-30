@@ -582,7 +582,73 @@ $$\mu_1 = \underbrace{\frac{1/\sigma_0^2}{1/\sigma_0^2+1/\sigma_w^2}}_{\text{wei
 **Link to the Kalman Filter.** This two-Gaussian update is *exactly* one step of the Kalman Filter introduced above. The prior at step $k$ is the Gaussian model forecast; the likelihood is the Gaussian observation error; the posterior is the analysis that initialises the next forecast cycle.
 :::
 
-With moments expressed as PDF-weighted integrals and Bayes' theorem derived from the product rule of joint PDFs, we now have a unified probabilistic language. The next step is to use this language to ask a concrete question: given a sample, how do we decide whether its mean is statistically different from an expected population value?
+With moments expressed as PDF-weighted integrals and Bayes' theorem derived from the product rule of joint PDFs, we now have a unified probabilistic language. Before moving to significance testing, it is worth making the connection to atmospheric data assimilation explicit — because the Gaussian × Gaussian result above *is* data assimilation, just written in statistician's language.
+
+### Data assimilation as Bayes' theorem
+
+**The scalar case.** The worked example gave a posterior mean:
+
+$$\mu_1 = \frac{1/\sigma_0^2}{1/\sigma_0^2+1/\sigma_w^2}\,\mu_0 + \frac{1/\sigma_w^2}{1/\sigma_0^2+1/\sigma_w^2}\,y$$
+
+In data assimilation (DA), the identical equation is written as:
+
+$$x^a = x^b + \underbrace{\frac{\sigma_b^2}{\sigma_b^2 + \sigma_o^2}}_{K\ \text{(Kalman gain)}}\,(y^o - x^b)$$
+
+The term-by-term translation between the two languages is:
+
+| Bayes / stats | DA notation | Meaning |
+|---|---|---|
+| Prior mean $\mu_0$ | Background $x^b$ | Model forecast |
+| Prior variance $\sigma_0^2$ | Background error variance $\sigma_b^2$ | Uncertainty in the forecast |
+| Observation $y$ | Observation $y^o$ | What the instrument reads |
+| Obs. noise variance $\sigma_w^2$ | Observation error variance $\sigma_o^2$ | Uncertainty in the instrument |
+| Posterior mean $\mu_1$ | **Analysis** $x^a$ | Best estimate of the true state |
+| Posterior variance $\sigma_1^2$ | Analysis error variance $\sigma_a^2$ | Remaining uncertainty after assimilation |
+| Precision-weighted blend | **Kalman gain** $K\in[0,1]$ | How much to trust obs. vs. forecast |
+
+The Kalman gain controls the blend:
+- $K \to 0$ when $\sigma_o^2 \gg \sigma_b^2$: the instrument is noisy → stay close to the forecast.
+- $K \to 1$ when $\sigma_b^2 \gg \sigma_o^2$: the forecast is uncertain → pull strongly toward the observation.
+
+**The multivariate extension.** In practice the true state is a vector $\mathbf{x}$ (millions of model grid points) and observations $\mathbf{y}^o$ are scattered in space and may not sit on the model grid. The scalar Bayes update generalises directly to matrices:
+
+$$\mathbf{x}^a = \mathbf{x}^b + \mathbf{K}\,(\mathbf{y}^o - \mathbf{H}\mathbf{x}^b)$$
+
+$$\mathbf{K} = \mathbf{B}\mathbf{H}^\top\!\left(\mathbf{H}\mathbf{B}\mathbf{H}^\top + \mathbf{R}\right)^{-1}$$
+
+where:
+
+| Symbol | Name | Generalises |
+|---|---|---|
+| $\mathbf{B}$ | Background error covariance matrix | scalar $\sigma_b^2$ |
+| $\mathbf{R}$ | Observation error covariance matrix | scalar $\sigma_o^2$ |
+| $\mathbf{H}$ | Observation operator | maps model state → what instrument would see (e.g. integrates a temperature profile to simulate a satellite radiance) |
+| $\mathbf{y}^o - \mathbf{H}\mathbf{x}^b$ | **Innovation** (or departure) | the "surprise" — how much the observation disagrees with the forecast |
+
+**The iterative picture — Kalman Filter as sequential Bayes.** Applying this update repeatedly in time gives the Kalman Filter:
+
+$$\underbrace{\text{Forecast step}}_{\text{prior}} \xrightarrow{\text{new obs.}} \underbrace{\text{Update step}}_{\text{posterior}} \xrightarrow{\text{model}} \underbrace{\text{Forecast step}}_{\text{new prior}} \to \cdots$$
+
+Each forecast–update cycle is one application of $f(x\mid y) \propto f(y\mid x)\,f(x)$. The posterior at step $k$ becomes the prior at step $k+1$.
+
+**The cost-function view (3D-Var / 4D-Var).** Instead of computing the full posterior, operational centres often find the **maximum a posteriori (MAP)** estimate — the state $\mathbf{x}$ that maximises $f(\mathbf{x}\mid\mathbf{y}^o)$, equivalently minimises $-\ln f(\mathbf{x}\mid\mathbf{y}^o)$:
+
+$$J(\mathbf{x}) = \underbrace{\frac{1}{2}(\mathbf{x}-\mathbf{x}^b)^\top \mathbf{B}^{-1}(\mathbf{x}-\mathbf{x}^b)}_{\text{background term }= -\ln f(\mathbf{x})\ \text{(prior)}} + \underbrace{\frac{1}{2}(\mathbf{y}^o - \mathbf{H}\mathbf{x})^\top \mathbf{R}^{-1}(\mathbf{y}^o - \mathbf{H}\mathbf{x})}_{\text{observation term }= -\ln f(\mathbf{y}^o\mid\mathbf{x})\ \text{(likelihood)}}$$
+
+Minimising $J$ is the **3D-Var** problem used operationally at weather centres (ECMWF, NCEP, etc.). The two terms map directly onto the prior and likelihood in Bayes' theorem — it is simply finding the mode of the posterior in log-space. **4D-Var** extends this by integrating the model forward in time inside the cost function, allowing observations at multiple times to constrain the initial state simultaneously.
+
+:::{admonition} Summary: Bayes → DA dictionary
+:class: tip
+The progression from the scalar Gaussian example to operational data assimilation is one of generalisation, not of new ideas:
+
+1. **Scalar Bayes** (worked example above) → analysis of a single variable at one point
+2. **Kalman Filter** → scalar Bayes applied repeatedly in time
+3. **Multivariate Kalman Filter** → extends to full model state vector $\mathbf{x}$
+4. **3D-Var / 4D-Var** → finds the MAP estimate of $\mathbf{x}$ by minimising the negative log-posterior $J(\mathbf{x})$
+5. **Ensemble Kalman Filter (EnKF)** → estimates $\mathbf{B}$ from an ensemble of model runs rather than assuming it is fixed; widely used in atmospheric and oceanic data assimilation today
+
+All of these are Bayes' theorem, applied to the problem of estimating the true atmospheric state from a combination of model forecasts and noisy observations.
+:::
 
 ## Statistical Significance Testing
 
