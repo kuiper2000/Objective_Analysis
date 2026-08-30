@@ -137,7 +137,8 @@ where the prime denotes departures from the mean.
 
 :::{admonition} Figure / in-class demonstration
 :class: tip
-*Figure Example: variance definition*
+Run [`variance_example.py`](variance_example.py) to generate this figure.
+![Variance definition and convergence](variance_example.png)
 :::
 
 The sample standard deviation is defined as:
@@ -158,7 +159,8 @@ The estimate of the variance depends greatly on the sample rate (e.g. if you are
 
 :::{admonition} Figure / in-class demonstration
 :class: tip
-*Figure Example: Run variance example.py*
+Run [`variance_example.py`](variance_example.py)
+![Variance vs sample size](variance_example.png)
 :::
 
 Also, one can show that two time series with the same variance (say, of 1) but with different persistences can give different answers depending on the sample window (how long of the record you look).
@@ -181,14 +183,16 @@ The skewness indicates the degree of asymmetry of the distribution about the mea
 
 :::{admonition} Figure / in-class demonstration
 :class: tip
-*Figure Example: skewness sketch*
+Run [`skewness_kurtosis.py`](skewness_kurtosis.py)
+![Skewness](skewness_kurtosis.png)
 :::
 
 The kurtosis indicates the degree of peakedness of the distribution. $a_4 > 3$ indicates a more peaked distribution compared to a Gaussian, which has $a_4 = 3$.
 
 :::{admonition} Figure / in-class demonstration
 :class: tip
-*Figure Example: kurtosis sketch*
+Run [`skewness_kurtosis.py`](skewness_kurtosis.py)
+![Kurtosis](skewness_kurtosis.png)
 :::
 
 Typically, higher order moments are given in terms of the standardized units, for ease of comparison (and so units don't matter).
@@ -223,7 +227,8 @@ One can see why the intersection term comes into the union equation by drawing a
 
 :::{admonition} Figure / in-class demonstration
 :class: tip
-*Figure Example: Venn Diagram*
+Run [`venn_diagram.py`](venn_diagram.py)
+![Venn Diagram](venn_diagram.png)
 :::
 
 In this diagram the area in the rectangle represents the total probability of one, and the area inside the two event circles indicates the probability of the two events. The intersection between them gets counted twice when you add the two areas and so must be subtracted to calculate the union of the probabilities. If the two events are mutually exclusive, then no intersection occurs, i.e., if one happens, we know the other did not happen at that time.
@@ -678,7 +683,8 @@ $$\Pr(a \leq x \leq b) = F(b) - F(a).$$
 
 :::{admonition} Figure / in-class demonstration
 :class: tip
-*Figure Example: run what is pdf.py*
+Run [`what_is_pdf.py`](what_is_pdf.py)
+![PDF, CDF, and probability](what_is_pdf.png)
 :::
 
 The probability density function for a variable $x$ that is normally distributed about its mean is given by:
@@ -707,7 +713,8 @@ $$f(z) = \frac{1}{\sqrt{2\pi}}\exp\left(\frac{-z^2}{2}\right)$$
 
 :::{admonition} Figure / in-class demonstration
 :class: tip
-*Figure Example: Draw normal distribution --- discuss histograms*
+Run [`normal_distribution.py`](normal_distribution.py)
+![Normal distribution and histograms](normal_distribution.png)
 :::
 
 $$\begin{aligned}
@@ -720,8 +727,8 @@ Recall that $z$ is a standardized normal variable, and so, $z=2$ is $z=2$ standa
 
 :::{admonition} Figure / in-class demonstration
 :class: tip
-*Figure Example: Draw meaning of one-tailed and two-tailed probabilities.*\
-*Figure Example: show uniform distribution example, integrate a rectangle*
+Run [`normal_distribution.py`](normal_distribution.py) (one-tailed and two-tailed panels) and [`what_is_pdf.py`](what_is_pdf.py) (uniform distribution panel).
+![One-tailed and two-tailed](normal_distribution.png)
 :::
 
 ### Statistical Significance Testing: the t-statistic and z-statistic
@@ -888,7 +895,8 @@ This theorem is the basis of most of what we do in statistics, and most of what 
 
 :::{admonition} Figure / in-class demonstration
 :class: tip
-*Figure Example: Run Matlab simulation: central limit theorem.m*
+Run [`central_limit_theorem.py`](central_limit_theorem.py)
+![Central Limit Theorem](central_limit_theorem.png)
 :::
 
 What the central limit theorem says is that if you have a sample that is large enough, you can use the normally distributed z-statistic to estimate probabilities of getting that mean --- no matter the distribution of the underlying data.
@@ -945,7 +953,8 @@ $\nu$ is the number of degrees of freedom $= N-1$. It is the number of independe
 
 :::{admonition} Figure / in-class demonstration
 :class: tip
-*Figure Example: Run Matlab tstat vs zstat.m*
+Run [`tstat_vs_zstat.py`](tstat_vs_zstat.py)
+![t-statistic vs z-statistic](tstat_vs_zstat.png)
 :::
 
 Comparisons between the t-statistic and z-statistic:
@@ -1015,7 +1024,8 @@ Thus, you cannot blindly apply the t-test to test differences in sample means if
 
 :::{admonition} Figure / in-class demonstration
 :class: tip
-*Figure Example: Back to Central Limit Theorem Matlab example*
+Run [`central_limit_theorem.py`](central_limit_theorem.py)
+![Central Limit Theorem revisited](central_limit_theorem.png)
 :::
 
 ### A note on the independence on N
@@ -1030,7 +1040,8 @@ For example, the geopotential height is highly auto-correlated so that each day'
 
 :::{admonition} Figure / in-class demonstration
 :class: tip
-*Figure Example: draw picture of $\alpha$, p-value, $t_c$, etc.*
+Run [`hypothesis_testing.py`](hypothesis_testing.py)
+![Hypothesis testing regions](hypothesis_testing.png)
 :::
 
 -   significance/confidence level: $\alpha$, typically 5% (0.05), often reported as $1-\alpha$
@@ -1307,14 +1318,8 @@ Performing this calculation for all possible values of $y$ leads to Fig. [condit
 
 :::{admonition} Figure / in-class demonstration
 :class: tip
-*Figure [Figure PDFs](#fig:pdfs): Probability density functions of $X$, $W$ and $Y = X+W$.*\
-*Figure [conditional-PDF figure](#fig:condpdf): The probability density function of $X$ given that $Y=y=2.2$. The dashed gray line denotes the conditional expectation of $X$ based on $Y$.*\
-*Figure [conditional-expectation figure](#fig:expectation): The conditional expectation of $X$ given $Y=y$.*\
-<a id="fig:pdfs"></a>
-<a id="fig:condpdf"></a>
-<a id="fig:expectation"></a>
-
-(Insert figures from original handout: PDF plots of X, W, Y; conditional PDF; conditional expectation curve.)
+Run [`bayesian_sst_example.py`](bayesian_sst_example.py)
+![Bayesian SST example: PDFs of X, W, Y; conditional PDF; conditional expectation](bayesian_sst_example.png)
 :::
 
 ## Monte Carlo and Resampling techniques
@@ -1351,7 +1356,8 @@ You will find the jackknife approach often used to estimate the slope of a line 
 
 :::{admonition} Figure / in-class demonstration
 :class: tip
-*Figure Example: Run Matlab example jackknife_example.m*
+Run [`jackknife_example.py`](jackknife_example.py)
+![Jackknife example](jackknife_example.png)
 :::
 
 ### Monte Carlo
@@ -1371,7 +1377,8 @@ Run 2,500 experiments; within each experiment, randomly grab 20 days from the hi
 
 :::{admonition} Figure / in-class demonstration
 :class: tip
-*Figure Example: run subsampling_example.m*
+Run [`bootstrap_example.py`](bootstrap_example.py)
+![Bootstrap resampling example](bootstrap_example.png)
 :::
 
 :::{admonition} Monte Carlo simulation
@@ -1389,7 +1396,8 @@ If we had the climatological data (say 50 years of data), we could instead follo
 
 :::{admonition} Figure / in-class demonstration
 :class: tip
-*Figure Example: RUN: monte_carlo_example.m*
+Run [`monte_carlo_example.py`](monte_carlo_example.py)
+![Monte Carlo example](monte_carlo_example.png)
 :::
 
 ## Compositing
@@ -1519,7 +1527,8 @@ Note that the right-hand side looks complicated, but really is the probability o
 
 :::{admonition} Figure / in-class demonstration
 :class: tip
-*Figure Example: Binomial examples*
+Run [`binomial_example.py`](binomial_example.py)
+![Binomial distribution examples](binomial_example.png)
 :::
 
 ### Normal Approximation to the Binomial

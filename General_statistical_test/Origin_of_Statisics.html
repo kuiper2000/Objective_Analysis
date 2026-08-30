@@ -562,7 +562,8 @@ s &amp;= \text{the sample standard deviation}
 <p>where the prime denotes departures from the mean.</p>
 <div class="tip admonition">
 <p class="admonition-title">Figure / in-class demonstration</p>
-<p><em>Figure Example: variance definition</em></p>
+<p>Run <a class="reference download internal" download="" href="../_downloads/e23f31c768771afb7293d1592bc53797/variance_example.py"><span class="xref download myst"><code class="docutils literal notranslate"><span class="pre">variance_example.py</span></code></span></a> to generate this figure.
+<img alt="Variance definition and convergence" src="../_images/variance_example.png" /></p>
 </div>
 <p>The sample standard deviation is defined as:</p>
 <div class="math notranslate nohighlight">
@@ -576,7 +577,8 @@ s &amp;= \text{the sample standard deviation}
 <p>The estimate of the variance depends greatly on the sample rate (e.g. if you are using daily data, monthly data, yearly data, etc).</p>
 <div class="tip admonition">
 <p class="admonition-title">Figure / in-class demonstration</p>
-<p><em>Figure Example: Run variance <a class="reference external" href="http://example.py">example.py</a></em></p>
+<p>Run <a class="reference download internal" download="" href="../_downloads/e23f31c768771afb7293d1592bc53797/variance_example.py"><span class="xref download myst"><code class="docutils literal notranslate"><span class="pre">variance_example.py</span></code></span></a>
+<img alt="Variance vs sample size" src="../_images/variance_example.png" /></p>
 </div>
 <p>Also, one can show that two time series with the same variance (say, of 1) but with different persistences can give different answers depending on the sample window (how long of the record you look).</p>
 </section>
@@ -593,12 +595,14 @@ s &amp;= \text{the sample standard deviation}
 <p>The skewness indicates the degree of asymmetry of the distribution about the mean. <span class="math notranslate nohighlight">\(a_3 &gt; 0\)</span> indicates a long tail on the positive side of the mean (a Gaussian has <span class="math notranslate nohighlight">\(a_3 = 0\)</span>).</p>
 <div class="tip admonition">
 <p class="admonition-title">Figure / in-class demonstration</p>
-<p><em>Figure Example: skewness sketch</em></p>
+<p>Run <a class="reference download internal" download="" href="../_downloads/55477aaa6e4c868b02334e21a8685c63/skewness_kurtosis.py"><span class="xref download myst"><code class="docutils literal notranslate"><span class="pre">skewness_kurtosis.py</span></code></span></a>
+<img alt="Skewness" src="../_images/skewness_kurtosis.png" /></p>
 </div>
 <p>The kurtosis indicates the degree of peakedness of the distribution. <span class="math notranslate nohighlight">\(a_4 &gt; 3\)</span> indicates a more peaked distribution compared to a Gaussian, which has <span class="math notranslate nohighlight">\(a_4 = 3\)</span>.</p>
 <div class="tip admonition">
 <p class="admonition-title">Figure / in-class demonstration</p>
-<p><em>Figure Example: kurtosis sketch</em></p>
+<p>Run <a class="reference download internal" download="" href="../_downloads/55477aaa6e4c868b02334e21a8685c63/skewness_kurtosis.py"><span class="xref download myst"><code class="docutils literal notranslate"><span class="pre">skewness_kurtosis.py</span></code></span></a>
+<img alt="Kurtosis" src="../_images/skewness_kurtosis.png" /></p>
 </div>
 <p>Typically, higher order moments are given in terms of the standardized units, for ease of comparison (and so units don’t matter).</p>
 </section>
@@ -626,7 +630,8 @@ s &amp;= \text{the sample standard deviation}
 <p>One can see why the intersection term comes into the union equation by drawing a Venn Diagram.</p>
 <div class="tip admonition">
 <p class="admonition-title">Figure / in-class demonstration</p>
-<p><em>Figure Example: Venn Diagram</em></p>
+<p>Run <a class="reference download internal" download="" href="../_downloads/d563eac5595adc922c3ed17e0675ef5c/venn_diagram.py"><span class="xref download myst"><code class="docutils literal notranslate"><span class="pre">venn_diagram.py</span></code></span></a>
+<img alt="Venn Diagram" src="../_images/venn_diagram.png" /></p>
 </div>
 <p>In this diagram the area in the rectangle represents the total probability of one, and the area inside the two event circles indicates the probability of the two events. The intersection between them gets counted twice when you add the two areas and so must be subtracted to calculate the union of the probabilities. If the two events are mutually exclusive, then no intersection occurs, i.e., if one happens, we know the other did not happen at that time.</p>
 <p>Another important concept is conditional probability,</p>
@@ -1120,7 +1125,8 @@ E_2 &amp;= \tilde{C} = \text{the chemical is not present}
 \[\Pr(a \leq x \leq b) = F(b) - F(a).\]</div>
 <div class="tip admonition">
 <p class="admonition-title">Figure / in-class demonstration</p>
-<p><em>Figure Example: run what is <a class="reference external" href="http://pdf.py">pdf.py</a></em></p>
+<p>Run <a class="reference download internal" download="" href="../_downloads/d5c21239231b7577a99dae379ad11586/what_is_pdf.py"><span class="xref download myst"><code class="docutils literal notranslate"><span class="pre">what_is_pdf.py</span></code></span></a>
+<img alt="PDF, CDF, and probability" src="../_images/what_is_pdf.png" /></p>
 </div>
 <p>The probability density function for a variable <span class="math notranslate nohighlight">\(x\)</span> that is normally distributed about its mean is given by:</p>
 <div class="math notranslate nohighlight">
@@ -1141,7 +1147,8 @@ E_2 &amp;= \tilde{C} = \text{the chemical is not present}
 <p>(note that the <span class="math notranslate nohighlight">\(\sigma\)</span> no longer appears in the denominator due to the transformation of <span class="math notranslate nohighlight">\(F(z)\)</span> using <span class="math notranslate nohighlight">\(z = (x-\mu)/\sigma\)</span> and needing to replace <span class="math notranslate nohighlight">\(dx\)</span> with <span class="math notranslate nohighlight">\(\sigma \cdot dz\)</span>)</p>
 <div class="tip admonition">
 <p class="admonition-title">Figure / in-class demonstration</p>
-<p><em>Figure Example: Draw normal distribution — discuss histograms</em></p>
+<p>Run <a class="reference download internal" download="" href="../_downloads/b4090ff2488eb11c8862a7813722049f/normal_distribution.py"><span class="xref download myst"><code class="docutils literal notranslate"><span class="pre">normal_distribution.py</span></code></span></a>
+<img alt="Normal distribution and histograms" src="../_images/normal_distribution.png" /></p>
 </div>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{aligned}
@@ -1152,8 +1159,8 @@ E_2 &amp;= \tilde{C} = \text{the chemical is not present}
 <p>Recall that <span class="math notranslate nohighlight">\(z\)</span> is a standardized normal variable, and so, <span class="math notranslate nohighlight">\(z=2\)</span> is <span class="math notranslate nohighlight">\(z=2\)</span> standard deviations. Thus, there is a 4.55% probability that <span class="math notranslate nohighlight">\(z\)</span> will fall outside of 2 standard deviations of its mean (two-tailed probability) and a 2.275% chance it will exceed <span class="math notranslate nohighlight">\(+2\)</span> standard deviations (one-tailed probability).</p>
 <div class="tip admonition">
 <p class="admonition-title">Figure / in-class demonstration</p>
-<p><em>Figure Example: Draw meaning of one-tailed and two-tailed probabilities.</em><br />
-<em>Figure Example: show uniform distribution example, integrate a rectangle</em></p>
+<p>Run <a class="reference download internal" download="" href="../_downloads/b4090ff2488eb11c8862a7813722049f/normal_distribution.py"><span class="xref download myst"><code class="docutils literal notranslate"><span class="pre">normal_distribution.py</span></code></span></a> (one-tailed and two-tailed panels) and <a class="reference download internal" download="" href="../_downloads/d5c21239231b7577a99dae379ad11586/what_is_pdf.py"><span class="xref download myst"><code class="docutils literal notranslate"><span class="pre">what_is_pdf.py</span></code></span></a> (uniform distribution panel).
+<img alt="One-tailed and two-tailed" src="../_images/normal_distribution.png" /></p>
 </div>
 </section>
 <section id="statistical-significance-testing-the-t-statistic-and-z-statistic">
@@ -1288,7 +1295,8 @@ z &amp;= \frac{\overline{X} - \mu}{\sigma/\sqrt{N}} \\
 <p>This theorem is the basis of most of what we do in statistics, and most of what we do when assessing the significance of geophysical signals.</p>
 <div class="tip admonition">
 <p class="admonition-title">Figure / in-class demonstration</p>
-<p><em>Figure Example: Run Matlab simulation: central limit theorem.m</em></p>
+<p>Run <a class="reference download internal" download="" href="../_downloads/cfdfe8e43106879722a3453dc60ac0fc/central_limit_theorem.py"><span class="xref download myst"><code class="docutils literal notranslate"><span class="pre">central_limit_theorem.py</span></code></span></a>
+<img alt="Central Limit Theorem" src="../_images/central_limit_theorem.png" /></p>
 </div>
 <p>What the central limit theorem says is that if you have a sample that is large enough, you can use the normally distributed z-statistic to estimate probabilities of getting that mean — no matter the distribution of the underlying data.</p>
 <div class="note admonition">
@@ -1329,7 +1337,8 @@ z &amp;= \frac{\overline{X} - \mu}{\sigma/\sqrt{N}} \\
 <p><span class="math notranslate nohighlight">\(\nu\)</span> is the number of degrees of freedom <span class="math notranslate nohighlight">\(= N-1\)</span>. It is the number of independent samples (<span class="math notranslate nohighlight">\(N\)</span>) minus the number of parameters that must be estimated. In the case of the t-statistic, we calculate <span class="math notranslate nohighlight">\(\overline{x}\)</span> and <span class="math notranslate nohighlight">\(s\)</span> but must estimate <span class="math notranslate nohighlight">\(\mu\)</span>. Hence, <span class="math notranslate nohighlight">\(\nu = N-1\)</span>. More on independent samples later.</p>
 <div class="tip admonition">
 <p class="admonition-title">Figure / in-class demonstration</p>
-<p><em>Figure Example: Run Matlab tstat vs zstat.m</em></p>
+<p>Run <a class="reference download internal" download="" href="../_downloads/2ab8fd734f3a4f7bc7bc16f834e9f6ea/tstat_vs_zstat.py"><span class="xref download myst"><code class="docutils literal notranslate"><span class="pre">tstat_vs_zstat.py</span></code></span></a>
+<img alt="t-statistic vs z-statistic" src="../_images/tstat_vs_zstat.png" /></p>
 </div>
 <p>Comparisons between the t-statistic and z-statistic:</p>
 <ul class="simple">
@@ -1377,7 +1386,8 @@ z &amp;= \frac{\overline{X} - \mu}{\sigma/\sqrt{N}} \\
 <p>Thus, you cannot blindly apply the t-test to test differences in sample means if the underlying distributions are not already normal! This is a common mistake made in our field.</p>
 <div class="tip admonition">
 <p class="admonition-title">Figure / in-class demonstration</p>
-<p><em>Figure Example: Back to Central Limit Theorem Matlab example</em></p>
+<p>Run <a class="reference download internal" download="" href="../_downloads/cfdfe8e43106879722a3453dc60ac0fc/central_limit_theorem.py"><span class="xref download myst"><code class="docutils literal notranslate"><span class="pre">central_limit_theorem.py</span></code></span></a>
+<img alt="Central Limit Theorem revisited" src="../_images/central_limit_theorem.png" /></p>
 </div>
 </section>
 <section id="a-note-on-the-independence-on-n">
@@ -1392,7 +1402,8 @@ z &amp;= \frac{\overline{X} - \mu}{\sigma/\sqrt{N}} \\
 <h3>Terminology and symbology<a class="headerlink" href="#terminology-and-symbology" title="Link to this heading">#</a></h3>
 <div class="tip admonition">
 <p class="admonition-title">Figure / in-class demonstration</p>
-<p><em>Figure Example: draw picture of <span class="math notranslate nohighlight">\(\alpha\)</span>, p-value, <span class="math notranslate nohighlight">\(t_c\)</span>, etc.</em></p>
+<p>Run <a class="reference download internal" download="" href="../_downloads/cf53942b76131e7243084509068c0393/hypothesis_testing.py"><span class="xref download myst"><code class="docutils literal notranslate"><span class="pre">hypothesis_testing.py</span></code></span></a>
+<img alt="Hypothesis testing regions" src="../_images/hypothesis_testing.png" /></p>
 </div>
 <ul class="simple">
 <li><p>significance/confidence level: <span class="math notranslate nohighlight">\(\alpha\)</span>, typically 5% (0.05), often reported as <span class="math notranslate nohighlight">\(1-\alpha\)</span></p></li>
@@ -1603,13 +1614,8 @@ z &amp;= \frac{\overline{X} - \mu}{\sigma/\sqrt{N}} \\
 </div>
 <div class="tip admonition">
 <p class="admonition-title">Figure / in-class demonstration</p>
-<p><em>Figure <a class="reference internal" href="#fig:pdfs"><span class="xref myst">Figure PDFs</span></a>: Probability density functions of <span class="math notranslate nohighlight">\(X\)</span>, <span class="math notranslate nohighlight">\(W\)</span> and <span class="math notranslate nohighlight">\(Y = X+W\)</span>.</em><br />
-<em>Figure <a class="reference internal" href="#fig:condpdf"><span class="xref myst">conditional-PDF figure</span></a>: The probability density function of <span class="math notranslate nohighlight">\(X\)</span> given that <span class="math notranslate nohighlight">\(Y=y=2.2\)</span>. The dashed gray line denotes the conditional expectation of <span class="math notranslate nohighlight">\(X\)</span> based on <span class="math notranslate nohighlight">\(Y\)</span>.</em><br />
-<em>Figure <a class="reference internal" href="#fig:expectation"><span class="xref myst">conditional-expectation figure</span></a>: The conditional expectation of <span class="math notranslate nohighlight">\(X\)</span> given <span class="math notranslate nohighlight">\(Y=y\)</span>.</em><br />
-<a id="fig:pdfs"></a>
-<a id="fig:condpdf"></a>
-<a id="fig:expectation"></a></p>
-<p>(Insert figures from original handout: PDF plots of X, W, Y; conditional PDF; conditional expectation curve.)</p>
+<p>Run <a class="reference download internal" download="" href="../_downloads/ea76cf1336706ca7cbaede6de5a49095/bayesian_sst_example.py"><span class="xref download myst"><code class="docutils literal notranslate"><span class="pre">bayesian_sst_example.py</span></code></span></a>
+<img alt="Bayesian SST example: PDFs of X, W, Y; conditional PDF; conditional expectation" src="../_images/bayesian_sst_example.png" /></p>
 </div>
 </section>
 </section>
@@ -1640,7 +1646,8 @@ z &amp;= \frac{\overline{X} - \mu}{\sigma/\sqrt{N}} \\
 <p>You will find the jackknife approach often used to estimate the slope of a line through multiple points, or the y-intercept, etc.</p>
 <div class="tip admonition">
 <p class="admonition-title">Figure / in-class demonstration</p>
-<p><em>Figure Example: Run Matlab example jackknife_example.m</em></p>
+<p>Run <a class="reference download internal" download="" href="../_downloads/c1f53cf790937d171b2b1d9ea5ece964/jackknife_example.py"><span class="xref download myst"><code class="docutils literal notranslate"><span class="pre">jackknife_example.py</span></code></span></a>
+<img alt="Jackknife example" src="../_images/jackknife_example.png" /></p>
 </div>
 </section>
 <section id="monte-carlo">
@@ -1655,7 +1662,8 @@ z &amp;= \frac{\overline{X} - \mu}{\sigma/\sqrt{N}} \\
 </div>
 <div class="tip admonition">
 <p class="admonition-title">Figure / in-class demonstration</p>
-<p><em>Figure Example: run subsampling_example.m</em></p>
+<p>Run <a class="reference download internal" download="" href="../_downloads/7ef96870f24319a6d94fa8404d02f967/bootstrap_example.py"><span class="xref download myst"><code class="docutils literal notranslate"><span class="pre">bootstrap_example.py</span></code></span></a>
+<img alt="Bootstrap resampling example" src="../_images/bootstrap_example.png" /></p>
 </div>
 <div class="note admonition">
 <p class="admonition-title">Monte Carlo simulation</p>
@@ -1667,7 +1675,8 @@ z &amp;= \frac{\overline{X} - \mu}{\sigma/\sqrt{N}} \\
 </div>
 <div class="tip admonition">
 <p class="admonition-title">Figure / in-class demonstration</p>
-<p><em>Figure Example: RUN: monte_carlo_example.m</em></p>
+<p>Run <a class="reference download internal" download="" href="../_downloads/2dbb44a736f454d4676ea1e4c49845cd/monte_carlo_example.py"><span class="xref download myst"><code class="docutils literal notranslate"><span class="pre">monte_carlo_example.py</span></code></span></a>
+<img alt="Monte Carlo example" src="../_images/monte_carlo_example.png" /></p>
 </div>
 </section>
 </section>
@@ -1766,7 +1775,8 @@ z &amp;= \frac{\overline{X} - \mu}{\sigma/\sqrt{N}} \\
 <p>Note that the right-hand side looks complicated, but really is the probability of a certain number of successes times the probability of a certain number of failures, with a special factor in front to account for the fact that order does not matter.</p>
 <div class="tip admonition">
 <p class="admonition-title">Figure / in-class demonstration</p>
-<p><em>Figure Example: Binomial examples</em></p>
+<p>Run <a class="reference download internal" download="" href="../_downloads/b5919eb5775028db0aff2905a2fb5275/binomial_example.py"><span class="xref download myst"><code class="docutils literal notranslate"><span class="pre">binomial_example.py</span></code></span></a>
+<img alt="Binomial distribution examples" src="../_images/binomial_example.png" /></p>
 </div>
 </section>
 <section id="normal-approximation-to-the-binomial">
