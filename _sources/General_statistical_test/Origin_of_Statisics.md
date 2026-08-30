@@ -532,7 +532,18 @@ The discrete Bayes formula used throughout the examples above,
 
 $$\Pr(E_j \mid B) = \frac{\Pr(B \mid E_j)\Pr(E_j)}{\sum_i \Pr(B \mid E_i)\Pr(E_i)}$$
 
-is simply the continuous formula with integrals replaced by sums and PDFs replaced by probability masses. The numerator $\Pr(B \mid E_j)\Pr(E_j)$ is the discrete counterpart of $f(y \mid x)\,f(x)$, and the denominator is the discrete counterpart of $\int f(y\mid x)\,f(x)\,dx$ — the evidence $f(y)$.
+is simply the continuous formula with integrals replaced by sums and PDFs replaced by probability masses. The correspondence with the table above is:
+
+| Discrete | Continuous | Role | Radiosonde example |
+|----------|------------|------|--------------------|
+| $E_j$ | $x$ | the **true (unknown) state** — what you want to infer | the true 500 hPa temperature |
+| $B$ | $y$ | the **observation** — the data you actually have | the radiosonde reading |
+| $\Pr(E_j)$ | $f(x)$ | **Prior** | model forecast distribution |
+| $\Pr(B \mid E_j)$ | $f(y \mid x)$ | **Likelihood** | instrument error model |
+| $\Pr(E_j \mid B)$ | $f(x \mid y)$ | **Posterior** | updated temperature estimate |
+| $\sum_i \Pr(B \mid E_i)\Pr(E_i)$ | $\int f(y\mid x)\,f(x)\,dx$ | **Evidence** $f(y)$ | normalising constant |
+
+In short: $E_j$ is the hypothesis about the true state (plays the role of $x$), and $B$ is the observed evidence (plays the role of $y$). The discrete sum over all possible $E_i$'s is just the finite analogue of integrating out $x$ over all possible true states.
 :::
 
 ### Worked example: Gaussian prior × Gaussian likelihood → Gaussian posterior

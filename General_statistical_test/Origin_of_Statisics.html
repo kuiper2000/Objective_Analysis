@@ -911,7 +911,50 @@ E_2 &amp;= \tilde{C} = \text{the chemical is not present}
 <p>The discrete Bayes formula used throughout the examples above,</p>
 <div class="math notranslate nohighlight">
 \[\Pr(E_j \mid B) = \frac{\Pr(B \mid E_j)\Pr(E_j)}{\sum_i \Pr(B \mid E_i)\Pr(E_i)}\]</div>
-<p>is simply the continuous formula with integrals replaced by sums and PDFs replaced by probability masses. The numerator <span class="math notranslate nohighlight">\(\Pr(B \mid E_j)\Pr(E_j)\)</span> is the discrete counterpart of <span class="math notranslate nohighlight">\(f(y \mid x)\,f(x)\)</span>, and the denominator is the discrete counterpart of <span class="math notranslate nohighlight">\(\int f(y\mid x)\,f(x)\,dx\)</span> — the evidence <span class="math notranslate nohighlight">\(f(y)\)</span>.</p>
+<p>is simply the continuous formula with integrals replaced by sums and PDFs replaced by probability masses. The correspondence with the table above is:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Discrete</p></th>
+<th class="head"><p>Continuous</p></th>
+<th class="head"><p>Role</p></th>
+<th class="head"><p>Radiosonde example</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(E_j\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(x\)</span></p></td>
+<td><p>the <strong>true (unknown) state</strong> — what you want to infer</p></td>
+<td><p>the true 500 hPa temperature</p></td>
+</tr>
+<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(B\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(y\)</span></p></td>
+<td><p>the <strong>observation</strong> — the data you actually have</p></td>
+<td><p>the radiosonde reading</p></td>
+</tr>
+<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(\Pr(E_j)\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(f(x)\)</span></p></td>
+<td><p><strong>Prior</strong></p></td>
+<td><p>model forecast distribution</p></td>
+</tr>
+<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(\Pr(B \mid E_j)\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(f(y \mid x)\)</span></p></td>
+<td><p><strong>Likelihood</strong></p></td>
+<td><p>instrument error model</p></td>
+</tr>
+<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(\Pr(E_j \mid B)\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(f(x \mid y)\)</span></p></td>
+<td><p><strong>Posterior</strong></p></td>
+<td><p>updated temperature estimate</p></td>
+</tr>
+<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(\sum_i \Pr(B \mid E_i)\Pr(E_i)\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(\int f(y\mid x)\,f(x)\,dx\)</span></p></td>
+<td><p><strong>Evidence</strong> <span class="math notranslate nohighlight">\(f(y)\)</span></p></td>
+<td><p>normalising constant</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>In short: <span class="math notranslate nohighlight">\(E_j\)</span> is the hypothesis about the true state (plays the role of <span class="math notranslate nohighlight">\(x\)</span>), and <span class="math notranslate nohighlight">\(B\)</span> is the observed evidence (plays the role of <span class="math notranslate nohighlight">\(y\)</span>). The discrete sum over all possible <span class="math notranslate nohighlight">\(E_i\)</span>’s is just the finite analogue of integrating out <span class="math notranslate nohighlight">\(x\)</span> over all possible true states.</p>
 </div>
 </section>
 <section id="worked-example-gaussian-prior-gaussian-likelihood-gaussian-posterior">
