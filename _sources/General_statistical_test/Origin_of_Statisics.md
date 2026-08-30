@@ -584,7 +584,7 @@ $$\mu_1 = \underbrace{\frac{1/\sigma_0^2}{1/\sigma_0^2+1/\sigma_w^2}}_{\text{wei
 
 With moments expressed as PDF-weighted integrals and Bayes' theorem derived from the product rule of joint PDFs, we now have a unified probabilistic language. Before moving to significance testing, it is worth making the connection to atmospheric data assimilation explicit — because the Gaussian × Gaussian result above *is* data assimilation, just written in statistician's language.
 
-### Data assimilation as Bayes' theorem
+### Data assimilation as Bayes' theorem (optional reading)
 
 **The scalar case.** The worked example gave a posterior mean:
 

@@ -365,6 +365,7 @@
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#how-to-read-these-notes">How to read these notes</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#course-outline">Course Outline</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#part-i-foundations-of-statistics">Part I: Foundations of Statistics</a></li>
 </ul>
@@ -383,92 +384,34 @@
   <section class="tex2jax_ignore mathjax_ignore" id="syllabus">
 <h1>Syllabus<a class="headerlink" href="#syllabus" title="Link to this heading">#</a></h1>
 <p>This is the course handout for Objective Analysis — a graduate-level introduction to the statistical and mathematical tools used in the atmospheric and oceanic sciences.</p>
+<section id="how-to-read-these-notes">
+<h2>How to read these notes<a class="headerlink" href="#how-to-read-these-notes" title="Link to this heading">#</a></h2>
+<p>Throughout the notes, two types of highlighted boxes are used:</p>
+<div class="tip admonition">
+<p class="admonition-title">Figure / in-class demonstration</p>
+<p><strong>Green boxes</strong> mark figures, in-class demonstrations, or Python/Matlab examples to be shown during lecture. They are placeholders for visual material that accompanies the written derivations.</p>
+</div>
+<div class="note admonition">
+<p class="admonition-title">Example / deeper dive</p>
+<p><strong>Blue boxes</strong> contain worked examples, mathematical proofs, or deeper conceptual discussions that go beyond the main narrative. These are important — they are where most of the practice problems and physical intuition live.</p>
+</div>
+</section>
 <section id="course-outline">
 <h2>Course Outline<a class="headerlink" href="#course-outline" title="Link to this heading">#</a></h2>
 <section id="part-i-foundations-of-statistics">
 <h3>Part I: Foundations of Statistics<a class="headerlink" href="#part-i-foundations-of-statistics" title="Link to this heading">#</a></h3>
 <p><strong><a class="reference internal" href="General_statistical_test/Origin_of_Statisics.html#origin-of-statisics"><span class="std std-ref">Week 1-4: Rule101</span></a></strong> — Week 1-4: Rule 101</p>
 <ul class="simple">
-<li><p><strong>The origin of statistics: why the bell curve?</strong></p>
-<ul>
-<li><p>A practical problem: combining noisy measurements</p></li>
-<li><p>Setting up the likelihood</p></li>
-<li><p>The key constraint: forcing the mean to be optimal</p></li>
-<li><p>From the constraint to an ODE — deriving the Gaussian</p></li>
-</ul>
-</li>
-<li><p><strong>Mean, variance and higher moments</strong></p>
-<ul>
-<li><p>Sample mean, median, and their properties</p></li>
-<li><p>Sample variance and the N−1 correction</p></li>
-<li><p>Higher moments: skewness and kurtosis</p></li>
-</ul>
-</li>
-<li><p><strong>Basic probabilities; unions; intersections; conditional probabilities; Bayes theorem</strong></p>
-<ul>
-<li><p>Unions and intersections; Venn diagrams</p></li>
-<li><p>Conditional probability and the multiplicative law</p></li>
-<li><p>Bayes’ theorem: worked examples (chemical detection, cab accidents, Monty Hall problem)</p></li>
-<li><p>Probability philosophy: frequentist vs. Bayesian approaches</p></li>
-</ul>
-</li>
-<li><p><strong>Tying it together: Moments, PDFs, and Bayes’ Theorem</strong></p>
-<ul>
-<li><p>Moments as expectations over a PDF — the population limit</p></li>
-<li><p>From the product rule of probability to Bayes’ theorem in continuous form</p></li>
-<li><p>Worked example: Gaussian prior × Gaussian likelihood → Gaussian posterior</p></li>
-<li><p>Physical interpretation: precision-weighted averaging and the Kalman Filter</p></li>
-</ul>
-</li>
-<li><p><strong>Statistical significance testing</strong></p>
-<ul>
-<li><p>The normal distribution, PDF, and CDF</p></li>
-<li><p>The z-statistic and z-score</p></li>
-<li><p>Estimating the significance of the sample mean</p></li>
-<li><p>Confidence intervals</p></li>
-<li><p>The Central Limit Theorem</p></li>
-<li><p>The t-statistic: when sample sizes are small</p></li>
-<li><p>When to use (and not use) the t-test</p></li>
-<li><p>A note on independence and effective sample size</p></li>
-</ul>
-</li>
-<li><p><strong>Hypothesis testing</strong></p>
-<ul>
-<li><p>Terminology: significance level, critical value, p-value</p></li>
-<li><p>Five-step framework for hypothesis testing</p></li>
-<li><p>Comparison of means</p></li>
-<li><p>Type I and Type II errors</p></li>
-<li><p>A priori vs. a posteriori statistics; the multiple-testing problem</p></li>
-<li><p>Bayesian vs. frequentist approaches revisited</p></li>
-</ul>
-</li>
-<li><p><strong>Monte Carlo and resampling techniques</strong></p>
-<ul>
-<li><p>Why use resampling and Monte Carlo?</p></li>
-<li><p>Bootstrap resampling</p></li>
-<li><p>Jackknife resampling</p></li>
-<li><p>Monte Carlo simulation</p></li>
-</ul>
-</li>
-<li><p><strong>Compositing (superposed epoch analysis)</strong></p>
-<ul>
-<li><p>Steps to compositing; advantages and disadvantages</p></li>
-<li><p>Significance of composites</p></li>
-</ul>
-</li>
-<li><p><strong>Other common distributions</strong></p>
-<ul>
-<li><p>Chi-square distribution: tests of variance</p></li>
-<li><p>F-statistic: comparing two sample variances</p></li>
-<li><p>Binomial distribution and its normal approximation</p></li>
-</ul>
-</li>
-<li><p><strong>Non-parametric tests</strong></p>
-<ul>
-<li><p>Signs test (Wilcoxon test)</p></li>
-<li><p>Runs test (Wald–Wolfowitz test)</p></li>
-</ul>
-</li>
+<li><p><strong>The origin of statistics: why the bell curve?</strong></p></li>
+<li><p><strong>Mean, variance and higher moments</strong></p></li>
+<li><p><strong>Basic probabilities; unions; intersections; conditional probabilities; Bayes theorem</strong></p></li>
+<li><p><strong>Tying it together: Moments, PDFs, and Bayes’ Theorem</strong></p></li>
+<li><p><strong>Statistical significance testing</strong></p></li>
+<li><p><strong>Hypothesis testing</strong></p></li>
+<li><p><strong>Monte Carlo and resampling techniques</strong></p></li>
+<li><p><strong>Compositing</strong></p></li>
+<li><p><strong>Other common distributions</strong></p></li>
+<li><p><strong>Non-parametric tests</strong></p></li>
 </ul>
 </section>
 </section>
@@ -532,6 +475,7 @@
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#how-to-read-these-notes">How to read these notes</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#course-outline">Course Outline</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#part-i-foundations-of-statistics">Part I: Foundations of Statistics</a></li>
 </ul>
