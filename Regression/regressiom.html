@@ -657,15 +657,21 @@ r^2 &amp;= \frac{\text{explained variance}}{\text{total variance}}
 <div class="math notranslate nohighlight">
 \[\eta(t) = \alpha\,\eta(t-\Delta t) + \epsilon(t), \qquad \epsilon \sim \mathcal{N}(0,\,\sigma_\epsilon^2)\]</div>
 <p>The procedure for constructing confidence intervals is then:</p>
-<ol class="arabic simple">
+<ol class="arabic">
 <li><p><strong>Fit</strong> <span class="math notranslate nohighlight">\(f(t)\)</span> by polynomial regression of order <span class="math notranslate nohighlight">\(p\)</span> (e.g., <span class="math notranslate nohighlight">\(p = 2\)</span>).</p></li>
 <li><p><strong>Estimate</strong> the lag-1 autocorrelation <span class="math notranslate nohighlight">\(\alpha = \rho(\Delta t)\)</span> of the residuals <span class="math notranslate nohighlight">\(\eta(t)\)</span>.</p></li>
-<li><p><strong>Compute</strong> the effective sample size using the Leith formula:
-$<span class="math notranslate nohighlight">\(N^* \approx N\frac{1-\alpha}{1+\alpha}\)</span>$</p></li>
-<li><p><strong>Compute</strong> the standard deviation of the residuals <span class="math notranslate nohighlight">\(\sigma_\eta\)</span> and the standard error of the fit:
-$<span class="math notranslate nohighlight">\(\sigma_f = \frac{\sigma_\eta}{\sqrt{N^*}}\)</span>$</p></li>
-<li><p><strong>Construct</strong> the pointwise confidence interval:
-$<span class="math notranslate nohighlight">\(\text{CI}(t) = f(t) \pm t_{N^*-p,\,\alpha/2}\cdot\sigma_f\)</span>$</p></li>
+<li><p><strong>Compute</strong> the effective sample size using the Leith formula:</p>
+<div class="math notranslate nohighlight">
+\[N^* \approx N\frac{1-\alpha}{1+\alpha}\]</div>
+</li>
+<li><p><strong>Compute</strong> the standard deviation of the residuals <span class="math notranslate nohighlight">\(\sigma_\eta\)</span> and the standard error of the fit:</p>
+<div class="math notranslate nohighlight">
+\[\sigma_f = \frac{\sigma_\eta}{\sqrt{N^*}}\]</div>
+</li>
+<li><p><strong>Construct</strong> the pointwise confidence interval:</p>
+<div class="math notranslate nohighlight">
+\[\text{CI}(t) = f(t) \pm t_{N^*-p,\,\alpha/2}\cdot\sigma_f\]</div>
+</li>
 </ol>
 <p>where <span class="math notranslate nohighlight">\(t_{N^*-p,\,\alpha/2}\)</span> is the t-critical value with <span class="math notranslate nohighlight">\(N^*-p\)</span> degrees of freedom (we lose <span class="math notranslate nohighlight">\(p\)</span> degrees of freedom for the <span class="math notranslate nohighlight">\(p\)</span> fitted polynomial coefficients).</p>
 <div class="tip admonition">
@@ -868,12 +874,11 @@ Z_2 &amp;= \frac{1}{2}\ln\left(\frac{1+r_2}{1-r_2}\right)
 <p>For climate downscaling, <span class="math notranslate nohighlight">\(\mathbf{x}_0\)</span> is a high-resolution field (e.g., 1 km precipitation) and the U-Net is <strong>conditioned</strong> on a low-resolution field <span class="math notranslate nohighlight">\(\mathbf{y}\)</span> (e.g., 25 km GCM output). The model learns the conditional distribution <span class="math notranslate nohighlight">\(p(\mathbf{x}_0 \mid \mathbf{y})\)</span>, allowing it to generate statistically realistic high-resolution fields consistent with the coarse model output.</p>
 <p><strong>Why conditioning is necessary — and how it maps onto <span class="math notranslate nohighlight">\(r^2\)</span></strong></p>
 <p>A natural objection: if the forward process destroys everything (<span class="math notranslate nohighlight">\(\mathbf{x}_T\)</span> is pure noise regardless of <span class="math notranslate nohighlight">\(\mathbf{x}_0\)</span>), how can the reverse process know what is signal and what is noise? The answer has two parts, and it is worth keeping them separate:</p>
-<ol class="arabic simple">
-<li><p><strong>The learned prior tells the model what data looks like.</strong> The trained network is (up to scaling) an estimate of the score of the noisy data distribution, <span class="math notranslate nohighlight">\(\boldsymbol{\epsilon}_\theta(\mathbf{x}_t,t) \approx -\sqrt{1-\bar\alpha_t}\,\nabla_{\mathbf{x}}\log p_t(\mathbf{x}_t)\)</span>, so that by Tweedie’s formula
-$<span class="math notranslate nohighlight">\(\mathbb{E}[\mathbf{x}_0\mid\mathbf{x}_t] = \frac{\mathbf{x}_t - \sqrt{1-\bar{\alpha}_t}\,\boldsymbol{\epsilon}_\theta(\mathbf{x}_t,t)}{\sqrt{\bar{\alpha}_t}}\)</span><span class="math notranslate nohighlight">\(
-&quot;Signal&quot; is defined as *the direction of the training-data manifold*. This is why **unconditional** diffusion models work at all — no conditioning input is required to generate a realistic field. (The network is always conditioned on \)</span>t$, but that only tells it the current noise level.)</p></li>
-<li><p><strong>The conditioning tells the model which realization.</strong> An unconditional model produces <em>a</em> plausible field, never <em>the</em> field behind a particular observation — that information was destroyed. To reconstruct, we must sample <span class="math notranslate nohighlight">\(p(\mathbf{x}_0\mid\mathbf{y})\)</span> rather than <span class="math notranslate nohighlight">\(p(\mathbf{x}_0)\)</span>.</p></li>
-</ol>
+<p><strong>1. The learned prior tells the model what data looks like.</strong> The trained network is (up to scaling) an estimate of the score of the noisy data distribution, <span class="math notranslate nohighlight">\(\boldsymbol{\epsilon}_\theta(\mathbf{x}_t,t) \approx -\sqrt{1-\bar\alpha_t}\,\nabla_{\mathbf{x}}\log p_t(\mathbf{x}_t)\)</span>, so that by Tweedie’s formula</p>
+<div class="math notranslate nohighlight">
+\[\mathbb{E}[\mathbf{x}_0\mid\mathbf{x}_t] = \frac{\mathbf{x}_t - \sqrt{1-\bar{\alpha}_t}\,\boldsymbol{\epsilon}_\theta(\mathbf{x}_t,t)}{\sqrt{\bar{\alpha}_t}}\]</div>
+<p>“Signal” is defined as <em>the direction of the training-data manifold</em>. This is why <strong>unconditional</strong> diffusion models work at all — no conditioning input is required to generate a realistic field. (The network is always conditioned on <span class="math notranslate nohighlight">\(t\)</span>, but that only tells it the current noise level.)</p>
+<p><strong>2. The conditioning tells the model which realization.</strong> An unconditional model produces <em>a</em> plausible field, never <em>the</em> field behind a particular observation — that information was destroyed. To reconstruct, we must sample <span class="math notranslate nohighlight">\(p(\mathbf{x}_0\mid\mathbf{y})\)</span> rather than <span class="math notranslate nohighlight">\(p(\mathbf{x}_0)\)</span>.</p>
 <p>The connection to everything above is exact. Ordinary least squares returns <span class="math notranslate nohighlight">\(\mathbb{E}[y\mid x]\)</span> — the <em>conditional mean</em>, a single best estimate whose variance is only <span class="math notranslate nohighlight">\(r^2\sigma_y^2\)</span>. The residual <span class="math notranslate nohighlight">\((1-r^2)\sigma_y^2\)</span> is discarded, which is precisely why regression-based downscaling produces fields that are too smooth. A conditional diffusion model learns the <em>full</em> conditional distribution, so it restores the <span class="math notranslate nohighlight">\((1-r^2)\)</span> fraction — not as white noise, but with the spatial and temporal structure learned from data:</p>
 <div class="pst-scrollable-table-container"><table class="table">
 <thead>

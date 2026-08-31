@@ -247,10 +247,15 @@ The procedure for constructing confidence intervals is then:
 1. **Fit** $f(t)$ by polynomial regression of order $p$ (e.g., $p = 2$).
 2. **Estimate** the lag-1 autocorrelation $\alpha = \rho(\Delta t)$ of the residuals $\eta(t)$.
 3. **Compute** the effective sample size using the Leith formula:
+
    $$N^* \approx N\frac{1-\alpha}{1+\alpha}$$
+
 4. **Compute** the standard deviation of the residuals $\sigma_\eta$ and the standard error of the fit:
+
    $$\sigma_f = \frac{\sigma_\eta}{\sqrt{N^*}}$$
+
 5. **Construct** the pointwise confidence interval:
+
    $$\text{CI}(t) = f(t) \pm t_{N^*-p,\,\alpha/2}\cdot\sigma_f$$
 
 where $t_{N^*-p,\,\alpha/2}$ is the t-critical value with $N^*-p$ degrees of freedom (we lose $p$ degrees of freedom for the $p$ fitted polynomial coefficients).
@@ -503,10 +508,13 @@ For climate downscaling, $\mathbf{x}_0$ is a high-resolution field (e.g., 1 km p
 
 A natural objection: if the forward process destroys everything ($\mathbf{x}_T$ is pure noise regardless of $\mathbf{x}_0$), how can the reverse process know what is signal and what is noise? The answer has two parts, and it is worth keeping them separate:
 
-1. **The learned prior tells the model what data looks like.** The trained network is (up to scaling) an estimate of the score of the noisy data distribution, $\boldsymbol{\epsilon}_\theta(\mathbf{x}_t,t) \approx -\sqrt{1-\bar\alpha_t}\,\nabla_{\mathbf{x}}\log p_t(\mathbf{x}_t)$, so that by Tweedie's formula
-   $$\mathbb{E}[\mathbf{x}_0\mid\mathbf{x}_t] = \frac{\mathbf{x}_t - \sqrt{1-\bar{\alpha}_t}\,\boldsymbol{\epsilon}_\theta(\mathbf{x}_t,t)}{\sqrt{\bar{\alpha}_t}}$$
-   "Signal" is defined as *the direction of the training-data manifold*. This is why **unconditional** diffusion models work at all — no conditioning input is required to generate a realistic field. (The network is always conditioned on $t$, but that only tells it the current noise level.)
-2. **The conditioning tells the model which realization.** An unconditional model produces *a* plausible field, never *the* field behind a particular observation — that information was destroyed. To reconstruct, we must sample $p(\mathbf{x}_0\mid\mathbf{y})$ rather than $p(\mathbf{x}_0)$.
+**1. The learned prior tells the model what data looks like.** The trained network is (up to scaling) an estimate of the score of the noisy data distribution, $\boldsymbol{\epsilon}_\theta(\mathbf{x}_t,t) \approx -\sqrt{1-\bar\alpha_t}\,\nabla_{\mathbf{x}}\log p_t(\mathbf{x}_t)$, so that by Tweedie's formula
+
+$$\mathbb{E}[\mathbf{x}_0\mid\mathbf{x}_t] = \frac{\mathbf{x}_t - \sqrt{1-\bar{\alpha}_t}\,\boldsymbol{\epsilon}_\theta(\mathbf{x}_t,t)}{\sqrt{\bar{\alpha}_t}}$$
+
+"Signal" is defined as *the direction of the training-data manifold*. This is why **unconditional** diffusion models work at all — no conditioning input is required to generate a realistic field. (The network is always conditioned on $t$, but that only tells it the current noise level.)
+
+**2. The conditioning tells the model which realization.** An unconditional model produces *a* plausible field, never *the* field behind a particular observation — that information was destroyed. To reconstruct, we must sample $p(\mathbf{x}_0\mid\mathbf{y})$ rather than $p(\mathbf{x}_0)$.
 
 The connection to everything above is exact. Ordinary least squares returns $\mathbb{E}[y\mid x]$ — the *conditional mean*, a single best estimate whose variance is only $r^2\sigma_y^2$. The residual $(1-r^2)\sigma_y^2$ is discarded, which is precisely why regression-based downscaling produces fields that are too smooth. A conditional diffusion model learns the *full* conditional distribution, so it restores the $(1-r^2)$ fraction — not as white noise, but with the spatial and temporal structure learned from data:
 
