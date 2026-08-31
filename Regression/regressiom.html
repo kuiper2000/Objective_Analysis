@@ -390,6 +390,7 @@
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#autocorrelation">Autocorrelation</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-first-order-autoregressive-model-ar1-red-noise">The first-order autoregressive model (AR1 / red noise)</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#white-noise">White noise</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#effective-sample-size-n">Effective sample size <span class="math notranslate nohighlight">\(N^*\)</span></a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#multiple-regression-multi-linear-regression">Multiple Regression (Multi-linear Regression)</a><ul class="nav section-nav flex-column">
@@ -920,6 +921,29 @@ Z_2 &amp;= \frac{1}{2}\ln\left(\frac{1+r_2}{1-r_2}\right)
 </figure>
 <p>Note that the correlation with the truth <em>drops</em> from 0.86 to 0.66 when the residual variance is added back. The conditional sample is a <strong>worse point estimate</strong> than the regression mean but a <strong>better field</strong>, because it has the correct spectrum. This is the same bias–variance trade that motivates using <span class="math notranslate nohighlight">\(\hat y\)</span> for prediction but <span class="math notranslate nohighlight">\(\hat y + \text{residual}\)</span> for anything requiring realistic variability (extremes, thresholds, spatial gradients).</p>
 </div>
+<p><strong>Where does the “noisy data distribution” come from?</strong></p>
+<p>The score above is the score of <span class="math notranslate nohighlight">\(p_t\)</span>, “the distribution of the data after <span class="math notranslate nohighlight">\(t\)</span> steps of noise have been added.” A fair question is: who decides what that distribution is? The answer is that <strong>nobody does — it is not chosen, it is a consequence.</strong> You only ever pick two things, and <span class="math notranslate nohighlight">\(p_t\)</span> follows automatically:</p>
+<ol class="arabic simple">
+<li><p>your <strong>data</strong> (the training archive: all the precipitation fields you have), and</p></li>
+<li><p>your <strong>noise schedule</strong> (how much noise to add at each step).</p></li>
+</ol>
+<p>Once those two are fixed, the distribution at step <span class="math notranslate nohighlight">\(t\)</span> is completely determined: take every field in your archive, shrink it slightly, add the prescribed amount of Gaussian noise, and look at the spread of everything you get. Formally, that “take every field and blur it” operation is an integral:</p>
+<div class="math notranslate nohighlight">
+\[p_t(\mathbf{x}_t) = \int p_0(\mathbf{x}_0)\, q(\mathbf{x}_t\mid\mathbf{x}_0)\, d\mathbf{x}_0, \qquad q(\mathbf{x}_t\mid\mathbf{x}_0) = \mathcal{N}\!\left(\sqrt{\bar\alpha_t}\,\mathbf{x}_0,\ (1-\bar\alpha_t)\mathbf{I}\right)\]</div>
+<p>So <span class="math notranslate nohighlight">\(p_t\)</span> is simply a <strong>blurred copy of the real data distribution</strong>, and <span class="math notranslate nohighlight">\(t\)</span> controls how blurred. At <span class="math notranslate nohighlight">\(t=0\)</span> there is no blur and <span class="math notranslate nohighlight">\(p_t\)</span> is the data itself. At <span class="math notranslate nohighlight">\(t=T\)</span> the blur is so heavy that every trace of the original is gone and <span class="math notranslate nohighlight">\(p_t\)</span> is plain <span class="math notranslate nohighlight">\(\mathcal{N}(\mathbf{0},\mathbf{I})\)</span>. Everything in between is a partially recognisable version of the data — like a photograph going progressively out of focus.</p>
+<p><strong>It is a kernel density estimate.</strong> This is the same object from earlier in your statistics training. With a finite archive of <span class="math notranslate nohighlight">\(n\)</span> fields, the integral is just a sum of Gaussian bumps centred on the (shrunken) training samples:</p>
+<div class="math notranslate nohighlight">
+\[p_t(\mathbf{x}_t) = \frac{1}{n}\sum_{i=1}^{n}\mathcal{N}\!\left(\mathbf{x}_t;\ \sqrt{\bar\alpha_t}\,\mathbf{x}_0^{(i)},\ (1-\bar\alpha_t)\mathbf{I}\right)\]</div>
+<p>That is exactly a Gaussian KDE with bandwidth <span class="math notranslate nohighlight">\(h_t = \sqrt{1-\bar\alpha_t}\)</span>. <strong>The diffusion timestep is a bandwidth knob.</strong> Sampling starts from an enormously over-smoothed density — where the picture is so blurry that the only information left is roughly where the data lives — and sharpens the bandwidth step by step. This is why the reverse process is done gradually rather than in one jump: each step only has to solve an easy, slightly-less-blurry problem.</p>
+<p><strong>You never actually have to know <span class="math notranslate nohighlight">\(p_t\)</span>.</strong> This is the part that makes diffusion models practical. That integral cannot be computed for real data — but we do not need the distribution itself, only its score (which direction makes the data look more realistic). And that can be obtained by pure supervised regression:</p>
+<blockquote>
+<div><p>Take a training field. Pick a random <span class="math notranslate nohighlight">\(t\)</span>. Add noise <em>that you generated yourself, so you know exactly what it was</em>. Ask the network to guess the noise you added.</p>
+</div></blockquote>
+<p>Because you generated the noise, you have the right answer for free, and the ordinary least-squares fit to this task provably converges to the score of <span class="math notranslate nohighlight">\(p_t\)</span>. The intractable integral never appears anywhere in the training code. That — not the noise-adding, which is trivial — is the actual engineering insight behind diffusion models.</p>
+<p>In <code class="docutils literal notranslate"><span class="pre">conditional_diffusion_demo.py</span></code> the data distribution is deliberately chosen to be AR1 red noise, i.e. a Gaussian. A Gaussian blurred by a Gaussian is still Gaussian, so there the integral <em>does</em> close, giving <span class="math notranslate nohighlight">\(p_t = \mathcal{N}(\mathbf{0},\ \bar\alpha_t\Sigma + (1-\bar\alpha_t)\mathbf{I})\)</span>. That is why the demo needs no training at all — it can write down the exact answer that a real network would have to learn.</p>
+<div class="warning admonition">
+<p class="admonition-title">A caveat that follows from the KDE view</p>
+<p>If the network learned the score of <span class="math notranslate nohighlight">\(p_t\)</span> <em>perfectly</em>, it would reproduce the training fields exactly and generate nothing new — because the score of a KDE points back at the samples used to build it. Real diffusion models generalise only because a finite network cannot fit that target exactly. Perfect optimisation of the training objective would be memorisation; useful generation is a controlled failure to reach it. This is worth remembering before trusting a generative downscaling product to produce genuinely unseen extremes.</p>
 </div>
 <p><strong>Summary of the AR1–diffusion connection</strong></p>
 <div class="pst-scrollable-table-container"><table class="table">
@@ -954,8 +978,10 @@ Z_2 &amp;= \frac{1}{2}\ln\left(\frac{1+r_2}{1-r_2}\right)
 </table>
 </div>
 <p>The key innovation of diffusion models is not the forward AR(1) process — that is just Gaussian noise addition — but the learned <em>reverse</em> process, which turns pure noise back into structured data. The statistical machinery of AR1 you learned here is the exact mathematical foundation.</p>
-<div class="docutils">
-<h3 class="rubric" id="effective-sample-size-n">Effective sample size <span class="math notranslate nohighlight">\(N^*\)</span></h3>
+</div>
+</section>
+<section id="effective-sample-size-n">
+<h3>Effective sample size <span class="math notranslate nohighlight">\(N^*\)</span><a class="headerlink" href="#effective-sample-size-n" title="Link to this heading">#</a></h3>
 <p>Persistence in a data set leads to <strong>overestimation of the sample size</strong>, because each data point is not independent of its neighbors. If persistence is ignored, the standard error of the mean is underestimated and the t-statistic is inflated.</p>
 <p>The solution is to introduce an <strong>effective sample size</strong> <span class="math notranslate nohighlight">\(N^* \leq N\)</span> and substitute it for <span class="math notranslate nohighlight">\(N\)</span> in formulas.</p>
 <p>For a first-order AR process, <span class="math notranslate nohighlight">\(N^*\)</span> can be estimated with the <strong>Bretherton/Wilks approximation</strong> (Wilks, p. 127):</p>
@@ -1000,7 +1026,6 @@ Z_2 &amp;= \frac{1}{2}\ln\left(\frac{1+r_2}{1-r_2}\right)
 <div class="tip admonition">
 <p class="admonition-title">Figure / in-class demonstration</p>
 <p><em>Figure Example: <code class="docutils literal notranslate"><span class="pre">effective_sample_size.py</span></code></em> — plot of <span class="math notranslate nohighlight">\(N^*/N\)</span> vs <span class="math notranslate nohighlight">\(\rho(\Delta t)\)</span> comparing the Leith and Bretherton approximations.</p>
-</div>
 </div>
 </section>
 </section>
@@ -1181,6 +1206,7 @@ Z_2 &amp;= \frac{1}{2}\ln\left(\frac{1+r_2}{1-r_2}\right)
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#autocorrelation">Autocorrelation</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-first-order-autoregressive-model-ar1-red-noise">The first-order autoregressive model (AR1 / red noise)</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#white-noise">White noise</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#effective-sample-size-n">Effective sample size <span class="math notranslate nohighlight">\(N^*\)</span></a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#multiple-regression-multi-linear-regression">Multiple Regression (Multi-linear Regression)</a><ul class="nav section-nav flex-column">

@@ -471,7 +471,7 @@ White noise is the special case of AR1 with $a = 0$ (i.e. $\rho(\tau > 0) = 0$).
 *Figure Example: `correlation_with_memory_examples.py`*
 :::
 
-:::{admonition} Side note: diffusion models in machine learning and their connection to AR processes
+::::{admonition} Side note: diffusion models in machine learning and their connection to AR processes
 :class: note
 
 **Diffusion models** (also called Denoising Diffusion Probabilistic Models, DDPMs) have become the dominant generative model architecture in machine learning — used for image synthesis, weather downscaling, and bias correction. At their core, they are built on a process that is mathematically identical to AR(1).
@@ -539,6 +539,38 @@ Unconditional vs. regression vs. conditional reconstruction of an AR1 field from
 Note that the correlation with the truth *drops* from 0.86 to 0.66 when the residual variance is added back. The conditional sample is a **worse point estimate** than the regression mean but a **better field**, because it has the correct spectrum. This is the same bias–variance trade that motivates using $\hat y$ for prediction but $\hat y + \text{residual}$ for anything requiring realistic variability (extremes, thresholds, spatial gradients).
 :::
 
+**Where does the "noisy data distribution" come from?**
+
+The score above is the score of $p_t$, "the distribution of the data after $t$ steps of noise have been added." A fair question is: who decides what that distribution is? The answer is that **nobody does — it is not chosen, it is a consequence.** You only ever pick two things, and $p_t$ follows automatically:
+
+1. your **data** (the training archive: all the precipitation fields you have), and
+2. your **noise schedule** (how much noise to add at each step).
+
+Once those two are fixed, the distribution at step $t$ is completely determined: take every field in your archive, shrink it slightly, add the prescribed amount of Gaussian noise, and look at the spread of everything you get. Formally, that "take every field and blur it" operation is an integral:
+
+$$p_t(\mathbf{x}_t) = \int p_0(\mathbf{x}_0)\, q(\mathbf{x}_t\mid\mathbf{x}_0)\, d\mathbf{x}_0, \qquad q(\mathbf{x}_t\mid\mathbf{x}_0) = \mathcal{N}\!\left(\sqrt{\bar\alpha_t}\,\mathbf{x}_0,\ (1-\bar\alpha_t)\mathbf{I}\right)$$
+
+So $p_t$ is simply a **blurred copy of the real data distribution**, and $t$ controls how blurred. At $t=0$ there is no blur and $p_t$ is the data itself. At $t=T$ the blur is so heavy that every trace of the original is gone and $p_t$ is plain $\mathcal{N}(\mathbf{0},\mathbf{I})$. Everything in between is a partially recognisable version of the data — like a photograph going progressively out of focus.
+
+**It is a kernel density estimate.** This is the same object from earlier in your statistics training. With a finite archive of $n$ fields, the integral is just a sum of Gaussian bumps centred on the (shrunken) training samples:
+
+$$p_t(\mathbf{x}_t) = \frac{1}{n}\sum_{i=1}^{n}\mathcal{N}\!\left(\mathbf{x}_t;\ \sqrt{\bar\alpha_t}\,\mathbf{x}_0^{(i)},\ (1-\bar\alpha_t)\mathbf{I}\right)$$
+
+That is exactly a Gaussian KDE with bandwidth $h_t = \sqrt{1-\bar\alpha_t}$. **The diffusion timestep is a bandwidth knob.** Sampling starts from an enormously over-smoothed density — where the picture is so blurry that the only information left is roughly where the data lives — and sharpens the bandwidth step by step. This is why the reverse process is done gradually rather than in one jump: each step only has to solve an easy, slightly-less-blurry problem.
+
+**You never actually have to know $p_t$.** This is the part that makes diffusion models practical. That integral cannot be computed for real data — but we do not need the distribution itself, only its score (which direction makes the data look more realistic). And that can be obtained by pure supervised regression:
+
+> Take a training field. Pick a random $t$. Add noise *that you generated yourself, so you know exactly what it was*. Ask the network to guess the noise you added.
+
+Because you generated the noise, you have the right answer for free, and the ordinary least-squares fit to this task provably converges to the score of $p_t$. The intractable integral never appears anywhere in the training code. That — not the noise-adding, which is trivial — is the actual engineering insight behind diffusion models.
+
+In `conditional_diffusion_demo.py` the data distribution is deliberately chosen to be AR1 red noise, i.e. a Gaussian. A Gaussian blurred by a Gaussian is still Gaussian, so there the integral *does* close, giving $p_t = \mathcal{N}(\mathbf{0},\ \bar\alpha_t\Sigma + (1-\bar\alpha_t)\mathbf{I})$. That is why the demo needs no training at all — it can write down the exact answer that a real network would have to learn.
+
+:::{admonition} A caveat that follows from the KDE view
+:class: warning
+If the network learned the score of $p_t$ *perfectly*, it would reproduce the training fields exactly and generate nothing new — because the score of a KDE points back at the samples used to build it. Real diffusion models generalise only because a finite network cannot fit that target exactly. Perfect optimisation of the training objective would be memorisation; useful generation is a controlled failure to reach it. This is worth remembering before trusting a generative downscaling product to produce genuinely unseen extremes.
+:::
+
 **Summary of the AR1–diffusion connection**
 
 | AR(1) concept | Diffusion model equivalent |
@@ -552,7 +584,7 @@ Note that the correlation with the truth *drops* from 0.86 to 0.66 when the resi
 | Residual $y_{\text{residual}}$ (the $1-r^2$ fraction) | Stochastic part of the reverse process |
 
 The key innovation of diffusion models is not the forward AR(1) process — that is just Gaussian noise addition — but the learned *reverse* process, which turns pure noise back into structured data. The statistical machinery of AR1 you learned here is the exact mathematical foundation.
-:::
+::::
 
 ### Effective sample size $N^*$
 
