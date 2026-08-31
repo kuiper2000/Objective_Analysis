@@ -370,6 +370,13 @@
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#general-comments-on-linear-regression">General comments on linear regression</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#orthogonal-least-squares-regression">Orthogonal Least Squares Regression</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#filtering-with-linear-regression">Filtering with linear regression</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#signal-to-noise-ratio-and-nonlinear-trend-detection">Signal-to-Noise Ratio and Nonlinear Trend Detection</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#signal-and-noise-in-the-regression-framework">Signal and noise in the regression framework</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#testing-whether-a-linear-trend-is-significant">Testing whether a linear trend is significant</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#why-a-linear-fit-can-fail-the-nonlinear-forced-response-problem">Why a linear fit can fail: the nonlinear forced response problem</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#confidence-intervals-for-a-nonlinear-trend-with-ar1-noise">Confidence intervals for a nonlinear trend with AR1 noise</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#theory-of-correlation-pearson-s-correlation">Theory of Correlation (Pearson’s Correlation)</a><ul class="nav section-nav flex-column">
@@ -577,6 +584,112 @@ r^2 &amp;= \frac{\text{explained variance}}{\text{total variance}}
 <li><p>the fraction of variance of <span class="math notranslate nohighlight">\(y(t)\)</span> explained by <span class="math notranslate nohighlight">\(x(t)\)</span> is <span class="math notranslate nohighlight">\(r^2\)</span></p></li>
 <li><p>the fraction of variance of <span class="math notranslate nohighlight">\(y(t)\)</span> not explained by <span class="math notranslate nohighlight">\(x(t)\)</span> is <span class="math notranslate nohighlight">\(1 - r^2\)</span></p></li>
 </ul>
+</section>
+<section id="signal-to-noise-ratio-and-nonlinear-trend-detection">
+<h3>Signal-to-Noise Ratio and Nonlinear Trend Detection<a class="headerlink" href="#signal-to-noise-ratio-and-nonlinear-trend-detection" title="Link to this heading">#</a></h3>
+<section id="signal-and-noise-in-the-regression-framework">
+<h4>Signal and noise in the regression framework<a class="headerlink" href="#signal-and-noise-in-the-regression-framework" title="Link to this heading">#</a></h4>
+<p>Linear regression provides a natural decomposition of a time series into a <strong>signal</strong> (the fitted trend) and <strong>noise</strong> (the residuals):</p>
+<div class="math notranslate nohighlight">
+\[y(t) = \underbrace{f(t)}_{\text{signal}} + \underbrace{\eta(t)}_{\text{noise}}\]</div>
+<p>For a linear trend <span class="math notranslate nohighlight">\(f(t) = a_1 t + a_0\)</span>, the signal and noise variances are:</p>
+<div class="math notranslate nohighlight">
+\[\sigma_{\text{signal}}^2 = \frac{1}{N}\sum_{i=1}^{N}(\hat{y}_i - \overline{y})^2 = r^2\,\sigma_y^2, \qquad \sigma_{\text{noise}}^2 = (1-r^2)\,\sigma_y^2\]</div>
+<p>so the <strong>signal-to-noise ratio</strong> is:</p>
+<div class="math notranslate nohighlight">
+\[\boxed{\text{SNR} = \frac{\sigma_{\text{signal}}^2}{\sigma_{\text{noise}}^2} = \frac{r^2}{1-r^2}}\]</div>
+<p>This directly links the familiar correlation coefficient <span class="math notranslate nohighlight">\(r\)</span> to the detectability of a trend:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p><span class="math notranslate nohighlight">\(r\)</span></p></th>
+<th class="head"><p>SNR</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>0.99</p></td>
+<td><p>49</p></td>
+</tr>
+<tr class="row-odd"><td><p>0.70</p></td>
+<td><p>0.96</p></td>
+</tr>
+<tr class="row-even"><td><p>0.50</p></td>
+<td><p>0.33</p></td>
+</tr>
+<tr class="row-odd"><td><p>0.25</p></td>
+<td><p>0.07</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>When SNR <span class="math notranslate nohighlight">\(\gg 1\)</span>, the forced signal dominates and is easy to detect. When SNR <span class="math notranslate nohighlight">\(\ll 1\)</span>, internal variability overwhelms the signal.</p>
+</section>
+<section id="testing-whether-a-linear-trend-is-significant">
+<h4>Testing whether a linear trend is significant<a class="headerlink" href="#testing-whether-a-linear-trend-is-significant" title="Link to this heading">#</a></h4>
+<p>The significance of the slope <span class="math notranslate nohighlight">\(a_1\)</span> is a direct application of our earlier t-test. Under <span class="math notranslate nohighlight">\(H_0: a_1 = 0\)</span>, the test statistic is:</p>
+<div class="math notranslate nohighlight">
+\[t = \frac{a_1}{\sigma_{a_1}} \sim t_{N^*-2}\]</div>
+<p>where <span class="math notranslate nohighlight">\(\sigma_{a_1}\)</span> is the standard error of the slope (see above) and <strong><span class="math notranslate nohighlight">\(N^*\)</span> is the effective sample size</strong> (Leith formula), not <span class="math notranslate nohighlight">\(N\)</span>, to account for autocorrelation in the residuals. This is a common mistake — if the residuals are red noise with lag-1 autocorrelation <span class="math notranslate nohighlight">\(\alpha\)</span>, using <span class="math notranslate nohighlight">\(N\)</span> instead of <span class="math notranslate nohighlight">\(N^*\)</span> inflates the t-statistic and leads to spurious detections.</p>
+</section>
+<section id="why-a-linear-fit-can-fail-the-nonlinear-forced-response-problem">
+<h4>Why a linear fit can fail: the nonlinear forced response problem<a class="headerlink" href="#why-a-linear-fit-can-fail-the-nonlinear-forced-response-problem" title="Link to this heading">#</a></h4>
+<p>In climate science, the forced response to greenhouse warming is often <strong>not linear in time</strong> — it can accelerate or decelerate depending on emission scenarios. If we force a linear fit onto a nonlinear trend:</p>
+<ul class="simple">
+<li><p>part of the signal leaks into the residuals</p></li>
+<li><p><span class="math notranslate nohighlight">\(\sigma_{\text{noise}}^2\)</span> is overestimated</p></li>
+<li><p>SNR is underestimated, making detection harder than it really is</p></li>
+</ul>
+<p>The remedy is to replace the linear model with a <strong>polynomial regression</strong>:</p>
+<div class="math notranslate nohighlight">
+\[f(t) = a_0 + a_1 t + a_2 t^2 + \dots + a_p t^p\]</div>
+<p>A 2nd-order (quadratic) polynomial is often sufficient for capturing a time-varying forced trend. This is just multiple regression with predictors <span class="math notranslate nohighlight">\(t, t^2, \dots, t^p\)</span> — the normal equations still apply:</p>
+<div class="math notranslate nohighlight">
+\[\mathbf{a} = \mathbf{C}_{xx}^{-1}\,\mathbf{C}_{xy}\]</div>
+<p>where the predictor matrix now contains powers of time.</p>
+<div class="note admonition">
+<p class="admonition-title">Example / deeper dive</p>
+<p><strong>Why does a non-linear trend matter for SNR?</strong></p>
+<p>Suppose the true forced response is <span class="math notranslate nohighlight">\(f(t) = 0.01\,t^2\)</span> (accelerating trend), but we fit a linear model. The linear fit will explain only part of the variance in <span class="math notranslate nohighlight">\(f(t)\)</span>, absorbing the remainder into the residuals. This inflates <span class="math notranslate nohighlight">\(\sigma_\eta^2\)</span>, suppresses SNR, and causes us to underestimate our confidence in the forced response.</p>
+<p>A quadratic fit, by contrast, captures the curvature exactly, so the residuals contain only internal variability — giving a faithful estimate of noise and a correct SNR.</p>
+</div>
+</section>
+<section id="confidence-intervals-for-a-nonlinear-trend-with-ar1-noise">
+<h4>Confidence intervals for a nonlinear trend with AR1 noise<a class="headerlink" href="#confidence-intervals-for-a-nonlinear-trend-with-ar1-noise" title="Link to this heading">#</a></h4>
+<p>Once the polynomial trend <span class="math notranslate nohighlight">\(f(t)\)</span> has been removed, the residuals <span class="math notranslate nohighlight">\(\eta(t) = y(t) - f(t)\)</span> are typically modeled as an AR1 process:</p>
+<div class="math notranslate nohighlight">
+\[\eta(t) = \alpha\,\eta(t-\Delta t) + \epsilon(t), \qquad \epsilon \sim \mathcal{N}(0,\,\sigma_\epsilon^2)\]</div>
+<p>The procedure for constructing confidence intervals is then:</p>
+<ol class="arabic simple">
+<li><p><strong>Fit</strong> <span class="math notranslate nohighlight">\(f(t)\)</span> by polynomial regression of order <span class="math notranslate nohighlight">\(p\)</span> (e.g., <span class="math notranslate nohighlight">\(p = 2\)</span>).</p></li>
+<li><p><strong>Estimate</strong> the lag-1 autocorrelation <span class="math notranslate nohighlight">\(\alpha = \rho(\Delta t)\)</span> of the residuals <span class="math notranslate nohighlight">\(\eta(t)\)</span>.</p></li>
+<li><p><strong>Compute</strong> the effective sample size using the Leith formula:
+$<span class="math notranslate nohighlight">\(N^* \approx N\frac{1-\alpha}{1+\alpha}\)</span>$</p></li>
+<li><p><strong>Compute</strong> the standard deviation of the residuals <span class="math notranslate nohighlight">\(\sigma_\eta\)</span> and the standard error of the fit:
+$<span class="math notranslate nohighlight">\(\sigma_f = \frac{\sigma_\eta}{\sqrt{N^*}}\)</span>$</p></li>
+<li><p><strong>Construct</strong> the pointwise confidence interval:
+$<span class="math notranslate nohighlight">\(\text{CI}(t) = f(t) \pm t_{N^*-p,\,\alpha/2}\cdot\sigma_f\)</span>$</p></li>
+</ol>
+<p>where <span class="math notranslate nohighlight">\(t_{N^*-p,\,\alpha/2}\)</span> is the t-critical value with <span class="math notranslate nohighlight">\(N^*-p\)</span> degrees of freedom (we lose <span class="math notranslate nohighlight">\(p\)</span> degrees of freedom for the <span class="math notranslate nohighlight">\(p\)</span> fitted polynomial coefficients).</p>
+<div class="tip admonition">
+<p class="admonition-title">Figure / in-class demonstration</p>
+<p><em>Figure: <code class="docutils literal notranslate"><span class="pre">nonlinear_snr.py</span></code></em> — (left) linear fit with CI using <span class="math notranslate nohighlight">\(N\)</span> (orange) vs. <span class="math notranslate nohighlight">\(N^*\)</span> (blue); (right) quadratic fit with the same CI comparison. Note how the quadratic fit captures the true forced response (green dashed) much better and yields a higher SNR.</p>
+<figure class="align-center" id="id2">
+<a class="reference internal image-reference" href="../_images/nonlinear_snr.png"><img alt="../_images/nonlinear_snr.png" src="../_images/nonlinear_snr.png" style="width: 100%;" />
+</a>
+<figcaption>
+<p><span class="caption-number">Fig. 1 </span><span class="caption-text">Signal-to-noise ratio for linear vs. quadratic trend fits with AR1 noise. Orange shading = naive CI using <span class="math notranslate nohighlight">\(N\)</span>; blue shading = corrected CI using <span class="math notranslate nohighlight">\(N^*\)</span> (Leith formula). The quadratic fit achieves a higher SNR and its CI correctly brackets the true forced response (green dashed).</span><a class="headerlink" href="#id2" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+</div>
+<p>This framework was applied to detecting the forced response of atmospheric rivers under greenhouse warming in <span id="id1"></span>, who showed that a second-order polynomial fit combined with an AR1 noise model can identify the time of emergence of a forced signal even from a single model realization — without needing a large ensemble.</p>
+<div class="note admonition">
+<p class="admonition-title">Example / deeper dive</p>
+<p><strong>Connecting back to the linear case</strong></p>
+<p>For <span class="math notranslate nohighlight">\(p = 1\)</span> (linear trend), the framework above reduces exactly to the standard t-test for the regression slope:</p>
+<div class="math notranslate nohighlight">
+\[t = \frac{a_1}{\sigma_{a_1}}, \qquad \text{with } \nu = N^* - 2\]</div>
+<p>The nonlinear case is simply the natural generalization: fit a richer model for <span class="math notranslate nohighlight">\(f(t)\)</span>, then use the residual AR1 structure to correct the degrees of freedom. The key insight is that <strong>SNR, polynomial fitting, AR1 noise, and effective sample size are all part of one unified regression framework</strong>.</p>
+</div>
+</section>
 </section>
 </section>
 <section id="theory-of-correlation-pearson-s-correlation">
@@ -941,6 +1054,13 @@ Z_2 &amp;= \frac{1}{2}\ln\left(\frac{1+r_2}{1-r_2}\right)
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#general-comments-on-linear-regression">General comments on linear regression</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#orthogonal-least-squares-regression">Orthogonal Least Squares Regression</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#filtering-with-linear-regression">Filtering with linear regression</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#signal-to-noise-ratio-and-nonlinear-trend-detection">Signal-to-Noise Ratio and Nonlinear Trend Detection</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#signal-and-noise-in-the-regression-framework">Signal and noise in the regression framework</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#testing-whether-a-linear-trend-is-significant">Testing whether a linear trend is significant</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#why-a-linear-fit-can-fail-the-nonlinear-forced-response-problem">Why a linear fit can fail: the nonlinear forced response problem</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#confidence-intervals-for-a-nonlinear-trend-with-ar1-noise">Confidence intervals for a nonlinear trend with AR1 noise</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#theory-of-correlation-pearson-s-correlation">Theory of Correlation (Pearson’s Correlation)</a><ul class="nav section-nav flex-column">

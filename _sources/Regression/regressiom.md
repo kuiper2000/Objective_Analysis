@@ -174,6 +174,111 @@ $$y(t)_{\text{residual}} = y(t) - \frac{\overline{x'y'}}{\overline{x'^2}}\cdot x
 - the fraction of variance of $y(t)$ explained by $x(t)$ is $r^2$
 - the fraction of variance of $y(t)$ not explained by $x(t)$ is $1 - r^2$
 
+### Signal-to-Noise Ratio and Nonlinear Trend Detection
+
+#### Signal and noise in the regression framework
+
+Linear regression provides a natural decomposition of a time series into a **signal** (the fitted trend) and **noise** (the residuals):
+
+$$y(t) = \underbrace{f(t)}_{\text{signal}} + \underbrace{\eta(t)}_{\text{noise}}$$
+
+For a linear trend $f(t) = a_1 t + a_0$, the signal and noise variances are:
+
+$$\sigma_{\text{signal}}^2 = \frac{1}{N}\sum_{i=1}^{N}(\hat{y}_i - \overline{y})^2 = r^2\,\sigma_y^2, \qquad \sigma_{\text{noise}}^2 = (1-r^2)\,\sigma_y^2$$
+
+so the **signal-to-noise ratio** is:
+
+$$\boxed{\text{SNR} = \frac{\sigma_{\text{signal}}^2}{\sigma_{\text{noise}}^2} = \frac{r^2}{1-r^2}}$$
+
+This directly links the familiar correlation coefficient $r$ to the detectability of a trend:
+
+| $r$ | SNR |
+|-----|-----|
+| 0.99 | 49 |
+| 0.70 | 0.96 |
+| 0.50 | 0.33 |
+| 0.25 | 0.07 |
+
+When SNR $\gg 1$, the forced signal dominates and is easy to detect. When SNR $\ll 1$, internal variability overwhelms the signal.
+
+#### Testing whether a linear trend is significant
+
+The significance of the slope $a_1$ is a direct application of our earlier t-test. Under $H_0: a_1 = 0$, the test statistic is:
+
+$$t = \frac{a_1}{\sigma_{a_1}} \sim t_{N^*-2}$$
+
+where $\sigma_{a_1}$ is the standard error of the slope (see above) and **$N^*$ is the effective sample size** (Leith formula), not $N$, to account for autocorrelation in the residuals. This is a common mistake — if the residuals are red noise with lag-1 autocorrelation $\alpha$, using $N$ instead of $N^*$ inflates the t-statistic and leads to spurious detections.
+
+#### Why a linear fit can fail: the nonlinear forced response problem
+
+In climate science, the forced response to greenhouse warming is often **not linear in time** — it can accelerate or decelerate depending on emission scenarios. If we force a linear fit onto a nonlinear trend:
+
+- part of the signal leaks into the residuals
+- $\sigma_{\text{noise}}^2$ is overestimated
+- SNR is underestimated, making detection harder than it really is
+
+The remedy is to replace the linear model with a **polynomial regression**:
+
+$$f(t) = a_0 + a_1 t + a_2 t^2 + \dots + a_p t^p$$
+
+A 2nd-order (quadratic) polynomial is often sufficient for capturing a time-varying forced trend. This is just multiple regression with predictors $t, t^2, \dots, t^p$ — the normal equations still apply:
+
+$$\mathbf{a} = \mathbf{C}_{xx}^{-1}\,\mathbf{C}_{xy}$$
+
+where the predictor matrix now contains powers of time.
+
+:::{admonition} Example / deeper dive
+:class: note
+**Why does a non-linear trend matter for SNR?**
+
+Suppose the true forced response is $f(t) = 0.01\,t^2$ (accelerating trend), but we fit a linear model. The linear fit will explain only part of the variance in $f(t)$, absorbing the remainder into the residuals. This inflates $\sigma_\eta^2$, suppresses SNR, and causes us to underestimate our confidence in the forced response.
+
+A quadratic fit, by contrast, captures the curvature exactly, so the residuals contain only internal variability — giving a faithful estimate of noise and a correct SNR.
+:::
+
+#### Confidence intervals for a nonlinear trend with AR1 noise
+
+Once the polynomial trend $f(t)$ has been removed, the residuals $\eta(t) = y(t) - f(t)$ are typically modeled as an AR1 process:
+
+$$\eta(t) = \alpha\,\eta(t-\Delta t) + \epsilon(t), \qquad \epsilon \sim \mathcal{N}(0,\,\sigma_\epsilon^2)$$
+
+The procedure for constructing confidence intervals is then:
+
+1. **Fit** $f(t)$ by polynomial regression of order $p$ (e.g., $p = 2$).
+2. **Estimate** the lag-1 autocorrelation $\alpha = \rho(\Delta t)$ of the residuals $\eta(t)$.
+3. **Compute** the effective sample size using the Leith formula:
+   $$N^* \approx N\frac{1-\alpha}{1+\alpha}$$
+4. **Compute** the standard deviation of the residuals $\sigma_\eta$ and the standard error of the fit:
+   $$\sigma_f = \frac{\sigma_\eta}{\sqrt{N^*}}$$
+5. **Construct** the pointwise confidence interval:
+   $$\text{CI}(t) = f(t) \pm t_{N^*-p,\,\alpha/2}\cdot\sigma_f$$
+
+where $t_{N^*-p,\,\alpha/2}$ is the t-critical value with $N^*-p$ degrees of freedom (we lose $p$ degrees of freedom for the $p$ fitted polynomial coefficients).
+
+:::{admonition} Figure / in-class demonstration
+:class: tip
+*Figure: `nonlinear_snr.py`* — (left) linear fit with CI using $N$ (orange) vs. $N^*$ (blue); (right) quadratic fit with the same CI comparison. Note how the quadratic fit captures the true forced response (green dashed) much better and yields a higher SNR.
+
+```{figure} nonlinear_snr.png
+:width: 100%
+:align: center
+Signal-to-noise ratio for linear vs. quadratic trend fits with AR1 noise. Orange shading = naive CI using $N$; blue shading = corrected CI using $N^*$ (Leith formula). The quadratic fit achieves a higher SNR and its CI correctly brackets the true forced response (green dashed).
+```
+:::
+
+This framework was applied to detecting the forced response of atmospheric rivers under greenhouse warming in {cite:t}`Ruan2021`, who showed that a second-order polynomial fit combined with an AR1 noise model can identify the time of emergence of a forced signal even from a single model realization — without needing a large ensemble.
+
+:::{admonition} Example / deeper dive
+:class: note
+**Connecting back to the linear case**
+
+For $p = 1$ (linear trend), the framework above reduces exactly to the standard t-test for the regression slope:
+
+$$t = \frac{a_1}{\sigma_{a_1}}, \qquad \text{with } \nu = N^* - 2$$
+
+The nonlinear case is simply the natural generalization: fit a richer model for $f(t)$, then use the residual AR1 structure to correct the degrees of freedom. The key insight is that **SNR, polynomial fitting, AR1 noise, and effective sample size are all part of one unified regression framework**.
+:::
+
 ## Theory of Correlation (Pearson's Correlation)
 
 ### Statistical significance of correlations
