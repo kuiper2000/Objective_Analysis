@@ -1,0 +1,505 @@
+(Regression)=
+# Week 5-8: Regression & AR1
+
+## Linear Regression
+
+In linear regression, the goal is to determine
+- the linear fit of $X$ and $Y$ (the regression coefficient)
+- the robustness of the fit (the correlation coefficient)
+
+Regression is simple but powerful, however, this also makes it easily misused. In a sense, the entire class (EOFs; Fourier analysis) is all based on regression.
+
+How do we find the slope and y-intercept of the line that best fits the observed data? Let's assume $x(t)$ and $y(t)$ are time series sampled at $N$ time steps (so that each point represents a time step).
+
+First, we have to define what "best-fit" means. For now, we will use the conventional definition which means that we want to reduce the sum of the squared errors of $y$.
+
+Using the method of least squares:
+
+$$\hat{y}(t) = a_1 x(t) + a_0$$
+
+where
+- $\hat{y}(t)$ denotes the estimate of $y(t)$ based on the linear relationship with $x(t)$
+- $a_1$ denotes the slope, a.k.a. the regression coefficient
+- $a_0$ denotes the y-intercept
+
+Define the error of the fit as the sum of squares of the $y(\text{estimate}) - y(\text{actual})$:
+
+$$Q = \sum_{i=1}^{N}(\hat{y}_i - y_i)^2 = \sum_{i=1}^{N}(a_1 x_i + a_0 - y_i)^2$$
+
+where the subscript $i$ denotes the time step.
+
+The error is squared so that
+- the error is positive definite (don't want positive and negative errors canceling out)
+- the minimization of $Q$ (the derivative of $Q$) is a linear problem
+
+Note: the square causes larger errors to be more heavily weighted.
+
+We now follow steps from our college Calculus I course and find the $a_1$ and $a_0$ that minimize $Q$ (sometimes called the cost function):
+
+$$\begin{aligned}
+\frac{dQ}{da_0} &= 0 \\
+0 &= 2\sum_{i=1}^{N}(a_1 x_i + a_0 - y_i) \\
+0 &= a_1\sum_{i=1}^{N} x_i + a_0 N - \sum_{i=1}^{N} y_i
+\end{aligned}$$
+
+$$\begin{aligned}
+\frac{dQ}{da_1} &= 0 \\
+0 &= 2\sum_{i=1}^{N}(a_1 x_i + a_0 - y_i)x_i \\
+0 &= a_1\sum_{i=1}^{N} x_i^2 + a_0\sum_{i=1}^{N} x_i - \sum_{i=1}^{N} x_i y_i
+\end{aligned}$$
+
+Divide through by $N$ and move the $y$ terms to the left-hand side, where overbars denote the mean and primes denote departures from the mean:
+
+$$\begin{aligned}
+\overline{y} &= a_1 \overline{x} + a_0 \\
+\overline{xy} &= a_1 \overline{x^2} + a_0 \overline{x}
+\end{aligned}$$
+
+Two equations, two unknowns. The solutions are:
+
+$$a_1 = \frac{\overline{xy} - \overline{x}\cdot\overline{y}}{\overline{x^2} - \overline{x}^2}$$
+
+Note that,
+
+$$\overline{xy} = \overline{x}\cdot\overline{y} + \overline{x'y'} \qquad \text{and} \qquad \overline{x^2} = \overline{x}^2 + \overline{x'^2}$$
+
+Hence,
+
+$$\boxed{a_1 = \frac{\overline{x'y'}}{\overline{x'^2}}, \qquad a_0 = \overline{y} - a_1\overline{x}}$$
+
+**$a_1$** (regression coefficient / slope):
+- slope of the best-fit line
+- equal to the covariance of $x$ and $y$ divided by the variance of $x$
+
+**$a_0$** (y-intercept):
+- note that if the means of the time series are 0 (they are anomalies), then $a_0 = 0$
+
+One can put confidence limits on the slope $a_1$ in a number of ways. For example, a jackknife approach can be used to determine the sensitivity to removing a single point. Alternatively, the standard error $\sigma_{a_1}$ of the slope is given by
+
+$$\sigma_{a_1}^2 = \frac{\dfrac{1}{N-2}\sum_{i=1}^{N}(y_i - \hat{y}_i)^2}{\sum_{i=1}^{N}(x_i - \overline{x})^2}$$
+
+where we assume that $x$ is known exactly. Intuitively, this is the error in our $y$ estimate divided by the variance in our $x$ values.
+
+The confidence interval for the true slope $b$ is then:
+
+$$a_1 - t_{N-2,\alpha}\cdot\sigma_{a_1} < b < a_1 + t_{N-2,\alpha}\cdot\sigma_{a_1}$$
+
+The $N-2$ comes from the fact that two degrees of freedom were used to estimate $a_1$ and $a_0$.
+
+### How good is the fit?
+
+How much we "believe" the regression coefficient ($a_1$) depends on the spread of the dots about the best-fit line. If the dots are closely packed about the regression line, then the fit is good. The spread of the dots is given by the correlation coefficient $r$.
+
+By definition, the total variance of $y(t)$ is $\frac{1}{N}\sum_{i=1}^{N}(y_i - \overline{y})^2$, and the total variance of the fit $\hat{y}(t)$ is $\frac{1}{N}\sum_{i=1}^{N}(\hat{y}_i - \overline{y})^2$, where we use the fact that $\overline{\hat{y}} = a_1\overline{x} + a_0 = \overline{y}$.
+
+The percent of the total variance in $y(t)$ explained by the fit $\hat{y}(t)$:
+
+$$\begin{aligned}
+r^2 &= \frac{\text{explained variance}}{\text{total variance}}
+= \frac{\sum_{i=1}^{N}(\hat{y}_i - \overline{y})^2}{\sum_{i=1}^{N}(y_i - \overline{y})^2}
+= \frac{\sum_{i=1}^{N}(a_1 x_i')^2}{\sum_{i=1}^{N}(y_i'^2)} \\
+&= \left(\frac{\overline{x'y'}}{\overline{x'^2}}\right)^2 \frac{\sum_{i=1}^{N}(x_i')^2}{\sum_{i=1}^{N}(y_i'^2)}
+= \frac{(\overline{x'y'})^2}{\overline{x'^2}\cdot\overline{y'^2}}
+\end{aligned}$$
+
+Hence:
+
+$$\boxed{r = \frac{\overline{x'y'}}{\sigma_x\sigma_y}}$$
+
+where $\sigma_x = (\overline{x'^2})^{1/2}$.
+
+- $r^2$ is the fraction of variance explained by the linear least-squares fit; it always lies between 0 and 1
+- $r$ varies between $-1$ and $1$
+
+Relationships between $r$ and $r^2$:
+
+| $r$ | $r^2$ |
+|-----|-------|
+| 0.99 | 0.98 |
+| 0.90 | 0.81 |
+| 0.70 | 0.49 |
+| 0.50 | 0.25 |
+| 0.25 | 0.06 |
+
+### Relationship between the slope and the correlation coefficient
+
+Since $a_1 = \overline{x'y'}/\overline{x'^2}$, it follows that:
+
+$$a_1 = r\frac{\sigma_y}{\sigma_x}$$
+
+- the regression coefficient can be thought of as the correlation coefficient multiplied by the ratio of the standard deviations of $y$ and $x$
+- regression coefficients give information about the correlation coefficient and the relative amplitudes of variations of $y$ and $x$
+- in the special case where $x$ and $y$ are standardized, the correlation coefficient and the regression coefficient are equal
+
+### General comments on linear regression
+
+- only works for linear relationships
+- does not reveal relationships that are lagged or out of phase
+- need to be careful about estimating the true sample size (more on this later)
+- correlation does **NOT** reveal cause and effect
+- flipping $x$ and $y$ will not give the same results — it is very important to physically justify your choice of $x$ and $y$!
+
+### Orthogonal Least Squares Regression
+
+If you can't justify which of your data is dependent and which is independent, **orthogonal least squares** may actually be what you want. In this case, you minimize the orthogonal (perpendicular) distances to the fit line, rather than the vertical distances.
+
+:::{admonition} Figure / in-class demonstration
+:class: tip
+*Figure Example: Orthogonal Least Squares vs Ordinary Least Squares* — a diagram comparing two fits: (left) **ordinary least squares**, minimizing *vertical offsets*; (right) **orthogonal least squares**, minimizing *perpendicular offsets*. The two approaches can give different answers.
+:::
+
+It just so happens that in 2-dimensions, EOF analysis (to be discussed later) gives you the orthogonal least squares fit. So, in a few weeks, you will be capable of calculating this too.
+
+:::{admonition} Figure / in-class demonstration
+:class: tip
+*Figure Example: `LSQ_OLS.py`*
+:::
+
+### Filtering with linear regression
+
+Consider the decomposition of a variable $y$ into a fraction that is linearly congruent with $x$ and the fraction uncorrelated with $x$:
+
+$$y(t) = y(t)_{\text{fitted}} + y(t)_{\text{residual}}$$
+
+The fit of $y(t)$ from $x(t)$ is:
+
+$$y(t)_{\text{fitted}} = a_1 x(t) + a_0, \qquad a_1 = \frac{\overline{x'y'}}{\overline{x'^2}} = r\frac{\sigma_y}{\sigma_x}$$
+
+If the means of $y(t)$ and $x(t)$ are zero:
+
+$$y(t)_{\text{residual}} = y(t) - \frac{\overline{x'y'}}{\overline{x'^2}}\cdot x(t) = y(t) - r\frac{\sigma_y}{\sigma_x}\cdot x(t)$$
+
+- $y(t)_{\text{fitted}}$ represents the LSQ fit of $x(t)$ to $y(t)$
+- by construction, $y(t)_{\text{residual}}$ is uncorrelated with $x(t)$
+- the fraction of variance of $y(t)$ explained by $x(t)$ is $r^2$
+- the fraction of variance of $y(t)$ not explained by $x(t)$ is $1 - r^2$
+
+## Theory of Correlation (Pearson's Correlation)
+
+### Statistical significance of correlations
+
+The correlation $r$ between two time series $x(t)$ and $y(t)$ gives a measure of how well the two time series vary linearly together. $-1 \leq r \leq 1$, with numbers closer to $\pm1$ implying a stronger linear relationship.
+
+We denote the sample correlation as $r$ and the theoretical true value as $\rho$.
+
+If $\rho = 0$, we can use the t-statistic:
+
+$$t = r\frac{\sqrt{N-2}}{\sqrt{1-r^2}}$$
+
+:::{admonition} Example: testing the hypothesis that $\rho = 0$
+:class: note
+We have two time series, each of length 20, correlated at $r = 0.6$. Does this exceed the 95% confidence interval under $H_0: \rho = 0$?
+
+We had no prior knowledge of the sign of the correlation, so we use a two-tailed t-test. For $\nu = N-2 = 18$, the critical value is $t_c = 2.1$.
+
+$$t = 0.6\frac{\sqrt{20-2}}{\sqrt{1-0.6^2}} = 3.18$$
+
+Since $t = 3.18 > t_c = 2.1$, we can reject the null hypothesis.
+:::
+
+:::{admonition} Example: confidence limits on the true correlation
+:class: note
+What are the 95% confidence limits on the true correlation if you drew 21 samples and obtained $r = 0.8$?
+
+$$\begin{aligned}
+Z &= \frac{1}{2}\ln\left(\frac{1+0.8}{1-0.8}\right) = 1.099 \\
+\sigma_Z &= \frac{1}{\sqrt{21-3}} = 0.235
+\end{aligned}$$
+
+With $t_{0.025} = 2.1$ (for $\nu = 21-3 = 18$):
+
+$$Z - 2.1\sigma_Z \leq \mu_Z \leq Z + 2.1\sigma_Z \quad \Rightarrow \quad 0.61 \leq \mu_Z \leq 1.59$$
+
+Converting back to correlation via $\rho = \tanh(\mu_Z)$:
+
+$$0.54 \leq \rho \leq 0.92$$
+:::
+
+The above statistic only works if the underlying distributions are normal, or if $N$ is large enough for the CLT to apply (roughly $N > 20$).
+
+:::{admonition} Figure / in-class demonstration
+:class: tip
+*Figure Example: `testing_normality_of_correlations.py`*
+:::
+
+If $\rho \neq 0$, we must use the **Fisher-Z Transformation**. When the true correlation is not zero, the distribution of $r$ is not symmetric, so we cannot directly use the normal/t distribution. The Fisher-Z transformation converts $r$ into a quantity that is approximately normally distributed:
+
+$$Z = \frac{1}{2}\ln\left(\frac{1+r}{1-r}\right) = \tanh^{-1}(r)$$
+
+The Fisher-Z statistic is normally distributed with:
+
+$$\begin{aligned}
+\mu_Z &= \frac{1}{2}\ln\left(\frac{1+\rho}{1-\rho}\right) \\
+\sigma_Z &= \frac{1}{\sqrt{N-3}}
+\end{aligned}$$
+
+The confidence bounds for $Z$ are:
+
+$$Z - t_c\sigma_Z \leq \mu_Z \leq Z + t_c\sigma_Z$$
+
+To convert back from $\mu_Z$ to the actual correlation $\rho$:
+
+$$\rho = \frac{e^{2\mu_Z} - 1}{e^{2\mu_Z}+1} = \tanh(\mu_Z)$$
+
+### Comparing two non-zero sample correlations
+
+To test whether two correlations $r_1$ (from sample $N_1$) and $r_2$ (from sample $N_2$) are significantly different, apply the Fisher-Z to each:
+
+$$\begin{aligned}
+Z_1 &= \frac{1}{2}\ln\left(\frac{1+r_1}{1-r_1}\right) \\
+Z_2 &= \frac{1}{2}\ln\left(\frac{1+r_2}{1-r_2}\right)
+\end{aligned}$$
+
+Then use the z-score for the difference of means:
+
+$$z = \frac{Z_1 - Z_2 - \delta_{1,2}}{\sigma_{1,2}}, \qquad \sigma_{1,2} = \sqrt{\frac{1}{N_1-3} + \frac{1}{N_2-3}}$$
+
+where $\delta_{1,2} = \mu_1 - \mu_2$ is the hypothesized difference (typically 0 if $H_0: \rho_1 = \rho_2$).
+
+### Spearman's rank correlation
+
+Spearman's rank correlation is a **nonparametric** test for whether paired data monotonically co-vary. No normality assumption is needed.
+
+The original data $x_i$ and $y_i$ are converted into ranks $X_i$ and $Y_i$, and the correlation is computed on the ranks:
+
+$$\rho_s = \frac{\sum_i (X_i - \overline{X})(Y_i - \overline{Y})}{\sqrt{\sum_i (X_i - \overline{X})^2 \sum_i (Y_i - \overline{Y})^2}}$$
+
+When there are duplicate values, ranks are set to the average position. The standard error is:
+
+$$\sigma_{\rho_s} = \frac{0.6325}{\sqrt{N-1}}$$
+
+Significance can be tested using the Fisher-Z test or the t-test (for $H_0: \rho = 0$), as for Pearson's $r$.
+
+:::{admonition} Figure / in-class demonstration
+:class: tip
+*Figure Example: see slides 08\_correlation.pdf*
+:::
+
+Note: a second nonparametric method is Kendall's Tau Rank Correlation — not covered here.
+
+## Autocorrelation & Estimating the Number of Independent Samples
+
+Thus far, we have assumed that our time series have no intrinsic memory. Now, we will discuss these assumptions and how to determine the true number of degrees of freedom in an autocorrelated data set.
+
+### Stationarity
+
+Stationarity implies that the statistics of a time series (mean and higher-order moments) are independent of time — unchanging in time. In general, we will assume this is the case. This means one should **remove any trend** in the data before performing the analysis, using the linear regression method discussed above.
+
+### Autocorrelation
+
+The **autocovariance function** $\gamma(\tau)$ is the covariance of a time series with itself at lag $\tau$:
+
+$$\gamma(\tau) = \frac{1}{(t_N - \tau) - t_1}\sum_{t=t_1}^{N-\tau}\left[x'(t)\cdot x'(t+\tau)\right]$$
+
+:::{admonition} Figure / in-class demonstration
+:class: tip
+*Figure Example: Draw out example of how autocovariance works.*
+:::
+
+For a time series with integer positions $k = 1, 2, \dots, N$:
+
+$$\gamma(\tau) = \overline{x'(t)\,x'(t+\tau)}$$
+
+At $\tau = 0$: $\gamma(0) = \overline{x'^2} = \text{variance}$.
+
+The **autocorrelation** $\rho(\tau)$ is $\gamma(\tau)$ normalized by $\gamma(0)$ — simply the correlation of a time series with itself at another time.
+
+Notes:
+- $\gamma$ is symmetric about $\tau = 0$
+- $-1 \leq \rho(\tau) \leq 1$
+- $\rho(0) = 1$
+- if the time series is not periodic, $\rho(\tau) \rightarrow 0$ as $\tau \rightarrow \infty$
+
+:::{admonition} Figure / in-class demonstration
+:class: tip
+*Figure Example: see slides 08\_correlation.pdf*
+:::
+
+### The first-order autoregressive model (AR1 / red noise)
+
+Also referred to as a "first order Markov process" or "red noise."
+
+**Red noise:** "today is like yesterday plus noise"
+
+$$x(t) = a\cdot x(t-\Delta t) + b\cdot \epsilon(t)$$
+
+where:
+- $x$ is a standardized variable (zero mean, unit variance)
+- $\Delta t$ is the (constant) time interval between data points
+- $a \in [0,1]$ measures the memory of the previous state
+- $\epsilon(t) \sim \mathcal{N}(0,1)$ is white noise
+
+**Deriving $a$:** Multiply both sides by $x(t-\Delta t)$ and time-average:
+
+$$\overline{x(t)\,x(t-\Delta t)} = a\underbrace{\overline{x^2(t-\Delta t)}}_{=1} + b\underbrace{\overline{\epsilon(t)\,x(t-\Delta t)}}_{=0}$$
+
+$$\Rightarrow \quad a = \overline{x(t)\,x(t-\Delta t)} = \rho(\Delta t) = \rho(1)$$
+
+**Deriving $b$:** Square both sides and time-average:
+
+$$\begin{aligned}
+\overline{x^2(t)} &= a^2\overline{x^2(t-\Delta t)} + b^2\overline{\epsilon^2(t)} \\
+1 &= a^2 + b^2 \quad \Rightarrow \quad b = \sqrt{1-a^2}
+\end{aligned}$$
+
+**Autocorrelation of red noise:** Multiplying the recursion two steps forward by $x(t)$ and averaging shows that $\rho(2\Delta t) = \rho^2(\Delta t)$, and more generally:
+
+$$\rho(n\Delta t) = \rho^n(\Delta t) = e^{-n\Delta t/T_e}$$
+
+The autocorrelation decays **exponentially** with an e-folding time:
+
+$$T_e = \frac{-\Delta t}{\ln(a)}$$
+
+The e-folding time $T_e$ is the lag at which $\rho$ drops to $1/e \approx 0.368$. For example, if $\Delta t = 1$ day and $a = \rho(1) = 0.6$, then $T_e = 2$ days.
+
+### White noise
+
+White noise is the special case of AR1 with $a = 0$ (i.e. $\rho(\tau > 0) = 0$). It has equal power at all frequencies and zero autocorrelation — no memory of previous time steps. In geophysics, white noise is generally assumed to be normally distributed.
+
+:::{admonition} Figure / in-class demonstration
+:class: tip
+*Figure Example: `correlation_with_memory_examples.py`*
+:::
+
+### Effective sample size $N^*$
+
+Persistence in a data set leads to **overestimation of the sample size**, because each data point is not independent of its neighbors. If persistence is ignored, the standard error of the mean is underestimated and the t-statistic is inflated.
+
+The solution is to introduce an **effective sample size** $N^* \leq N$ and substitute it for $N$ in formulas.
+
+For a first-order AR process, $N^*$ can be estimated with the **Bretherton/Wilks approximation** (Wilks, p. 127):
+
+$$\frac{N^*}{N} \approx \frac{1-\rho(\Delta t)}{1+\rho(\Delta t)}$$
+
+- if $\rho(1) = 0$ (white noise): $N^* = N$
+- as $\rho(1)$ increases, $N^*$ decreases
+
+An equivalent form from Leith (*J. Appl. Meteor.*, 1973):
+
+$$N^* \approx \frac{N\Delta t}{2T_e} = \frac{\text{total record length}}{2 \times \text{e-folding time}}$$
+
+The factor of 2 reflects the fact that any point in red noise can be predicted by points both before and after it. The Leith formula can also be written as:
+
+$$\frac{N^*}{N} \approx \frac{\ln a}{-2}$$
+
+The table below shows $N^*/N$ as a function of lag-1 autocorrelation:
+
+| $\rho(\Delta t)$ | $<0.1$ | $0.3$ | $0.5$ | $0.7$ | $0.9$ |
+|---|---|---|---|---|---|
+| $N^*/N$ | $\approx 1$ | $0.60$ | $0.35$ | $0.18$ | $0.053$ |
+
+Bretherton et al. (*J. Climate*, 1999) proposed a less conservative approximation (use for variance/higher-order moments):
+
+$$\frac{N^*}{N} \approx \frac{1-\rho^2(\Delta t)}{1+\rho^2(\Delta t)}$$
+
+This yields nearly twice as many degrees of freedom as the Leith formula. For testing the **mean**, use the Leith formula; for testing **variance**, the Bretherton formula may be used.
+
+:::{admonition} Figure / in-class demonstration
+:class: tip
+*Figure Example: `effective_sample_size.py`* — plot of $N^*/N$ vs $\rho(\Delta t)$ comparing the Leith and Bretherton approximations.
+:::
+
+## Multiple Regression (Multi-linear Regression)
+
+*Basic idea:* Generalize the regression coefficient derivation to multiple **linear** predictors:
+
+$$\hat{y} = a_0 + a_1 x_1 + a_2 x_2 + \dots + a_n x_n$$
+
+The fit now lives in a multi-dimensional predictor space.
+
+:::{admonition} Figure / in-class demonstration
+:class: tip
+*Figure Example: 3-D scatter diagram* — points $\hat{y}$ plotted against two orthogonal predictor axes $X_1$ and $X_2$, with a best-fit plane drawn through the point cloud.
+:::
+
+If $X_1$ and $X_2$ are **orthogonal** (at right angles):
+- they give independent information
+- their inner product is 0
+- if they span the space, they "form a basis"
+
+If $X_1$ and $X_2$ are **not orthogonal**:
+- they are not independent and share redundant information
+
+The usefulness of independent predictors motivates EOF analysis (to be discussed later).
+
+### Generalized normal equations
+
+For multiple predictors $x_1, x_2, \dots, x_n$, minimize:
+
+$$Q = \sum_{i=1}^{N}\left(a_0 + a_1 x_{1,i} + a_2 x_{2,i} + \dots + a_n x_{n,i} - y_i\right)^2$$
+
+Setting $\partial Q/\partial a_i = 0$ for $i = 0, \dots, n$ gives $n+1$ equations. If the mean has been removed from all variables ($a_0 = 0$), the $j$th equation is:
+
+$$\overline{x_j y} = \sum_{i=1}^{n} a_i \overline{x_j x_i}$$
+
+In matrix form:
+
+$$\underbrace{\begin{bmatrix}
+\overline{x_1^2} & \overline{x_1 x_2} & \cdots \\
+\overline{x_2 x_1} & \overline{x_2^2} & \cdots \\
+\vdots & & \ddots
+\end{bmatrix}}_{\mathbf{C}_{xx}}
+\underbrace{\begin{bmatrix} a_1 \\ a_2 \\ \vdots \end{bmatrix}}_{\mathbf{a}}
+=
+\underbrace{\begin{bmatrix} \overline{x_1 y} \\ \overline{x_2 y} \\ \vdots \end{bmatrix}}_{\mathbf{C}_{xy}}$$
+
+Or compactly: $C_{x_i x_j}\, a_j = C_{x_i y}$
+
+Key observations:
+1. The left-hand side $\mathbf{C}_{xx}$ is the **covariance matrix** of the predictors (diagonal = variances, off-diagonal = covariances)
+2. The right-hand side $\mathbf{C}_{xy}$ is the **covariance vector** between predictors and predictand
+3. If each variable is standardized, $\mathbf{C}_{xx}$ becomes the **correlation matrix** and $\mathbf{C}_{xy}$ the **correlation vector**
+4. If predictors are linearly independent, off-diagonal elements are 0 and the $a_j$'s can be found algebraically
+5. Otherwise, solve via matrix inversion:
+
+$$\mathbf{a} = \mathbf{C}_{xx}^{-1}\,\mathbf{C}_{xy}$$
+
+### Multiple regression — how many predictors should I use?
+
+Assuming all variables are standardized, the normal equations become $r(x_i, x_j)\,a_i = r(x_j, y)$. For two predictors:
+
+$$\begin{bmatrix} 1 & r_{1,2} \\ r_{1,2} & 1 \end{bmatrix}
+\begin{bmatrix} a_1 \\ a_2 \end{bmatrix}
+=
+\begin{bmatrix} r_{1,y} \\ r_{2,y} \end{bmatrix}$$
+
+Solving:
+
+$$a_1 = \frac{r_{1,y} - r_{1,2}r_{2,y}}{1 - r_{1,2}^2}, \qquad a_2 = \frac{r_{2,y} - r_{1,2}r_{1,y}}{1 - r_{1,2}^2}$$
+
+The total fraction of explained variance ($R^2$) with two predictors:
+
+$$R^2 = \frac{r_{1,y}^2 + r_{2,y}^2 - 2r_{1,y}r_{2,y}r_{1,2}}{1 - r_{1,2}^2}$$
+
+:::{admonition} Example: does adding a second predictor help?
+:class: note
+Say $r_{1,y} = r_{2,y} = r_{1,2} = 0.5$.
+
+With only $x_1$: $R_1^2 = r_{1,y}^2 = 0.25$
+
+Adding $x_2$:
+
+$$R_{1,2}^2 = \frac{0.5^2 + 0.5^2 - 2\times 0.5\times 0.5\times 0.5}{1-0.5^2} = 0.33$$
+
+Adding $x_2$ increases the explained variance from 25% to 33%. ✓
+
+Now suppose $r_{2,y} = 0.25$ (everything else the same):
+
+$$R_{1,2}^2 = \frac{0.5^2 + 0.25^2 - 2\times 0.5\times 0.25\times 0.5}{1-0.5^2} = 0.25$$
+
+Adding $x_2$ adds **nothing**. The minimum useful correlation for $x_2$ is:
+
+$$|r(x_2,y)|_{\text{min}} > |r(x_1,y)\cdot r(x_1,x_2)| = 0.5\times 0.5 = 0.25$$
+
+So $r_{2,y}$ must exceed 0.25 to be worth adding.
+:::
+
+Key guidelines:
+- Ideal case: $r_{1,2} = 0$ — two completely independent predictors
+- Worst case: $r_{1,2} = 1$ — $x_2$ provides no new information
+- Adding too many predictors can lead to **overfitting** — fitting the noise rather than the signal. Always use as few predictors as possible and test the fit on **independent data**.
+
+:::{admonition} Figure / in-class demonstration
+:class: tip
+*Figure Example: Adjusted $R^2$* — see <https://en.wikipedia.org/wiki/Coefficient_of_determination#Adjusted_R2>
+:::

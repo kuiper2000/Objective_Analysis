@@ -1,0 +1,1019 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Week 5-8: Regression &amp; AR1 &#8212; Numerical Method</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=a3416100" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css?v=be8a1c11" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js?v=4a39c7ea"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="../_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'Regression/regressiom';</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="prev" title="Week 1-4: Rule101" href="../General_statistical_test/Origin_of_Statisics.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../intro.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/logo.png" class="logo__image only-light" alt="Numerical Method - Home"/>
+    <img src="../_static/logo.png" class="logo__image only-dark pst-js-only" alt="Numerical Method - Home"/>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../intro.html">
+                    Syllabus
+                </a>
+            </li>
+        </ul>
+        <ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../General_statistical_test/Origin_of_Statisics.html">Week 1-4: Rule101</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Week 5-8: Regression &amp; AR1</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/executablebooks/jupyter-book" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/executablebooks/jupyter-book/issues/new?title=Issue%20on%20page%20%2FRegression/regressiom.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/Regression/regressiom.md" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.md</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
+
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Week 5-8: Regression & AR1</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#linear-regression">Linear Regression</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#how-good-is-the-fit">How good is the fit?</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#relationship-between-the-slope-and-the-correlation-coefficient">Relationship between the slope and the correlation coefficient</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#general-comments-on-linear-regression">General comments on linear regression</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#orthogonal-least-squares-regression">Orthogonal Least Squares Regression</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#filtering-with-linear-regression">Filtering with linear regression</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#theory-of-correlation-pearson-s-correlation">Theory of Correlation (Pearson’s Correlation)</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#statistical-significance-of-correlations">Statistical significance of correlations</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#comparing-two-non-zero-sample-correlations">Comparing two non-zero sample correlations</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#spearman-s-rank-correlation">Spearman’s rank correlation</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#autocorrelation-estimating-the-number-of-independent-samples">Autocorrelation &amp; Estimating the Number of Independent Samples</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stationarity">Stationarity</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#autocorrelation">Autocorrelation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-first-order-autoregressive-model-ar1-red-noise">The first-order autoregressive model (AR1 / red noise)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#white-noise">White noise</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#effective-sample-size-n">Effective sample size <span class="math notranslate nohighlight">\(N^*\)</span></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#multiple-regression-multi-linear-regression">Multiple Regression (Multi-linear Regression)</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#generalized-normal-equations">Generalized normal equations</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#multiple-regression-how-many-predictors-should-i-use">Multiple regression — how many predictors should I use?</a></li>
+</ul>
+</li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="week-5-8-regression-ar1">
+<span id="regression"></span><h1>Week 5-8: Regression &amp; AR1<a class="headerlink" href="#week-5-8-regression-ar1" title="Link to this heading">#</a></h1>
+<section id="linear-regression">
+<h2>Linear Regression<a class="headerlink" href="#linear-regression" title="Link to this heading">#</a></h2>
+<p>In linear regression, the goal is to determine</p>
+<ul class="simple">
+<li><p>the linear fit of <span class="math notranslate nohighlight">\(X\)</span> and <span class="math notranslate nohighlight">\(Y\)</span> (the regression coefficient)</p></li>
+<li><p>the robustness of the fit (the correlation coefficient)</p></li>
+</ul>
+<p>Regression is simple but powerful, however, this also makes it easily misused. In a sense, the entire class (EOFs; Fourier analysis) is all based on regression.</p>
+<p>How do we find the slope and y-intercept of the line that best fits the observed data? Let’s assume <span class="math notranslate nohighlight">\(x(t)\)</span> and <span class="math notranslate nohighlight">\(y(t)\)</span> are time series sampled at <span class="math notranslate nohighlight">\(N\)</span> time steps (so that each point represents a time step).</p>
+<p>First, we have to define what “best-fit” means. For now, we will use the conventional definition which means that we want to reduce the sum of the squared errors of <span class="math notranslate nohighlight">\(y\)</span>.</p>
+<p>Using the method of least squares:</p>
+<div class="math notranslate nohighlight">
+\[\hat{y}(t) = a_1 x(t) + a_0\]</div>
+<p>where</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(\hat{y}(t)\)</span> denotes the estimate of <span class="math notranslate nohighlight">\(y(t)\)</span> based on the linear relationship with <span class="math notranslate nohighlight">\(x(t)\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(a_1\)</span> denotes the slope, a.k.a. the regression coefficient</p></li>
+<li><p><span class="math notranslate nohighlight">\(a_0\)</span> denotes the y-intercept</p></li>
+</ul>
+<p>Define the error of the fit as the sum of squares of the <span class="math notranslate nohighlight">\(y(\text{estimate}) - y(\text{actual})\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[Q = \sum_{i=1}^{N}(\hat{y}_i - y_i)^2 = \sum_{i=1}^{N}(a_1 x_i + a_0 - y_i)^2\]</div>
+<p>where the subscript <span class="math notranslate nohighlight">\(i\)</span> denotes the time step.</p>
+<p>The error is squared so that</p>
+<ul class="simple">
+<li><p>the error is positive definite (don’t want positive and negative errors canceling out)</p></li>
+<li><p>the minimization of <span class="math notranslate nohighlight">\(Q\)</span> (the derivative of <span class="math notranslate nohighlight">\(Q\)</span>) is a linear problem</p></li>
+</ul>
+<p>Note: the square causes larger errors to be more heavily weighted.</p>
+<p>We now follow steps from our college Calculus I course and find the <span class="math notranslate nohighlight">\(a_1\)</span> and <span class="math notranslate nohighlight">\(a_0\)</span> that minimize <span class="math notranslate nohighlight">\(Q\)</span> (sometimes called the cost function):</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{aligned}
+\frac{dQ}{da_0} &amp;= 0 \\
+0 &amp;= 2\sum_{i=1}^{N}(a_1 x_i + a_0 - y_i) \\
+0 &amp;= a_1\sum_{i=1}^{N} x_i + a_0 N - \sum_{i=1}^{N} y_i
+\end{aligned}\end{split}\]</div>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{aligned}
+\frac{dQ}{da_1} &amp;= 0 \\
+0 &amp;= 2\sum_{i=1}^{N}(a_1 x_i + a_0 - y_i)x_i \\
+0 &amp;= a_1\sum_{i=1}^{N} x_i^2 + a_0\sum_{i=1}^{N} x_i - \sum_{i=1}^{N} x_i y_i
+\end{aligned}\end{split}\]</div>
+<p>Divide through by <span class="math notranslate nohighlight">\(N\)</span> and move the <span class="math notranslate nohighlight">\(y\)</span> terms to the left-hand side, where overbars denote the mean and primes denote departures from the mean:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{aligned}
+\overline{y} &amp;= a_1 \overline{x} + a_0 \\
+\overline{xy} &amp;= a_1 \overline{x^2} + a_0 \overline{x}
+\end{aligned}\end{split}\]</div>
+<p>Two equations, two unknowns. The solutions are:</p>
+<div class="math notranslate nohighlight">
+\[a_1 = \frac{\overline{xy} - \overline{x}\cdot\overline{y}}{\overline{x^2} - \overline{x}^2}\]</div>
+<p>Note that,</p>
+<div class="math notranslate nohighlight">
+\[\overline{xy} = \overline{x}\cdot\overline{y} + \overline{x'y'} \qquad \text{and} \qquad \overline{x^2} = \overline{x}^2 + \overline{x'^2}\]</div>
+<p>Hence,</p>
+<div class="math notranslate nohighlight">
+\[\boxed{a_1 = \frac{\overline{x'y'}}{\overline{x'^2}}, \qquad a_0 = \overline{y} - a_1\overline{x}}\]</div>
+<p><strong><span class="math notranslate nohighlight">\(a_1\)</span></strong> (regression coefficient / slope):</p>
+<ul class="simple">
+<li><p>slope of the best-fit line</p></li>
+<li><p>equal to the covariance of <span class="math notranslate nohighlight">\(x\)</span> and <span class="math notranslate nohighlight">\(y\)</span> divided by the variance of <span class="math notranslate nohighlight">\(x\)</span></p></li>
+</ul>
+<p><strong><span class="math notranslate nohighlight">\(a_0\)</span></strong> (y-intercept):</p>
+<ul class="simple">
+<li><p>note that if the means of the time series are 0 (they are anomalies), then <span class="math notranslate nohighlight">\(a_0 = 0\)</span></p></li>
+</ul>
+<p>One can put confidence limits on the slope <span class="math notranslate nohighlight">\(a_1\)</span> in a number of ways. For example, a jackknife approach can be used to determine the sensitivity to removing a single point. Alternatively, the standard error <span class="math notranslate nohighlight">\(\sigma_{a_1}\)</span> of the slope is given by</p>
+<div class="math notranslate nohighlight">
+\[\sigma_{a_1}^2 = \frac{\dfrac{1}{N-2}\sum_{i=1}^{N}(y_i - \hat{y}_i)^2}{\sum_{i=1}^{N}(x_i - \overline{x})^2}\]</div>
+<p>where we assume that <span class="math notranslate nohighlight">\(x\)</span> is known exactly. Intuitively, this is the error in our <span class="math notranslate nohighlight">\(y\)</span> estimate divided by the variance in our <span class="math notranslate nohighlight">\(x\)</span> values.</p>
+<p>The confidence interval for the true slope <span class="math notranslate nohighlight">\(b\)</span> is then:</p>
+<div class="math notranslate nohighlight">
+\[a_1 - t_{N-2,\alpha}\cdot\sigma_{a_1} &lt; b &lt; a_1 + t_{N-2,\alpha}\cdot\sigma_{a_1}\]</div>
+<p>The <span class="math notranslate nohighlight">\(N-2\)</span> comes from the fact that two degrees of freedom were used to estimate <span class="math notranslate nohighlight">\(a_1\)</span> and <span class="math notranslate nohighlight">\(a_0\)</span>.</p>
+<section id="how-good-is-the-fit">
+<h3>How good is the fit?<a class="headerlink" href="#how-good-is-the-fit" title="Link to this heading">#</a></h3>
+<p>How much we “believe” the regression coefficient (<span class="math notranslate nohighlight">\(a_1\)</span>) depends on the spread of the dots about the best-fit line. If the dots are closely packed about the regression line, then the fit is good. The spread of the dots is given by the correlation coefficient <span class="math notranslate nohighlight">\(r\)</span>.</p>
+<p>By definition, the total variance of <span class="math notranslate nohighlight">\(y(t)\)</span> is <span class="math notranslate nohighlight">\(\frac{1}{N}\sum_{i=1}^{N}(y_i - \overline{y})^2\)</span>, and the total variance of the fit <span class="math notranslate nohighlight">\(\hat{y}(t)\)</span> is <span class="math notranslate nohighlight">\(\frac{1}{N}\sum_{i=1}^{N}(\hat{y}_i - \overline{y})^2\)</span>, where we use the fact that <span class="math notranslate nohighlight">\(\overline{\hat{y}} = a_1\overline{x} + a_0 = \overline{y}\)</span>.</p>
+<p>The percent of the total variance in <span class="math notranslate nohighlight">\(y(t)\)</span> explained by the fit <span class="math notranslate nohighlight">\(\hat{y}(t)\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{aligned}
+r^2 &amp;= \frac{\text{explained variance}}{\text{total variance}}
+= \frac{\sum_{i=1}^{N}(\hat{y}_i - \overline{y})^2}{\sum_{i=1}^{N}(y_i - \overline{y})^2}
+= \frac{\sum_{i=1}^{N}(a_1 x_i')^2}{\sum_{i=1}^{N}(y_i'^2)} \\
+&amp;= \left(\frac{\overline{x'y'}}{\overline{x'^2}}\right)^2 \frac{\sum_{i=1}^{N}(x_i')^2}{\sum_{i=1}^{N}(y_i'^2)}
+= \frac{(\overline{x'y'})^2}{\overline{x'^2}\cdot\overline{y'^2}}
+\end{aligned}\end{split}\]</div>
+<p>Hence:</p>
+<div class="math notranslate nohighlight">
+\[\boxed{r = \frac{\overline{x'y'}}{\sigma_x\sigma_y}}\]</div>
+<p>where <span class="math notranslate nohighlight">\(\sigma_x = (\overline{x'^2})^{1/2}\)</span>.</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(r^2\)</span> is the fraction of variance explained by the linear least-squares fit; it always lies between 0 and 1</p></li>
+<li><p><span class="math notranslate nohighlight">\(r\)</span> varies between <span class="math notranslate nohighlight">\(-1\)</span> and <span class="math notranslate nohighlight">\(1\)</span></p></li>
+</ul>
+<p>Relationships between <span class="math notranslate nohighlight">\(r\)</span> and <span class="math notranslate nohighlight">\(r^2\)</span>:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p><span class="math notranslate nohighlight">\(r\)</span></p></th>
+<th class="head"><p><span class="math notranslate nohighlight">\(r^2\)</span></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>0.99</p></td>
+<td><p>0.98</p></td>
+</tr>
+<tr class="row-odd"><td><p>0.90</p></td>
+<td><p>0.81</p></td>
+</tr>
+<tr class="row-even"><td><p>0.70</p></td>
+<td><p>0.49</p></td>
+</tr>
+<tr class="row-odd"><td><p>0.50</p></td>
+<td><p>0.25</p></td>
+</tr>
+<tr class="row-even"><td><p>0.25</p></td>
+<td><p>0.06</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="relationship-between-the-slope-and-the-correlation-coefficient">
+<h3>Relationship between the slope and the correlation coefficient<a class="headerlink" href="#relationship-between-the-slope-and-the-correlation-coefficient" title="Link to this heading">#</a></h3>
+<p>Since <span class="math notranslate nohighlight">\(a_1 = \overline{x'y'}/\overline{x'^2}\)</span>, it follows that:</p>
+<div class="math notranslate nohighlight">
+\[a_1 = r\frac{\sigma_y}{\sigma_x}\]</div>
+<ul class="simple">
+<li><p>the regression coefficient can be thought of as the correlation coefficient multiplied by the ratio of the standard deviations of <span class="math notranslate nohighlight">\(y\)</span> and <span class="math notranslate nohighlight">\(x\)</span></p></li>
+<li><p>regression coefficients give information about the correlation coefficient and the relative amplitudes of variations of <span class="math notranslate nohighlight">\(y\)</span> and <span class="math notranslate nohighlight">\(x\)</span></p></li>
+<li><p>in the special case where <span class="math notranslate nohighlight">\(x\)</span> and <span class="math notranslate nohighlight">\(y\)</span> are standardized, the correlation coefficient and the regression coefficient are equal</p></li>
+</ul>
+</section>
+<section id="general-comments-on-linear-regression">
+<h3>General comments on linear regression<a class="headerlink" href="#general-comments-on-linear-regression" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>only works for linear relationships</p></li>
+<li><p>does not reveal relationships that are lagged or out of phase</p></li>
+<li><p>need to be careful about estimating the true sample size (more on this later)</p></li>
+<li><p>correlation does <strong>NOT</strong> reveal cause and effect</p></li>
+<li><p>flipping <span class="math notranslate nohighlight">\(x\)</span> and <span class="math notranslate nohighlight">\(y\)</span> will not give the same results — it is very important to physically justify your choice of <span class="math notranslate nohighlight">\(x\)</span> and <span class="math notranslate nohighlight">\(y\)</span>!</p></li>
+</ul>
+</section>
+<section id="orthogonal-least-squares-regression">
+<h3>Orthogonal Least Squares Regression<a class="headerlink" href="#orthogonal-least-squares-regression" title="Link to this heading">#</a></h3>
+<p>If you can’t justify which of your data is dependent and which is independent, <strong>orthogonal least squares</strong> may actually be what you want. In this case, you minimize the orthogonal (perpendicular) distances to the fit line, rather than the vertical distances.</p>
+<div class="tip admonition">
+<p class="admonition-title">Figure / in-class demonstration</p>
+<p><em>Figure Example: Orthogonal Least Squares vs Ordinary Least Squares</em> — a diagram comparing two fits: (left) <strong>ordinary least squares</strong>, minimizing <em>vertical offsets</em>; (right) <strong>orthogonal least squares</strong>, minimizing <em>perpendicular offsets</em>. The two approaches can give different answers.</p>
+</div>
+<p>It just so happens that in 2-dimensions, EOF analysis (to be discussed later) gives you the orthogonal least squares fit. So, in a few weeks, you will be capable of calculating this too.</p>
+<div class="tip admonition">
+<p class="admonition-title">Figure / in-class demonstration</p>
+<p><em>Figure Example: <code class="docutils literal notranslate"><span class="pre">LSQ_OLS.py</span></code></em></p>
+</div>
+</section>
+<section id="filtering-with-linear-regression">
+<h3>Filtering with linear regression<a class="headerlink" href="#filtering-with-linear-regression" title="Link to this heading">#</a></h3>
+<p>Consider the decomposition of a variable <span class="math notranslate nohighlight">\(y\)</span> into a fraction that is linearly congruent with <span class="math notranslate nohighlight">\(x\)</span> and the fraction uncorrelated with <span class="math notranslate nohighlight">\(x\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[y(t) = y(t)_{\text{fitted}} + y(t)_{\text{residual}}\]</div>
+<p>The fit of <span class="math notranslate nohighlight">\(y(t)\)</span> from <span class="math notranslate nohighlight">\(x(t)\)</span> is:</p>
+<div class="math notranslate nohighlight">
+\[y(t)_{\text{fitted}} = a_1 x(t) + a_0, \qquad a_1 = \frac{\overline{x'y'}}{\overline{x'^2}} = r\frac{\sigma_y}{\sigma_x}\]</div>
+<p>If the means of <span class="math notranslate nohighlight">\(y(t)\)</span> and <span class="math notranslate nohighlight">\(x(t)\)</span> are zero:</p>
+<div class="math notranslate nohighlight">
+\[y(t)_{\text{residual}} = y(t) - \frac{\overline{x'y'}}{\overline{x'^2}}\cdot x(t) = y(t) - r\frac{\sigma_y}{\sigma_x}\cdot x(t)\]</div>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(y(t)_{\text{fitted}}\)</span> represents the LSQ fit of <span class="math notranslate nohighlight">\(x(t)\)</span> to <span class="math notranslate nohighlight">\(y(t)\)</span></p></li>
+<li><p>by construction, <span class="math notranslate nohighlight">\(y(t)_{\text{residual}}\)</span> is uncorrelated with <span class="math notranslate nohighlight">\(x(t)\)</span></p></li>
+<li><p>the fraction of variance of <span class="math notranslate nohighlight">\(y(t)\)</span> explained by <span class="math notranslate nohighlight">\(x(t)\)</span> is <span class="math notranslate nohighlight">\(r^2\)</span></p></li>
+<li><p>the fraction of variance of <span class="math notranslate nohighlight">\(y(t)\)</span> not explained by <span class="math notranslate nohighlight">\(x(t)\)</span> is <span class="math notranslate nohighlight">\(1 - r^2\)</span></p></li>
+</ul>
+</section>
+</section>
+<section id="theory-of-correlation-pearson-s-correlation">
+<h2>Theory of Correlation (Pearson’s Correlation)<a class="headerlink" href="#theory-of-correlation-pearson-s-correlation" title="Link to this heading">#</a></h2>
+<section id="statistical-significance-of-correlations">
+<h3>Statistical significance of correlations<a class="headerlink" href="#statistical-significance-of-correlations" title="Link to this heading">#</a></h3>
+<p>The correlation <span class="math notranslate nohighlight">\(r\)</span> between two time series <span class="math notranslate nohighlight">\(x(t)\)</span> and <span class="math notranslate nohighlight">\(y(t)\)</span> gives a measure of how well the two time series vary linearly together. <span class="math notranslate nohighlight">\(-1 \leq r \leq 1\)</span>, with numbers closer to <span class="math notranslate nohighlight">\(\pm1\)</span> implying a stronger linear relationship.</p>
+<p>We denote the sample correlation as <span class="math notranslate nohighlight">\(r\)</span> and the theoretical true value as <span class="math notranslate nohighlight">\(\rho\)</span>.</p>
+<p>If <span class="math notranslate nohighlight">\(\rho = 0\)</span>, we can use the t-statistic:</p>
+<div class="math notranslate nohighlight">
+\[t = r\frac{\sqrt{N-2}}{\sqrt{1-r^2}}\]</div>
+<div class="note admonition">
+<p class="admonition-title">Example: testing the hypothesis that <span class="math notranslate nohighlight">\(\rho = 0\)</span></p>
+<p>We have two time series, each of length 20, correlated at <span class="math notranslate nohighlight">\(r = 0.6\)</span>. Does this exceed the 95% confidence interval under <span class="math notranslate nohighlight">\(H_0: \rho = 0\)</span>?</p>
+<p>We had no prior knowledge of the sign of the correlation, so we use a two-tailed t-test. For <span class="math notranslate nohighlight">\(\nu = N-2 = 18\)</span>, the critical value is <span class="math notranslate nohighlight">\(t_c = 2.1\)</span>.</p>
+<div class="math notranslate nohighlight">
+\[t = 0.6\frac{\sqrt{20-2}}{\sqrt{1-0.6^2}} = 3.18\]</div>
+<p>Since <span class="math notranslate nohighlight">\(t = 3.18 &gt; t_c = 2.1\)</span>, we can reject the null hypothesis.</p>
+</div>
+<div class="note admonition">
+<p class="admonition-title">Example: confidence limits on the true correlation</p>
+<p>What are the 95% confidence limits on the true correlation if you drew 21 samples and obtained <span class="math notranslate nohighlight">\(r = 0.8\)</span>?</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{aligned}
+Z &amp;= \frac{1}{2}\ln\left(\frac{1+0.8}{1-0.8}\right) = 1.099 \\
+\sigma_Z &amp;= \frac{1}{\sqrt{21-3}} = 0.235
+\end{aligned}\end{split}\]</div>
+<p>With <span class="math notranslate nohighlight">\(t_{0.025} = 2.1\)</span> (for <span class="math notranslate nohighlight">\(\nu = 21-3 = 18\)</span>):</p>
+<div class="math notranslate nohighlight">
+\[Z - 2.1\sigma_Z \leq \mu_Z \leq Z + 2.1\sigma_Z \quad \Rightarrow \quad 0.61 \leq \mu_Z \leq 1.59\]</div>
+<p>Converting back to correlation via <span class="math notranslate nohighlight">\(\rho = \tanh(\mu_Z)\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[0.54 \leq \rho \leq 0.92\]</div>
+</div>
+<p>The above statistic only works if the underlying distributions are normal, or if <span class="math notranslate nohighlight">\(N\)</span> is large enough for the CLT to apply (roughly <span class="math notranslate nohighlight">\(N &gt; 20\)</span>).</p>
+<div class="tip admonition">
+<p class="admonition-title">Figure / in-class demonstration</p>
+<p><em>Figure Example: <code class="docutils literal notranslate"><span class="pre">testing_normality_of_correlations.py</span></code></em></p>
+</div>
+<p>If <span class="math notranslate nohighlight">\(\rho \neq 0\)</span>, we must use the <strong>Fisher-Z Transformation</strong>. When the true correlation is not zero, the distribution of <span class="math notranslate nohighlight">\(r\)</span> is not symmetric, so we cannot directly use the normal/t distribution. The Fisher-Z transformation converts <span class="math notranslate nohighlight">\(r\)</span> into a quantity that is approximately normally distributed:</p>
+<div class="math notranslate nohighlight">
+\[Z = \frac{1}{2}\ln\left(\frac{1+r}{1-r}\right) = \tanh^{-1}(r)\]</div>
+<p>The Fisher-Z statistic is normally distributed with:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{aligned}
+\mu_Z &amp;= \frac{1}{2}\ln\left(\frac{1+\rho}{1-\rho}\right) \\
+\sigma_Z &amp;= \frac{1}{\sqrt{N-3}}
+\end{aligned}\end{split}\]</div>
+<p>The confidence bounds for <span class="math notranslate nohighlight">\(Z\)</span> are:</p>
+<div class="math notranslate nohighlight">
+\[Z - t_c\sigma_Z \leq \mu_Z \leq Z + t_c\sigma_Z\]</div>
+<p>To convert back from <span class="math notranslate nohighlight">\(\mu_Z\)</span> to the actual correlation <span class="math notranslate nohighlight">\(\rho\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[\rho = \frac{e^{2\mu_Z} - 1}{e^{2\mu_Z}+1} = \tanh(\mu_Z)\]</div>
+</section>
+<section id="comparing-two-non-zero-sample-correlations">
+<h3>Comparing two non-zero sample correlations<a class="headerlink" href="#comparing-two-non-zero-sample-correlations" title="Link to this heading">#</a></h3>
+<p>To test whether two correlations <span class="math notranslate nohighlight">\(r_1\)</span> (from sample <span class="math notranslate nohighlight">\(N_1\)</span>) and <span class="math notranslate nohighlight">\(r_2\)</span> (from sample <span class="math notranslate nohighlight">\(N_2\)</span>) are significantly different, apply the Fisher-Z to each:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{aligned}
+Z_1 &amp;= \frac{1}{2}\ln\left(\frac{1+r_1}{1-r_1}\right) \\
+Z_2 &amp;= \frac{1}{2}\ln\left(\frac{1+r_2}{1-r_2}\right)
+\end{aligned}\end{split}\]</div>
+<p>Then use the z-score for the difference of means:</p>
+<div class="math notranslate nohighlight">
+\[z = \frac{Z_1 - Z_2 - \delta_{1,2}}{\sigma_{1,2}}, \qquad \sigma_{1,2} = \sqrt{\frac{1}{N_1-3} + \frac{1}{N_2-3}}\]</div>
+<p>where <span class="math notranslate nohighlight">\(\delta_{1,2} = \mu_1 - \mu_2\)</span> is the hypothesized difference (typically 0 if <span class="math notranslate nohighlight">\(H_0: \rho_1 = \rho_2\)</span>).</p>
+</section>
+<section id="spearman-s-rank-correlation">
+<h3>Spearman’s rank correlation<a class="headerlink" href="#spearman-s-rank-correlation" title="Link to this heading">#</a></h3>
+<p>Spearman’s rank correlation is a <strong>nonparametric</strong> test for whether paired data monotonically co-vary. No normality assumption is needed.</p>
+<p>The original data <span class="math notranslate nohighlight">\(x_i\)</span> and <span class="math notranslate nohighlight">\(y_i\)</span> are converted into ranks <span class="math notranslate nohighlight">\(X_i\)</span> and <span class="math notranslate nohighlight">\(Y_i\)</span>, and the correlation is computed on the ranks:</p>
+<div class="math notranslate nohighlight">
+\[\rho_s = \frac{\sum_i (X_i - \overline{X})(Y_i - \overline{Y})}{\sqrt{\sum_i (X_i - \overline{X})^2 \sum_i (Y_i - \overline{Y})^2}}\]</div>
+<p>When there are duplicate values, ranks are set to the average position. The standard error is:</p>
+<div class="math notranslate nohighlight">
+\[\sigma_{\rho_s} = \frac{0.6325}{\sqrt{N-1}}\]</div>
+<p>Significance can be tested using the Fisher-Z test or the t-test (for <span class="math notranslate nohighlight">\(H_0: \rho = 0\)</span>), as for Pearson’s <span class="math notranslate nohighlight">\(r\)</span>.</p>
+<div class="tip admonition">
+<p class="admonition-title">Figure / in-class demonstration</p>
+<p><em>Figure Example: see slides 08_correlation.pdf</em></p>
+</div>
+<p>Note: a second nonparametric method is Kendall’s Tau Rank Correlation — not covered here.</p>
+</section>
+</section>
+<section id="autocorrelation-estimating-the-number-of-independent-samples">
+<h2>Autocorrelation &amp; Estimating the Number of Independent Samples<a class="headerlink" href="#autocorrelation-estimating-the-number-of-independent-samples" title="Link to this heading">#</a></h2>
+<p>Thus far, we have assumed that our time series have no intrinsic memory. Now, we will discuss these assumptions and how to determine the true number of degrees of freedom in an autocorrelated data set.</p>
+<section id="stationarity">
+<h3>Stationarity<a class="headerlink" href="#stationarity" title="Link to this heading">#</a></h3>
+<p>Stationarity implies that the statistics of a time series (mean and higher-order moments) are independent of time — unchanging in time. In general, we will assume this is the case. This means one should <strong>remove any trend</strong> in the data before performing the analysis, using the linear regression method discussed above.</p>
+</section>
+<section id="autocorrelation">
+<h3>Autocorrelation<a class="headerlink" href="#autocorrelation" title="Link to this heading">#</a></h3>
+<p>The <strong>autocovariance function</strong> <span class="math notranslate nohighlight">\(\gamma(\tau)\)</span> is the covariance of a time series with itself at lag <span class="math notranslate nohighlight">\(\tau\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[\gamma(\tau) = \frac{1}{(t_N - \tau) - t_1}\sum_{t=t_1}^{N-\tau}\left[x'(t)\cdot x'(t+\tau)\right]\]</div>
+<div class="tip admonition">
+<p class="admonition-title">Figure / in-class demonstration</p>
+<p><em>Figure Example: Draw out example of how autocovariance works.</em></p>
+</div>
+<p>For a time series with integer positions <span class="math notranslate nohighlight">\(k = 1, 2, \dots, N\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[\gamma(\tau) = \overline{x'(t)\,x'(t+\tau)}\]</div>
+<p>At <span class="math notranslate nohighlight">\(\tau = 0\)</span>: <span class="math notranslate nohighlight">\(\gamma(0) = \overline{x'^2} = \text{variance}\)</span>.</p>
+<p>The <strong>autocorrelation</strong> <span class="math notranslate nohighlight">\(\rho(\tau)\)</span> is <span class="math notranslate nohighlight">\(\gamma(\tau)\)</span> normalized by <span class="math notranslate nohighlight">\(\gamma(0)\)</span> — simply the correlation of a time series with itself at another time.</p>
+<p>Notes:</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(\gamma\)</span> is symmetric about <span class="math notranslate nohighlight">\(\tau = 0\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(-1 \leq \rho(\tau) \leq 1\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\rho(0) = 1\)</span></p></li>
+<li><p>if the time series is not periodic, <span class="math notranslate nohighlight">\(\rho(\tau) \rightarrow 0\)</span> as <span class="math notranslate nohighlight">\(\tau \rightarrow \infty\)</span></p></li>
+</ul>
+<div class="tip admonition">
+<p class="admonition-title">Figure / in-class demonstration</p>
+<p><em>Figure Example: see slides 08_correlation.pdf</em></p>
+</div>
+</section>
+<section id="the-first-order-autoregressive-model-ar1-red-noise">
+<h3>The first-order autoregressive model (AR1 / red noise)<a class="headerlink" href="#the-first-order-autoregressive-model-ar1-red-noise" title="Link to this heading">#</a></h3>
+<p>Also referred to as a “first order Markov process” or “red noise.”</p>
+<p><strong>Red noise:</strong> “today is like yesterday plus noise”</p>
+<div class="math notranslate nohighlight">
+\[x(t) = a\cdot x(t-\Delta t) + b\cdot \epsilon(t)\]</div>
+<p>where:</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(x\)</span> is a standardized variable (zero mean, unit variance)</p></li>
+<li><p><span class="math notranslate nohighlight">\(\Delta t\)</span> is the (constant) time interval between data points</p></li>
+<li><p><span class="math notranslate nohighlight">\(a \in [0,1]\)</span> measures the memory of the previous state</p></li>
+<li><p><span class="math notranslate nohighlight">\(\epsilon(t) \sim \mathcal{N}(0,1)\)</span> is white noise</p></li>
+</ul>
+<p><strong>Deriving <span class="math notranslate nohighlight">\(a\)</span>:</strong> Multiply both sides by <span class="math notranslate nohighlight">\(x(t-\Delta t)\)</span> and time-average:</p>
+<div class="math notranslate nohighlight">
+\[\overline{x(t)\,x(t-\Delta t)} = a\underbrace{\overline{x^2(t-\Delta t)}}_{=1} + b\underbrace{\overline{\epsilon(t)\,x(t-\Delta t)}}_{=0}\]</div>
+<div class="math notranslate nohighlight">
+\[\Rightarrow \quad a = \overline{x(t)\,x(t-\Delta t)} = \rho(\Delta t) = \rho(1)\]</div>
+<p><strong>Deriving <span class="math notranslate nohighlight">\(b\)</span>:</strong> Square both sides and time-average:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{aligned}
+\overline{x^2(t)} &amp;= a^2\overline{x^2(t-\Delta t)} + b^2\overline{\epsilon^2(t)} \\
+1 &amp;= a^2 + b^2 \quad \Rightarrow \quad b = \sqrt{1-a^2}
+\end{aligned}\end{split}\]</div>
+<p><strong>Autocorrelation of red noise:</strong> Multiplying the recursion two steps forward by <span class="math notranslate nohighlight">\(x(t)\)</span> and averaging shows that <span class="math notranslate nohighlight">\(\rho(2\Delta t) = \rho^2(\Delta t)\)</span>, and more generally:</p>
+<div class="math notranslate nohighlight">
+\[\rho(n\Delta t) = \rho^n(\Delta t) = e^{-n\Delta t/T_e}\]</div>
+<p>The autocorrelation decays <strong>exponentially</strong> with an e-folding time:</p>
+<div class="math notranslate nohighlight">
+\[T_e = \frac{-\Delta t}{\ln(a)}\]</div>
+<p>The e-folding time <span class="math notranslate nohighlight">\(T_e\)</span> is the lag at which <span class="math notranslate nohighlight">\(\rho\)</span> drops to <span class="math notranslate nohighlight">\(1/e \approx 0.368\)</span>. For example, if <span class="math notranslate nohighlight">\(\Delta t = 1\)</span> day and <span class="math notranslate nohighlight">\(a = \rho(1) = 0.6\)</span>, then <span class="math notranslate nohighlight">\(T_e = 2\)</span> days.</p>
+</section>
+<section id="white-noise">
+<h3>White noise<a class="headerlink" href="#white-noise" title="Link to this heading">#</a></h3>
+<p>White noise is the special case of AR1 with <span class="math notranslate nohighlight">\(a = 0\)</span> (i.e. <span class="math notranslate nohighlight">\(\rho(\tau &gt; 0) = 0\)</span>). It has equal power at all frequencies and zero autocorrelation — no memory of previous time steps. In geophysics, white noise is generally assumed to be normally distributed.</p>
+<div class="tip admonition">
+<p class="admonition-title">Figure / in-class demonstration</p>
+<p><em>Figure Example: <code class="docutils literal notranslate"><span class="pre">correlation_with_memory_examples.py</span></code></em></p>
+</div>
+</section>
+<section id="effective-sample-size-n">
+<h3>Effective sample size <span class="math notranslate nohighlight">\(N^*\)</span><a class="headerlink" href="#effective-sample-size-n" title="Link to this heading">#</a></h3>
+<p>Persistence in a data set leads to <strong>overestimation of the sample size</strong>, because each data point is not independent of its neighbors. If persistence is ignored, the standard error of the mean is underestimated and the t-statistic is inflated.</p>
+<p>The solution is to introduce an <strong>effective sample size</strong> <span class="math notranslate nohighlight">\(N^* \leq N\)</span> and substitute it for <span class="math notranslate nohighlight">\(N\)</span> in formulas.</p>
+<p>For a first-order AR process, <span class="math notranslate nohighlight">\(N^*\)</span> can be estimated with the <strong>Bretherton/Wilks approximation</strong> (Wilks, p. 127):</p>
+<div class="math notranslate nohighlight">
+\[\frac{N^*}{N} \approx \frac{1-\rho(\Delta t)}{1+\rho(\Delta t)}\]</div>
+<ul class="simple">
+<li><p>if <span class="math notranslate nohighlight">\(\rho(1) = 0\)</span> (white noise): <span class="math notranslate nohighlight">\(N^* = N\)</span></p></li>
+<li><p>as <span class="math notranslate nohighlight">\(\rho(1)\)</span> increases, <span class="math notranslate nohighlight">\(N^*\)</span> decreases</p></li>
+</ul>
+<p>An equivalent form from Leith (<em>J. Appl. Meteor.</em>, 1973):</p>
+<div class="math notranslate nohighlight">
+\[N^* \approx \frac{N\Delta t}{2T_e} = \frac{\text{total record length}}{2 \times \text{e-folding time}}\]</div>
+<p>The factor of 2 reflects the fact that any point in red noise can be predicted by points both before and after it. The Leith formula can also be written as:</p>
+<div class="math notranslate nohighlight">
+\[\frac{N^*}{N} \approx \frac{\ln a}{-2}\]</div>
+<p>The table below shows <span class="math notranslate nohighlight">\(N^*/N\)</span> as a function of lag-1 autocorrelation:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p><span class="math notranslate nohighlight">\(\rho(\Delta t)\)</span></p></th>
+<th class="head"><p><span class="math notranslate nohighlight">\(&lt;0.1\)</span></p></th>
+<th class="head"><p><span class="math notranslate nohighlight">\(0.3\)</span></p></th>
+<th class="head"><p><span class="math notranslate nohighlight">\(0.5\)</span></p></th>
+<th class="head"><p><span class="math notranslate nohighlight">\(0.7\)</span></p></th>
+<th class="head"><p><span class="math notranslate nohighlight">\(0.9\)</span></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(N^*/N\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(\approx 1\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(0.60\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(0.35\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(0.18\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(0.053\)</span></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Bretherton et al. (<em>J. Climate</em>, 1999) proposed a less conservative approximation (use for variance/higher-order moments):</p>
+<div class="math notranslate nohighlight">
+\[\frac{N^*}{N} \approx \frac{1-\rho^2(\Delta t)}{1+\rho^2(\Delta t)}\]</div>
+<p>This yields nearly twice as many degrees of freedom as the Leith formula. For testing the <strong>mean</strong>, use the Leith formula; for testing <strong>variance</strong>, the Bretherton formula may be used.</p>
+<div class="tip admonition">
+<p class="admonition-title">Figure / in-class demonstration</p>
+<p><em>Figure Example: <code class="docutils literal notranslate"><span class="pre">effective_sample_size.py</span></code></em> — plot of <span class="math notranslate nohighlight">\(N^*/N\)</span> vs <span class="math notranslate nohighlight">\(\rho(\Delta t)\)</span> comparing the Leith and Bretherton approximations.</p>
+</div>
+</section>
+</section>
+<section id="multiple-regression-multi-linear-regression">
+<h2>Multiple Regression (Multi-linear Regression)<a class="headerlink" href="#multiple-regression-multi-linear-regression" title="Link to this heading">#</a></h2>
+<p><em>Basic idea:</em> Generalize the regression coefficient derivation to multiple <strong>linear</strong> predictors:</p>
+<div class="math notranslate nohighlight">
+\[\hat{y} = a_0 + a_1 x_1 + a_2 x_2 + \dots + a_n x_n\]</div>
+<p>The fit now lives in a multi-dimensional predictor space.</p>
+<div class="tip admonition">
+<p class="admonition-title">Figure / in-class demonstration</p>
+<p><em>Figure Example: 3-D scatter diagram</em> — points <span class="math notranslate nohighlight">\(\hat{y}\)</span> plotted against two orthogonal predictor axes <span class="math notranslate nohighlight">\(X_1\)</span> and <span class="math notranslate nohighlight">\(X_2\)</span>, with a best-fit plane drawn through the point cloud.</p>
+</div>
+<p>If <span class="math notranslate nohighlight">\(X_1\)</span> and <span class="math notranslate nohighlight">\(X_2\)</span> are <strong>orthogonal</strong> (at right angles):</p>
+<ul class="simple">
+<li><p>they give independent information</p></li>
+<li><p>their inner product is 0</p></li>
+<li><p>if they span the space, they “form a basis”</p></li>
+</ul>
+<p>If <span class="math notranslate nohighlight">\(X_1\)</span> and <span class="math notranslate nohighlight">\(X_2\)</span> are <strong>not orthogonal</strong>:</p>
+<ul class="simple">
+<li><p>they are not independent and share redundant information</p></li>
+</ul>
+<p>The usefulness of independent predictors motivates EOF analysis (to be discussed later).</p>
+<section id="generalized-normal-equations">
+<h3>Generalized normal equations<a class="headerlink" href="#generalized-normal-equations" title="Link to this heading">#</a></h3>
+<p>For multiple predictors <span class="math notranslate nohighlight">\(x_1, x_2, \dots, x_n\)</span>, minimize:</p>
+<div class="math notranslate nohighlight">
+\[Q = \sum_{i=1}^{N}\left(a_0 + a_1 x_{1,i} + a_2 x_{2,i} + \dots + a_n x_{n,i} - y_i\right)^2\]</div>
+<p>Setting <span class="math notranslate nohighlight">\(\partial Q/\partial a_i = 0\)</span> for <span class="math notranslate nohighlight">\(i = 0, \dots, n\)</span> gives <span class="math notranslate nohighlight">\(n+1\)</span> equations. If the mean has been removed from all variables (<span class="math notranslate nohighlight">\(a_0 = 0\)</span>), the <span class="math notranslate nohighlight">\(j\)</span>th equation is:</p>
+<div class="math notranslate nohighlight">
+\[\overline{x_j y} = \sum_{i=1}^{n} a_i \overline{x_j x_i}\]</div>
+<p>In matrix form:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\underbrace{\begin{bmatrix}
+\overline{x_1^2} &amp; \overline{x_1 x_2} &amp; \cdots \\
+\overline{x_2 x_1} &amp; \overline{x_2^2} &amp; \cdots \\
+\vdots &amp; &amp; \ddots
+\end{bmatrix}}_{\mathbf{C}_{xx}}
+\underbrace{\begin{bmatrix} a_1 \\ a_2 \\ \vdots \end{bmatrix}}_{\mathbf{a}}
+=
+\underbrace{\begin{bmatrix} \overline{x_1 y} \\ \overline{x_2 y} \\ \vdots \end{bmatrix}}_{\mathbf{C}_{xy}}\end{split}\]</div>
+<p>Or compactly: <span class="math notranslate nohighlight">\(C_{x_i x_j}\, a_j = C_{x_i y}\)</span></p>
+<p>Key observations:</p>
+<ol class="arabic simple">
+<li><p>The left-hand side <span class="math notranslate nohighlight">\(\mathbf{C}_{xx}\)</span> is the <strong>covariance matrix</strong> of the predictors (diagonal = variances, off-diagonal = covariances)</p></li>
+<li><p>The right-hand side <span class="math notranslate nohighlight">\(\mathbf{C}_{xy}\)</span> is the <strong>covariance vector</strong> between predictors and predictand</p></li>
+<li><p>If each variable is standardized, <span class="math notranslate nohighlight">\(\mathbf{C}_{xx}\)</span> becomes the <strong>correlation matrix</strong> and <span class="math notranslate nohighlight">\(\mathbf{C}_{xy}\)</span> the <strong>correlation vector</strong></p></li>
+<li><p>If predictors are linearly independent, off-diagonal elements are 0 and the <span class="math notranslate nohighlight">\(a_j\)</span>’s can be found algebraically</p></li>
+<li><p>Otherwise, solve via matrix inversion:</p></li>
+</ol>
+<div class="math notranslate nohighlight">
+\[\mathbf{a} = \mathbf{C}_{xx}^{-1}\,\mathbf{C}_{xy}\]</div>
+</section>
+<section id="multiple-regression-how-many-predictors-should-i-use">
+<h3>Multiple regression — how many predictors should I use?<a class="headerlink" href="#multiple-regression-how-many-predictors-should-i-use" title="Link to this heading">#</a></h3>
+<p>Assuming all variables are standardized, the normal equations become <span class="math notranslate nohighlight">\(r(x_i, x_j)\,a_i = r(x_j, y)\)</span>. For two predictors:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{bmatrix} 1 &amp; r_{1,2} \\ r_{1,2} &amp; 1 \end{bmatrix}
+\begin{bmatrix} a_1 \\ a_2 \end{bmatrix}
+=
+\begin{bmatrix} r_{1,y} \\ r_{2,y} \end{bmatrix}\end{split}\]</div>
+<p>Solving:</p>
+<div class="math notranslate nohighlight">
+\[a_1 = \frac{r_{1,y} - r_{1,2}r_{2,y}}{1 - r_{1,2}^2}, \qquad a_2 = \frac{r_{2,y} - r_{1,2}r_{1,y}}{1 - r_{1,2}^2}\]</div>
+<p>The total fraction of explained variance (<span class="math notranslate nohighlight">\(R^2\)</span>) with two predictors:</p>
+<div class="math notranslate nohighlight">
+\[R^2 = \frac{r_{1,y}^2 + r_{2,y}^2 - 2r_{1,y}r_{2,y}r_{1,2}}{1 - r_{1,2}^2}\]</div>
+<div class="note admonition">
+<p class="admonition-title">Example: does adding a second predictor help?</p>
+<p>Say <span class="math notranslate nohighlight">\(r_{1,y} = r_{2,y} = r_{1,2} = 0.5\)</span>.</p>
+<p>With only <span class="math notranslate nohighlight">\(x_1\)</span>: <span class="math notranslate nohighlight">\(R_1^2 = r_{1,y}^2 = 0.25\)</span></p>
+<p>Adding <span class="math notranslate nohighlight">\(x_2\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[R_{1,2}^2 = \frac{0.5^2 + 0.5^2 - 2\times 0.5\times 0.5\times 0.5}{1-0.5^2} = 0.33\]</div>
+<p>Adding <span class="math notranslate nohighlight">\(x_2\)</span> increases the explained variance from 25% to 33%. ✓</p>
+<p>Now suppose <span class="math notranslate nohighlight">\(r_{2,y} = 0.25\)</span> (everything else the same):</p>
+<div class="math notranslate nohighlight">
+\[R_{1,2}^2 = \frac{0.5^2 + 0.25^2 - 2\times 0.5\times 0.25\times 0.5}{1-0.5^2} = 0.25\]</div>
+<p>Adding <span class="math notranslate nohighlight">\(x_2\)</span> adds <strong>nothing</strong>. The minimum useful correlation for <span class="math notranslate nohighlight">\(x_2\)</span> is:</p>
+<div class="math notranslate nohighlight">
+\[|r(x_2,y)|_{\text{min}} &gt; |r(x_1,y)\cdot r(x_1,x_2)| = 0.5\times 0.5 = 0.25\]</div>
+<p>So <span class="math notranslate nohighlight">\(r_{2,y}\)</span> must exceed 0.25 to be worth adding.</p>
+</div>
+<p>Key guidelines:</p>
+<ul class="simple">
+<li><p>Ideal case: <span class="math notranslate nohighlight">\(r_{1,2} = 0\)</span> — two completely independent predictors</p></li>
+<li><p>Worst case: <span class="math notranslate nohighlight">\(r_{1,2} = 1\)</span> — <span class="math notranslate nohighlight">\(x_2\)</span> provides no new information</p></li>
+<li><p>Adding too many predictors can lead to <strong>overfitting</strong> — fitting the noise rather than the signal. Always use as few predictors as possible and test the fit on <strong>independent data</strong>.</p></li>
+</ul>
+<div class="tip admonition">
+<p class="admonition-title">Figure / in-class demonstration</p>
+<p><em>Figure Example: Adjusted <span class="math notranslate nohighlight">\(R^2\)</span></em> — see <a class="reference external" href="https://en.wikipedia.org/wiki/Coefficient_of_determination#Adjusted_R2">https://en.wikipedia.org/wiki/Coefficient_of_determination#Adjusted_R2</a></p>
+</div>
+</section>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./Regression"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="../General_statistical_test/Origin_of_Statisics.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Week 1-4: Rule101</p>
+      </div>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#linear-regression">Linear Regression</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#how-good-is-the-fit">How good is the fit?</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#relationship-between-the-slope-and-the-correlation-coefficient">Relationship between the slope and the correlation coefficient</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#general-comments-on-linear-regression">General comments on linear regression</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#orthogonal-least-squares-regression">Orthogonal Least Squares Regression</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#filtering-with-linear-regression">Filtering with linear regression</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#theory-of-correlation-pearson-s-correlation">Theory of Correlation (Pearson’s Correlation)</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#statistical-significance-of-correlations">Statistical significance of correlations</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#comparing-two-non-zero-sample-correlations">Comparing two non-zero sample correlations</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#spearman-s-rank-correlation">Spearman’s rank correlation</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#autocorrelation-estimating-the-number-of-independent-samples">Autocorrelation &amp; Estimating the Number of Independent Samples</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stationarity">Stationarity</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#autocorrelation">Autocorrelation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-first-order-autoregressive-model-ar1-red-noise">The first-order autoregressive model (AR1 / red noise)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#white-noise">White noise</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#effective-sample-size-n">Effective sample size <span class="math notranslate nohighlight">\(N^*\)</span></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#multiple-regression-multi-linear-regression">Multiple Regression (Multi-linear Regression)</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#generalized-normal-equations">Generalized normal equations</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#multiple-regression-how-many-predictors-should-i-use">Multiple regression — how many predictors should I use?</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By The Jupyter Book Community
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2023.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

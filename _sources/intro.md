@@ -31,3 +31,12 @@ Throughout the notes, two types of highlighted boxes are used:
 * **Compositing**
 * **Other common distributions**
 * **Non-parametric tests**
+
+### Part II: Regression & Time Series
+
+**{ref}`Regression`** — Week 5-8: Regression & AR1
+
+* **Linear regression: least squares, slope & intercept**
+* **Theory of correlation: Pearson's r, Fisher-Z, Spearman's rank**
+* **Autocorrelation & effective sample size: AR1/red noise, Leith & Bretherton**
+* **Multiple regression: generalized normal equations, overfitting**
