@@ -390,7 +390,6 @@
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#autocorrelation">Autocorrelation</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-first-order-autoregressive-model-ar1-red-noise">The first-order autoregressive model (AR1 / red noise)</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#white-noise">White noise</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#effective-sample-size-n">Effective sample size <span class="math notranslate nohighlight">\(N^*\)</span></a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#multiple-regression-multi-linear-regression">Multiple Regression (Multi-linear Regression)</a><ul class="nav section-nav flex-column">
@@ -867,6 +866,56 @@ Z_2 &amp;= \frac{1}{2}\ln\left(\frac{1+r_2}{1-r_2}\right)
 <p>starting from <span class="math notranslate nohighlight">\(\mathbf{x}_T \sim \mathcal{N}(\mathbf{0},\mathbf{I})\)</span> and working backwards to <span class="math notranslate nohighlight">\(\mathbf{x}_0\)</span>.</p>
 <p><strong>Application to downscaling</strong></p>
 <p>For climate downscaling, <span class="math notranslate nohighlight">\(\mathbf{x}_0\)</span> is a high-resolution field (e.g., 1 km precipitation) and the U-Net is <strong>conditioned</strong> on a low-resolution field <span class="math notranslate nohighlight">\(\mathbf{y}\)</span> (e.g., 25 km GCM output). The model learns the conditional distribution <span class="math notranslate nohighlight">\(p(\mathbf{x}_0 \mid \mathbf{y})\)</span>, allowing it to generate statistically realistic high-resolution fields consistent with the coarse model output.</p>
+<p><strong>Why conditioning is necessary — and how it maps onto <span class="math notranslate nohighlight">\(r^2\)</span></strong></p>
+<p>A natural objection: if the forward process destroys everything (<span class="math notranslate nohighlight">\(\mathbf{x}_T\)</span> is pure noise regardless of <span class="math notranslate nohighlight">\(\mathbf{x}_0\)</span>), how can the reverse process know what is signal and what is noise? The answer has two parts, and it is worth keeping them separate:</p>
+<ol class="arabic simple">
+<li><p><strong>The learned prior tells the model what data looks like.</strong> The trained network is (up to scaling) an estimate of the score of the noisy data distribution, <span class="math notranslate nohighlight">\(\boldsymbol{\epsilon}_\theta(\mathbf{x}_t,t) \approx -\sqrt{1-\bar\alpha_t}\,\nabla_{\mathbf{x}}\log p_t(\mathbf{x}_t)\)</span>, so that by Tweedie’s formula
+$<span class="math notranslate nohighlight">\(\mathbb{E}[\mathbf{x}_0\mid\mathbf{x}_t] = \frac{\mathbf{x}_t - \sqrt{1-\bar{\alpha}_t}\,\boldsymbol{\epsilon}_\theta(\mathbf{x}_t,t)}{\sqrt{\bar{\alpha}_t}}\)</span><span class="math notranslate nohighlight">\(
+&quot;Signal&quot; is defined as *the direction of the training-data manifold*. This is why **unconditional** diffusion models work at all — no conditioning input is required to generate a realistic field. (The network is always conditioned on \)</span>t$, but that only tells it the current noise level.)</p></li>
+<li><p><strong>The conditioning tells the model which realization.</strong> An unconditional model produces <em>a</em> plausible field, never <em>the</em> field behind a particular observation — that information was destroyed. To reconstruct, we must sample <span class="math notranslate nohighlight">\(p(\mathbf{x}_0\mid\mathbf{y})\)</span> rather than <span class="math notranslate nohighlight">\(p(\mathbf{x}_0)\)</span>.</p></li>
+</ol>
+<p>The connection to everything above is exact. Ordinary least squares returns <span class="math notranslate nohighlight">\(\mathbb{E}[y\mid x]\)</span> — the <em>conditional mean</em>, a single best estimate whose variance is only <span class="math notranslate nohighlight">\(r^2\sigma_y^2\)</span>. The residual <span class="math notranslate nohighlight">\((1-r^2)\sigma_y^2\)</span> is discarded, which is precisely why regression-based downscaling produces fields that are too smooth. A conditional diffusion model learns the <em>full</em> conditional distribution, so it restores the <span class="math notranslate nohighlight">\((1-r^2)\)</span> fraction — not as white noise, but with the spatial and temporal structure learned from data:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p></p></th>
+<th class="head"><p>what it returns</p></th>
+<th class="head"><p>variance</p></th>
+<th class="head"><p>tied to this <span class="math notranslate nohighlight">\(\mathbf{y}\)</span>?</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Unconditional diffusion</p></td>
+<td><p>a draw from <span class="math notranslate nohighlight">\(p(\mathbf{x}_0)\)</span></p></td>
+<td><p>correct</p></td>
+<td><p><strong>no</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p>Regression / OLS</p></td>
+<td><p><span class="math notranslate nohighlight">\(\mathbb{E}[\mathbf{x}_0\mid\mathbf{y}]\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(r^2\sigma^2\)</span> — <strong>too smooth</strong></p></td>
+<td><p>yes</p></td>
+</tr>
+<tr class="row-even"><td><p>Conditional diffusion</p></td>
+<td><p>a draw from <span class="math notranslate nohighlight">\(p(\mathbf{x}_0\mid\mathbf{y})\)</span></p></td>
+<td><p>correct</p></td>
+<td><p>yes</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>In short: <strong>regression gives the best guess; conditional diffusion gives a plausible draw.</strong> The prior narrows the possibilities from “any array of numbers” to “realistic weather”; the conditioning narrows them further to “realistic weather consistent with this particular day.”</p>
+<div class="tip admonition">
+<p class="admonition-title">Figure / in-class demonstration</p>
+<p><em>Figure: <code class="docutils literal notranslate"><span class="pre">conditional_diffusion_demo.py</span></code></em> — a 1-D toy downscaling problem in which the prior is AR1 red noise (<span class="math notranslate nohighlight">\(\alpha=0.85\)</span>, <span class="math notranslate nohighlight">\(n=240\)</span>), so the “neural network” <span class="math notranslate nohighlight">\(\boldsymbol{\epsilon}_\theta\)</span> is available in <strong>closed form</strong> and a genuine DDPM reverse loop can be run with no training. The coarse “GCM” field is the block mean over 12 points, which explains <span class="math notranslate nohighlight">\(r^2 = 0.63\)</span> of the variance.</p>
+<figure class="align-center" id="id3">
+<a class="reference internal image-reference" href="../_images/conditional_diffusion_demo.png"><img alt="../_images/conditional_diffusion_demo.png" src="../_images/conditional_diffusion_demo.png" style="width: 100%;" />
+</a>
+<figcaption>
+<p><span class="caption-number">Fig. 2 </span><span class="caption-text">Unconditional vs. regression vs. conditional reconstruction of an AR1 field from its block means. <strong>(1)</strong> The unconditional diffusion sample has the correct variance (0.92) but correlates with the truth at only <span class="math notranslate nohighlight">\(+0.002\)</span> — statistically perfect, informationally useless. <strong>(2)</strong> The regression mean <span class="math notranslate nohighlight">\(\mathbb{E}[x_0|y]\)</span> locates the signal well (corr <span class="math notranslate nohighlight">\(+0.86\)</span>) but its variance is <span class="math notranslate nohighlight">\(0.61 \approx r^2 = 0.63\)</span>; the shading shows the discarded <span class="math notranslate nohighlight">\(1-r^2\)</span>. <strong>(3)</strong> Conditional diffusion samples honour the coarse field exactly <em>and</em> recover the full variance (0.96), matching the analytic <span class="math notranslate nohighlight">\(p(x_0|y)\)</span>.</span><a class="headerlink" href="#id3" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<p>Note that the correlation with the truth <em>drops</em> from 0.86 to 0.66 when the residual variance is added back. The conditional sample is a <strong>worse point estimate</strong> than the regression mean but a <strong>better field</strong>, because it has the correct spectrum. This is the same bias–variance trade that motivates using <span class="math notranslate nohighlight">\(\hat y\)</span> for prediction but <span class="math notranslate nohighlight">\(\hat y + \text{residual}\)</span> for anything requiring realistic variability (extremes, thresholds, spatial gradients).</p>
+</div>
+</div>
 <p><strong>Summary of the AR1–diffusion connection</strong></p>
 <div class="pst-scrollable-table-container"><table class="table">
 <thead>
@@ -890,14 +939,18 @@ Z_2 &amp;= \frac{1}{2}\ln\left(\frac{1+r_2}{1-r_2}\right)
 <tr class="row-even"><td><p>Stationary variance = 1</p></td>
 <td><p>Unit variance of the noise prior</p></td>
 </tr>
+<tr class="row-odd"><td><p>Fitted part <span class="math notranslate nohighlight">\(y_{\text{fitted}}\)</span> (the <span class="math notranslate nohighlight">\(r^2\)</span> fraction)</p></td>
+<td><p>Conditional mean <span class="math notranslate nohighlight">\(\mathbb{E}[\mathbf{x}_0\mid\mathbf{y}]\)</span></p></td>
+</tr>
+<tr class="row-even"><td><p>Residual <span class="math notranslate nohighlight">\(y_{\text{residual}}\)</span> (the <span class="math notranslate nohighlight">\(1-r^2\)</span> fraction)</p></td>
+<td><p>Stochastic part of the reverse process</p></td>
+</tr>
 </tbody>
 </table>
 </div>
 <p>The key innovation of diffusion models is not the forward AR(1) process — that is just Gaussian noise addition — but the learned <em>reverse</em> process, which turns pure noise back into structured data. The statistical machinery of AR1 you learned here is the exact mathematical foundation.</p>
-</div>
-</section>
-<section id="effective-sample-size-n">
-<h3>Effective sample size <span class="math notranslate nohighlight">\(N^*\)</span><a class="headerlink" href="#effective-sample-size-n" title="Link to this heading">#</a></h3>
+<div class="docutils">
+<h3 class="rubric" id="effective-sample-size-n">Effective sample size <span class="math notranslate nohighlight">\(N^*\)</span></h3>
 <p>Persistence in a data set leads to <strong>overestimation of the sample size</strong>, because each data point is not independent of its neighbors. If persistence is ignored, the standard error of the mean is underestimated and the t-statistic is inflated.</p>
 <p>The solution is to introduce an <strong>effective sample size</strong> <span class="math notranslate nohighlight">\(N^* \leq N\)</span> and substitute it for <span class="math notranslate nohighlight">\(N\)</span> in formulas.</p>
 <p>For a first-order AR process, <span class="math notranslate nohighlight">\(N^*\)</span> can be estimated with the <strong>Bretherton/Wilks approximation</strong> (Wilks, p. 127):</p>
@@ -942,6 +995,7 @@ Z_2 &amp;= \frac{1}{2}\ln\left(\frac{1+r_2}{1-r_2}\right)
 <div class="tip admonition">
 <p class="admonition-title">Figure / in-class demonstration</p>
 <p><em>Figure Example: <code class="docutils literal notranslate"><span class="pre">effective_sample_size.py</span></code></em> — plot of <span class="math notranslate nohighlight">\(N^*/N\)</span> vs <span class="math notranslate nohighlight">\(\rho(\Delta t)\)</span> comparing the Leith and Bretherton approximations.</p>
+</div>
 </div>
 </section>
 </section>
@@ -1122,7 +1176,6 @@ Z_2 &amp;= \frac{1}{2}\ln\left(\frac{1+r_2}{1-r_2}\right)
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#autocorrelation">Autocorrelation</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-first-order-autoregressive-model-ar1-red-noise">The first-order autoregressive model (AR1 / red noise)</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#white-noise">White noise</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#effective-sample-size-n">Effective sample size <span class="math notranslate nohighlight">\(N^*\)</span></a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#multiple-regression-multi-linear-regression">Multiple Regression (Multi-linear Regression)</a><ul class="nav section-nav flex-column">

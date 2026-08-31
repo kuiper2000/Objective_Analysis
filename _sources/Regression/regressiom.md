@@ -499,6 +499,38 @@ starting from $\mathbf{x}_T \sim \mathcal{N}(\mathbf{0},\mathbf{I})$ and working
 
 For climate downscaling, $\mathbf{x}_0$ is a high-resolution field (e.g., 1 km precipitation) and the U-Net is **conditioned** on a low-resolution field $\mathbf{y}$ (e.g., 25 km GCM output). The model learns the conditional distribution $p(\mathbf{x}_0 \mid \mathbf{y})$, allowing it to generate statistically realistic high-resolution fields consistent with the coarse model output.
 
+**Why conditioning is necessary — and how it maps onto $r^2$**
+
+A natural objection: if the forward process destroys everything ($\mathbf{x}_T$ is pure noise regardless of $\mathbf{x}_0$), how can the reverse process know what is signal and what is noise? The answer has two parts, and it is worth keeping them separate:
+
+1. **The learned prior tells the model what data looks like.** The trained network is (up to scaling) an estimate of the score of the noisy data distribution, $\boldsymbol{\epsilon}_\theta(\mathbf{x}_t,t) \approx -\sqrt{1-\bar\alpha_t}\,\nabla_{\mathbf{x}}\log p_t(\mathbf{x}_t)$, so that by Tweedie's formula
+   $$\mathbb{E}[\mathbf{x}_0\mid\mathbf{x}_t] = \frac{\mathbf{x}_t - \sqrt{1-\bar{\alpha}_t}\,\boldsymbol{\epsilon}_\theta(\mathbf{x}_t,t)}{\sqrt{\bar{\alpha}_t}}$$
+   "Signal" is defined as *the direction of the training-data manifold*. This is why **unconditional** diffusion models work at all — no conditioning input is required to generate a realistic field. (The network is always conditioned on $t$, but that only tells it the current noise level.)
+2. **The conditioning tells the model which realization.** An unconditional model produces *a* plausible field, never *the* field behind a particular observation — that information was destroyed. To reconstruct, we must sample $p(\mathbf{x}_0\mid\mathbf{y})$ rather than $p(\mathbf{x}_0)$.
+
+The connection to everything above is exact. Ordinary least squares returns $\mathbb{E}[y\mid x]$ — the *conditional mean*, a single best estimate whose variance is only $r^2\sigma_y^2$. The residual $(1-r^2)\sigma_y^2$ is discarded, which is precisely why regression-based downscaling produces fields that are too smooth. A conditional diffusion model learns the *full* conditional distribution, so it restores the $(1-r^2)$ fraction — not as white noise, but with the spatial and temporal structure learned from data:
+
+| | what it returns | variance | tied to this $\mathbf{y}$? |
+|---|---|---|---|
+| Unconditional diffusion | a draw from $p(\mathbf{x}_0)$ | correct | **no** |
+| Regression / OLS | $\mathbb{E}[\mathbf{x}_0\mid\mathbf{y}]$ | $r^2\sigma^2$ — **too smooth** | yes |
+| Conditional diffusion | a draw from $p(\mathbf{x}_0\mid\mathbf{y})$ | correct | yes |
+
+In short: **regression gives the best guess; conditional diffusion gives a plausible draw.** The prior narrows the possibilities from "any array of numbers" to "realistic weather"; the conditioning narrows them further to "realistic weather consistent with this particular day."
+
+:::{admonition} Figure / in-class demonstration
+:class: tip
+*Figure: `conditional_diffusion_demo.py`* — a 1-D toy downscaling problem in which the prior is AR1 red noise ($\alpha=0.85$, $n=240$), so the "neural network" $\boldsymbol{\epsilon}_\theta$ is available in **closed form** and a genuine DDPM reverse loop can be run with no training. The coarse "GCM" field is the block mean over 12 points, which explains $r^2 = 0.63$ of the variance.
+
+```{figure} conditional_diffusion_demo.png
+:width: 100%
+:align: center
+Unconditional vs. regression vs. conditional reconstruction of an AR1 field from its block means. **(1)** The unconditional diffusion sample has the correct variance (0.92) but correlates with the truth at only $+0.002$ — statistically perfect, informationally useless. **(2)** The regression mean $\mathbb{E}[x_0|y]$ locates the signal well (corr $+0.86$) but its variance is $0.61 \approx r^2 = 0.63$; the shading shows the discarded $1-r^2$. **(3)** Conditional diffusion samples honour the coarse field exactly *and* recover the full variance (0.96), matching the analytic $p(x_0|y)$.
+```
+
+Note that the correlation with the truth *drops* from 0.86 to 0.66 when the residual variance is added back. The conditional sample is a **worse point estimate** than the regression mean but a **better field**, because it has the correct spectrum. This is the same bias–variance trade that motivates using $\hat y$ for prediction but $\hat y + \text{residual}$ for anything requiring realistic variability (extremes, thresholds, spatial gradients).
+:::
+
 **Summary of the AR1–diffusion connection**
 
 | AR(1) concept | Diffusion model equivalent |
@@ -508,6 +540,8 @@ For climate downscaling, $\mathbf{x}_0$ is a high-resolution field (e.g., 1 km p
 | $a^n$ (n-step autocorrelation) | $\sqrt{\bar{\alpha}_t}$ |
 | White noise limit ($a \to 0$) | $\mathbf{x}_T \to \mathcal{N}(\mathbf{0},\mathbf{I})$ as $T\to\infty$ |
 | Stationary variance = 1 | Unit variance of the noise prior |
+| Fitted part $y_{\text{fitted}}$ (the $r^2$ fraction) | Conditional mean $\mathbb{E}[\mathbf{x}_0\mid\mathbf{y}]$ |
+| Residual $y_{\text{residual}}$ (the $1-r^2$ fraction) | Stochastic part of the reverse process |
 
 The key innovation of diffusion models is not the forward AR(1) process — that is just Gaussian noise addition — but the learned *reverse* process, which turns pure noise back into structured data. The statistical machinery of AR1 you learned here is the exact mathematical foundation.
 :::
