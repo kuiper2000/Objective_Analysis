@@ -262,11 +262,11 @@ where $t_{N^*-p,\,\alpha/2}$ is the t-critical value with $N^*-p$ degrees of fre
 ```{figure} nonlinear_snr.png
 :width: 100%
 :align: center
-Signal-to-noise ratio for linear vs. quadratic trend fits with AR1 noise. Orange shading = naive CI using $N$; blue shading = corrected CI using $N^*$ (Leith formula). The quadratic fit achieves a higher SNR and its CI correctly brackets the true forced response (green dashed).
+95% CI (gray shading) for a quadratic forced trend $f(t)=a_2 t^2$ embedded in AR1 noise ($\alpha=0.70$). Each panel uses the same single realization (gray dots), with the blue dots indicating the data window used for fitting. The fitted quadratic trend (red) is compared to the true forced response (green dashed), which is exactly zero at $t=0$. The CI is wide and overlaps zero for short records ($T=10, 30$ yr — signal undetected), but narrows progressively until the forced response clearly emerges from noise ($T=60, 100$ yr — signal detected). The CI width uses the hat-matrix leverage inflated by $\sqrt{T/N^*}$ to account for AR1 autocorrelation.
 ```
 :::
 
-This framework was applied to detecting the forced response of atmospheric rivers under greenhouse warming in {cite:t}`Ruan2021`, who showed that a second-order polynomial fit combined with an AR1 noise model can identify the time of emergence of a forced signal even from a single model realization — without needing a large ensemble.
+This framework was applied to detecting the forced response of atmospheric rivers under greenhouse warming in {cite:t}`Tseng2021`, who showed that a second-order polynomial fit combined with an AR1 noise model can identify the time of emergence of a forced signal even from a single model realization — without needing a large ensemble.
 
 :::{admonition} Example / deeper dive
 :class: note
