@@ -466,6 +466,52 @@ White noise is the special case of AR1 with $a = 0$ (i.e. $\rho(\tau > 0) = 0$).
 *Figure Example: `correlation_with_memory_examples.py`*
 :::
 
+:::{admonition} Side note: diffusion models in machine learning and their connection to AR processes
+:class: note
+
+**Diffusion models** (also called Denoising Diffusion Probabilistic Models, DDPMs) have become the dominant generative model architecture in machine learning — used for image synthesis, weather downscaling, and bias correction. At their core, they are built on a process that is mathematically identical to AR(1).
+
+**The forward process — adding noise step by step**
+
+Given a data sample $\mathbf{x}_0$ (e.g., a high-resolution precipitation field), a diffusion model defines a sequence of increasingly noisy versions $\mathbf{x}_1, \mathbf{x}_2, \dots, \mathbf{x}_T$:
+
+$$\mathbf{x}_t = \sqrt{1-\beta_t}\,\mathbf{x}_{t-1} + \sqrt{\beta_t}\,\boldsymbol{\epsilon}_t, \qquad \boldsymbol{\epsilon}_t \sim \mathcal{N}(\mathbf{0}, \mathbf{I})$$
+
+where $\beta_t \in (0,1)$ is a **noise schedule** (a small, pre-defined sequence that increases with $t$). This is **exactly an AR(1) process** with time-varying coefficient $a_t = \sqrt{1-\beta_t}$ and noise amplitude $\sqrt{\beta_t}$.
+
+By the end of the forward chain ($t = T$, typically $T = 1000$ steps), $\mathbf{x}_T \approx \mathcal{N}(\mathbf{0}, \mathbf{I})$ — pure Gaussian noise, regardless of what $\mathbf{x}_0$ was.
+
+Using the telescoping property of AR(1), one can skip directly to any step:
+
+$$\mathbf{x}_t = \sqrt{\bar{\alpha}_t}\,\mathbf{x}_0 + \sqrt{1-\bar{\alpha}_t}\,\boldsymbol{\epsilon}, \qquad \bar{\alpha}_t = \prod_{s=1}^{t}(1-\beta_s)$$
+
+This is the closed-form solution for the AR(1) recursion: $\bar{\alpha}_t$ plays the role of $a^t$ (the t-step autocorrelation) in our notation.
+
+**The reverse process — learning to denoise**
+
+The model learns the reverse: given $\mathbf{x}_t$, predict $\mathbf{x}_{t-1}$ (i.e., remove one step of noise). This reverse distribution is intractable analytically, so a neural network (usually a **U-Net**) $\boldsymbol{\epsilon}_\theta(\mathbf{x}_t, t)$ is trained to predict the noise $\boldsymbol{\epsilon}$ that was added at step $t$. Sampling then iterates:
+
+$$\mathbf{x}_{t-1} = \frac{1}{\sqrt{1-\beta_t}}\!\left(\mathbf{x}_t - \frac{\beta_t}{\sqrt{1-\bar{\alpha}_t}}\,\boldsymbol{\epsilon}_\theta(\mathbf{x}_t, t)\right) + \sqrt{\beta_t}\,\mathbf{z}, \qquad \mathbf{z} \sim \mathcal{N}(\mathbf{0},\mathbf{I})$$
+
+starting from $\mathbf{x}_T \sim \mathcal{N}(\mathbf{0},\mathbf{I})$ and working backwards to $\mathbf{x}_0$.
+
+**Application to downscaling**
+
+For climate downscaling, $\mathbf{x}_0$ is a high-resolution field (e.g., 1 km precipitation) and the U-Net is **conditioned** on a low-resolution field $\mathbf{y}$ (e.g., 25 km GCM output). The model learns the conditional distribution $p(\mathbf{x}_0 \mid \mathbf{y})$, allowing it to generate statistically realistic high-resolution fields consistent with the coarse model output.
+
+**Summary of the AR1–diffusion connection**
+
+| AR(1) concept | Diffusion model equivalent |
+|---|---|
+| $a = \sqrt{1-\beta}$ (memory coefficient) | Noise schedule $\beta_t$ |
+| $b = \sqrt{1-a^2}$ (noise amplitude) | $\sqrt{\beta_t}$ |
+| $a^n$ (n-step autocorrelation) | $\sqrt{\bar{\alpha}_t}$ |
+| White noise limit ($a \to 0$) | $\mathbf{x}_T \to \mathcal{N}(\mathbf{0},\mathbf{I})$ as $T\to\infty$ |
+| Stationary variance = 1 | Unit variance of the noise prior |
+
+The key innovation of diffusion models is not the forward AR(1) process — that is just Gaussian noise addition — but the learned *reverse* process, which turns pure noise back into structured data. The statistical machinery of AR1 you learned here is the exact mathematical foundation.
+:::
+
 ### Effective sample size $N^*$
 
 Persistence in a data set leads to **overestimation of the sample size**, because each data point is not independent of its neighbors. If persistence is ignored, the standard error of the mean is underestimated and the t-statistic is inflated.
