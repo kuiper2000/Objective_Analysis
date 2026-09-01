@@ -606,6 +606,63 @@ In `conditional_diffusion_demo.py` the data distribution is deliberately chosen 
 If the network learned the score of $p_t$ *perfectly*, it would reproduce the training fields exactly and generate nothing new — because the score of a KDE points back at the samples used to build it. Real diffusion models generalise only because a finite network cannot fit that target exactly. Perfect optimisation of the training objective would be memorisation; useful generation is a controlled failure to reach it. This is worth remembering before trusting a generative downscaling product to produce genuinely unseen extremes.
 :::
 
+**Where the score–noise identity comes from**
+
+The relation $\boldsymbol{\epsilon}_\theta(\mathbf{x}_t,t) \approx -\sqrt{1-\bar\alpha_t}\,\nabla_{\mathbf{x}}\log p_t(\mathbf{x}_t)$ used above looks mysterious, but it is two lines of calculus followed by a result you have already proved in this chapter.
+
+*Step 1 — if you knew $\mathbf{x}_0$, it is just the derivative of a Gaussian.* Recall $\boldsymbol{\epsilon} = (\mathbf{x}_t - \sqrt{\bar\alpha_t}\mathbf{x}_0)/\sqrt{1-\bar\alpha_t}$. For a *known* starting point, $q(\mathbf{x}_t\mid\mathbf{x}_0)$ is an ordinary Gaussian, so
+
+$$\nabla_{\mathbf{x}_t}\log q(\mathbf{x}_t\mid\mathbf{x}_0) = -\frac{\mathbf{x}_t-\sqrt{\bar\alpha_t}\mathbf{x}_0}{1-\bar\alpha_t} = -\frac{\boldsymbol{\epsilon}}{\sqrt{1-\bar\alpha_t}}$$
+
+Nothing deep has happened: the gradient of a Gaussian log-density is (mean − point)/variance, and that displacement *is* the noise that was added, up to scaling.
+
+*Step 2 — average over which $\mathbf{x}_0$ it might have been.* Differentiating $p_t(\mathbf{x})=\int p_0(\mathbf{x}_0)q(\mathbf{x}\mid\mathbf{x}_0)\,d\mathbf{x}_0$ and using $\nabla q = q\,\nabla\log q$ gives
+
+$$\nabla\log p_t(\mathbf{x}) = \int \underbrace{\frac{p_0(\mathbf{x}_0)q(\mathbf{x}\mid\mathbf{x}_0)}{p_t(\mathbf{x})}}_{=\,p(\mathbf{x}_0\mid\mathbf{x})}\,\nabla\log q(\mathbf{x}\mid\mathbf{x}_0)\,d\mathbf{x}_0 = \mathbb{E}\big[\nabla\log q(\mathbf{x}\mid\mathbf{x}_0)\,\big|\,\mathbf{x}_t=\mathbf{x}\big]$$
+
+The marginal score is the **posterior average of the conditional scores**. Substituting Step 1:
+
+$$\mathbb{E}[\boldsymbol{\epsilon}\mid\mathbf{x}_t] = -\sqrt{1-\bar\alpha_t}\,\nabla\log p_t(\mathbf{x}_t)$$
+
+*Step 3 — why the trained network equals that.* The training loss is $\mathbb{E}\|\boldsymbol{\epsilon}_\theta(\mathbf{x}_t,t)-\boldsymbol{\epsilon}\|^2$, which is an ordinary least-squares regression of $\boldsymbol{\epsilon}$ on $\mathbf{x}_t$ — and this chapter has already established what least squares returns: the **conditional mean of the target given the predictor**. Hence the optimum is $\boldsymbol{\epsilon}_\theta^\star = \mathbb{E}[\boldsymbol{\epsilon}\mid\mathbf{x}_t]$, which is the identity. The $\approx$ is only because a real network has finite capacity and finite training; the identity itself is exact.
+
+This is the punchline worth stating explicitly to a class: **the network is doing plain least-squares regression, and the score identity is what makes that regression secretly a density estimate.** You never write down $p_t$, yet minimising a squared error hands you its gradient. Tweedie's formula then follows in one line by applying $\mathbb{E}[\,\cdot\mid\mathbf{x}_t]$ to $\mathbf{x}_0=(\mathbf{x}_t-\sqrt{1-\bar\alpha_t}\boldsymbol{\epsilon})/\sqrt{\bar\alpha_t}$.
+
+Computing both sides independently for the four-mode mixture used below — the left by finite-differencing the analytic $\log p_t$, the right by Monte Carlo over $8\times10^6$ draws — confirms it:
+
+| $t$ | $x_t$ | $-\sqrt{1-\bar\alpha_t}\,\nabla\log p_t$ | $\mathbb{E}[\epsilon\mid x_t]$ | difference |
+|---|---|---|---|---|
+| 50 | 0.80 | −0.176874 | −0.176803 | $7.1\times10^{-5}$ |
+| 150 | −1.00 | −0.139174 | −0.139960 | $7.9\times10^{-4}$ |
+| 250 | 0.30 | 0.164649 | 0.164322 | $3.3\times10^{-4}$ |
+| 350 | 1.50 | 1.341690 | 1.341872 | $1.8\times10^{-4}$ |
+
+**How to read the identity**
+
+*It is a change of units.* If $\mathbf{x}$ carries units $[X]$, then $\nabla_{\mathbf{x}}\log p_t$ has units $[X]^{-1}$, while $\sigma_t \equiv \sqrt{1-\bar\alpha_t}$ is a standard deviation with units $[X]$. Their product is dimensionless — as $\boldsymbol{\epsilon}\sim\mathcal{N}(\mathbf{0},\mathbf{I})$ must be. The score and the noise-prediction are **the same vector field measured on two different rulers**, and $\sigma_t$ is the exchange rate.
+
+*It is a $z$-score.* Take a single Gaussian $p=\mathcal{N}(\mu,\sigma_t^2)$:
+
+$$-\sigma_t\,\nabla\log p(x) = -\sigma_t\cdot\left(-\frac{x-\mu}{\sigma_t^2}\right) = \frac{x-\mu}{\sigma_t}$$
+
+which is exactly the $z$-score from the beginning of the course. So $\boldsymbol{\epsilon}_\theta(\mathbf{x}_t,t)$ answers: *how many standard deviations am I from where the clean data says I should be?* For a mixture it is the posterior-weighted average of the $z$-scores relative to each candidate origin.
+
+*The sign is geometry.* $\nabla\log p_t$ points **uphill in density**, toward where the data lives; $\boldsymbol{\epsilon}$ is the kick that pushed you *away* from it. Same line, opposite arrows. Denoising means stepping along $-\boldsymbol{\epsilon}_\theta$.
+
+*The two sides scale very differently with $t$*, which is the practical content of the formula:
+
+| $t$ | $\sigma_t$ | RMS of $\nabla\log p_t$ | RMS of $\boldsymbol{\epsilon}_\theta$ |
+|---|---|---|---|
+| 399 | 0.991 | 0.98 | 0.98 |
+| 200 | 0.801 | 0.80 | 0.64 |
+| 50 | 0.258 | 1.78 | 0.46 |
+| 5 | 0.037 | 3.00 | 0.11 |
+| 1 | 0.016 | 3.03 | 0.05 |
+
+Two limits are worth checking by hand. At $t=T$, $p_T=\mathcal{N}(\mathbf{0},\mathbf{I})$ so $\nabla\log p_T=-\mathbf{x}_T$ and $\sigma_T\approx1$, giving $\boldsymbol{\epsilon}_\theta=\mathbf{x}_T$ — correct, since at pure noise everything you see *is* the noise. At $t\to0$, $\boldsymbol{\epsilon}_\theta\to\mathbf{0}$: here $\mathbf{x}_t\approx\mathbf{x}_0+\sigma_t\boldsymbol{\epsilon}$ with $\sigma_t$ tiny, so $\mathbf{x}_t$ pins down $\mathbf{x}_0$ but says almost nothing about $\boldsymbol{\epsilon}$. When a predictor carries no information ($r^2\to0$) the least-squares prediction collapses to the unconditional mean, which for $\boldsymbol{\epsilon}$ is zero — ordinary regression shrinkage. Note the score itself does *not* diverge here, because this $p_0$ is a smooth mixture; it would diverge for an empirical $p_0$ built from delta spikes, which is the memorisation regime discussed above.
+
+This also explains a design choice visible in every implementation: one could equally train the network to output $\mathbf{x}_0$, or the score directly, since all three are related by the algebra above. Predicting $\boldsymbol{\epsilon}$ is preferred because its *target* has unit variance at every $t$, keeping the regression well-conditioned — the same reason one standardises predictors before a multiple regression.
+
 **Watching it happen: a wiggly PDF through both processes**
 
 The animation below runs a deliberately non-Gaussian ("wiggly") distribution all the way out to noise and back. The top panel is the distribution; the bottom panel follows 22 individual particles continuously through the forward pass and then back through the reverse pass.
