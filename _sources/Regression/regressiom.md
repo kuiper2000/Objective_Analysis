@@ -571,6 +571,47 @@ In `conditional_diffusion_demo.py` the data distribution is deliberately chosen 
 If the network learned the score of $p_t$ *perfectly*, it would reproduce the training fields exactly and generate nothing new — because the score of a KDE points back at the samples used to build it. Real diffusion models generalise only because a finite network cannot fit that target exactly. Perfect optimisation of the training objective would be memorisation; useful generation is a controlled failure to reach it. This is worth remembering before trusting a generative downscaling product to produce genuinely unseen extremes.
 :::
 
+**Watching it happen: a wiggly PDF through both processes**
+
+The animation below runs a deliberately non-Gaussian ("wiggly") distribution all the way out to noise and back. The top panel is the distribution; the bottom panel follows 22 individual particles continuously through the forward pass and then back through the reverse pass.
+
+```{figure} diffusion_wiggle_demo.gif
+:width: 100%
+:align: center
+Forward and reverse diffusion of a four-mode ("wiggly") PDF. **Forward** (blue): each bump widens and contracts toward the origin until the four modes have merged into a single indistinguishable $\mathcal{N}(0,1)$ — the wiggles are erased. **Reverse** (green): starting from that noise, the wiggles re-emerge and the original shape is recovered. **Bottom:** the particle paths fan out during the forward pass and re-collapse into the four modes during the reverse pass — but each particle lands in a *different* mode from the one it started in.
+```
+
+Three things are worth pointing out to a class:
+
+- **The forward pass is where the information dies.** Watch the two central bumps merge first: they are closest together, so they become indistinguishable earliest. By the time the width reaches $\approx 1$, no trace of "which bump" survives.
+- **The distribution comes back; the sample does not.** Averaged over the tracked particles, the distance between where a particle started and where it ended is $1.52$ — comparable to the width of the whole distribution. Each particle is reconstructed as a *valid* draw, not as *its own* original value. This is the same point as the conditioning discussion above: without $\mathbf{y}$, there is nothing to say which bump you came from.
+- **The moments are recovered, not memorised.** Original: mean $0.029$, sd $1.714$, skew $0.071$, excess kurtosis $-1.164$. Reconstruction: $0.040$, $1.705$, $0.058$, $-1.169$.
+
+The static comparison makes the "similar but not identical" point precise, and shows what happens when the score is learned from a *finite archive* rather than known exactly:
+
+```{figure} diffusion_wiggle_demo.png
+:width: 100%
+:align: center
+Black dashed: the true $p_0$. Green: the reverse pass using the exact score — it recovers the shape faithfully. Red: the reverse pass using a score estimated from only 300 training samples — the fourth mode is too heavy, the first too light, and a spurious bump appears near $x=-3.3$. The red curve is an honest picture of what a diffusion model trained on a small archive actually gives you.
+```
+
+A quantitative memorisation check makes the difference concrete. Measuring the mean distance from each generated sample to the *nearest training sample*, and comparing against the same statistic for a genuinely fresh draw from $p_0$:
+
+| sampler | mean distance to nearest training sample |
+|---|---|
+| fresh draw from $p_0$ (the benchmark) | 0.0111 |
+| reverse pass, exact score | 0.0112 |
+| reverse pass, score from 300 samples | **0.0027** |
+
+The exact-score sampler is statistically indistinguishable from a fresh draw — it is genuinely generating. The finite-archive sampler sits four times closer to its training data than a fresh draw would: it is partly reproducing what it was trained on. Note that an absolute threshold ("within 0.01 of a training point") would be meaningless here — with 300 points on a line, *every* number is close to some training sample. The benchmark comparison is what makes the statistic interpretable.
+
+:::{admonition} Full source — `diffusion_wiggle_demo.py` (click to expand)
+:class: dropdown
+```{literalinclude} diffusion_wiggle_demo.py
+:language: python
+```
+:::
+
 **Summary of the AR1–diffusion connection**
 
 | AR(1) concept | Diffusion model equivalent |
