@@ -856,6 +856,92 @@ Z_2 &amp;= \frac{1}{2}\ln\left(\frac{1+r_2}{1-r_2}\right)
 <div class="note admonition">
 <p class="admonition-title">Side note: diffusion models in machine learning and their connection to AR processes</p>
 <p><strong>Diffusion models</strong> (also called Denoising Diffusion Probabilistic Models, DDPMs) have become the dominant generative model architecture in machine learning — used for image synthesis, weather downscaling, and bias correction. At their core, they are built on a process that is mathematically identical to AR(1).</p>
+<div class="warning admonition">
+<p class="admonition-title">Read this first — the notation changes here</p>
+<p>Machine learning uses <span class="math notranslate nohighlight">\(x\)</span> and <span class="math notranslate nohighlight">\(y\)</span> in <strong>the opposite sense</strong> to the regression sections above. Statistics fixed <span class="math notranslate nohighlight">\((x,y) = (\text{predictor},\text{response})\)</span>; generative ML fixed <span class="math notranslate nohighlight">\(\mathbf{x} = \)</span> the field being modelled and <span class="math notranslate nohighlight">\(\mathbf{y} = \)</span> the conditioning information. Both are entrenched, so this note keeps the ML convention — every diffusion paper you go on to read will use it — but you must hold the mapping in mind:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p></p></th>
+<th class="head"><p>in the regression sections above</p></th>
+<th class="head"><p>in this side note</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>the thing you are <strong>given</strong> (predictor)</p></td>
+<td><p><span class="math notranslate nohighlight">\(x\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(\mathbf{y}\)</span></p></td>
+</tr>
+<tr class="row-odd"><td><p>the thing you <strong>want</strong> (predictand)</p></td>
+<td><p><span class="math notranslate nohighlight">\(y\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(\mathbf{x}_0\)</span></p></td>
+</tr>
+<tr class="row-even"><td><p>what the subscript <span class="math notranslate nohighlight">\(t\)</span> means</p></td>
+<td><p>physical time</p></td>
+<td><p>index of the noise ladder, <span class="math notranslate nohighlight">\(0\dots T\)</span></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>So <span class="math notranslate nohighlight">\(\mathbb{E}[y\mid x]\)</span> in the regression sections and <span class="math notranslate nohighlight">\(\mathbb{E}[\mathbf{x}_0\mid\mathbf{y}]\)</span> here denote <strong>the same operation</strong> — the letters are simply exchanged.</p>
+<p><strong>Symbols used below</strong></p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>symbol</p></th>
+<th class="head"><p>meaning</p></th>
+<th class="head"><p>shape</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(\mathbf{x}_0\)</span></p></td>
+<td><p>the clean high-resolution field you want</p></td>
+<td><p>e.g. 1 km precipitation, <span class="math notranslate nohighlight">\(10^4\)</span>–<span class="math notranslate nohighlight">\(10^6\)</span> values</p></td>
+</tr>
+<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(\mathbf{x}_t\)</span></p></td>
+<td><p>that same field after <span class="math notranslate nohighlight">\(t\)</span> noising steps</p></td>
+<td><p><strong>always the same shape as <span class="math notranslate nohighlight">\(\mathbf{x}_0\)</span></strong></p></td>
+</tr>
+<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(\mathbf{y}\)</span></p></td>
+<td><p>the coarse field you actually have</p></td>
+<td><p>e.g. 25 km GCM output, far fewer values</p></td>
+</tr>
+<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(t\)</span></p></td>
+<td><p>position on the noise ladder, <em>not</em> time</p></td>
+<td><p><span class="math notranslate nohighlight">\(0\)</span> (clean) to <span class="math notranslate nohighlight">\(T\)</span> (pure noise)</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>A six-point example.</strong> Let the high-resolution truth be <span class="math notranslate nohighlight">\(\mathbf{x}_0 = [\,2.1,\ -0.4,\ 1.3,\ -1.8,\ 0.6,\ -2.2\,]\)</span>, and let the coarse model resolve only blocks of three, so it reports block means <span class="math notranslate nohighlight">\(\mathbf{y} = [\,1.00,\ -1.13\,]\)</span>. The noising ladder is then</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p><span class="math notranslate nohighlight">\(t\)</span></p></th>
+<th class="head"><p><span class="math notranslate nohighlight">\(\sqrt{\bar\alpha_t}\)</span></p></th>
+<th class="head"><p><span class="math notranslate nohighlight">\(\mathbf{x}_t\)</span></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>0</p></td>
+<td><p>1.00</p></td>
+<td><p><span class="math notranslate nohighlight">\([2.10,\ -0.39,\ 1.31,\ -1.81,\ 0.60,\ -2.21]\)</span></p></td>
+</tr>
+<tr class="row-odd"><td><p>100</p></td>
+<td><p>0.88</p></td>
+<td><p><span class="math notranslate nohighlight">\([2.12,\ -0.38,\ 1.50,\ -2.47,\ 1.28,\ -1.98]\)</span></p></td>
+</tr>
+<tr class="row-even"><td><p>250</p></td>
+<td><p>0.45</p></td>
+<td><p><span class="math notranslate nohighlight">\([1.55,\ -0.30,\ 0.25,\ -0.40,\ 1.01,\ -1.17]\)</span></p></td>
+</tr>
+<tr class="row-odd"><td><p>399</p></td>
+<td><p>0.13</p></td>
+<td><p><span class="math notranslate nohighlight">\([0.13,\ 0.63,\ -0.69,\ -1.74,\ 0.47,\ -0.96]\)</span></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Three things to notice: <span class="math notranslate nohighlight">\(\mathbf{y}\)</span> <strong>never appears in that table</strong> — it is never noised, and is supplied unchanged to the network at every reverse step; <span class="math notranslate nohighlight">\(\mathbf{x}_t\)</span> is <strong>never a 2-vector</strong>, because the subscript changes the noise level, not the resolution; and <span class="math notranslate nohighlight">\(t\)</span> is <strong>not time</strong>. The task is to produce a plausible 6-vector whose block means are <span class="math notranslate nohighlight">\([1.00,-1.13]\)</span> and whose fine structure looks like real data. Infinitely many exist — which is why we <em>sample</em> rather than <em>solve</em>.</p>
+<p>In <code class="docutils literal notranslate"><span class="pre">conditional_diffusion_demo.py</span></code> these are exactly the variables <code class="docutils literal notranslate"><span class="pre">x0</span></code>, <code class="docutils literal notranslate"><span class="pre">yobs</span> <span class="pre">=</span> <span class="pre">A</span> <span class="pre">&#64;</span> <span class="pre">x0</span></code>, and the running <code class="docutils literal notranslate"><span class="pre">x</span></code> inside <code class="docutils literal notranslate"><span class="pre">ddpm_sample</span></code>.</p>
+</div>
 <p><strong>The forward process — adding noise step by step</strong></p>
 <p>Given a data sample <span class="math notranslate nohighlight">\(\mathbf{x}_0\)</span> (e.g., a high-resolution precipitation field), a diffusion model defines a sequence of increasingly noisy versions <span class="math notranslate nohighlight">\(\mathbf{x}_1, \mathbf{x}_2, \dots, \mathbf{x}_T\)</span>:</p>
 <div class="math notranslate nohighlight">
@@ -880,7 +966,7 @@ Z_2 &amp;= \frac{1}{2}\ln\left(\frac{1+r_2}{1-r_2}\right)
 \[\mathbb{E}[\mathbf{x}_0\mid\mathbf{x}_t] = \frac{\mathbf{x}_t - \sqrt{1-\bar{\alpha}_t}\,\boldsymbol{\epsilon}_\theta(\mathbf{x}_t,t)}{\sqrt{\bar{\alpha}_t}}\]</div>
 <p>“Signal” is defined as <em>the direction of the training-data manifold</em>. This is why <strong>unconditional</strong> diffusion models work at all — no conditioning input is required to generate a realistic field. (The network is always conditioned on <span class="math notranslate nohighlight">\(t\)</span>, but that only tells it the current noise level.)</p>
 <p><strong>2. The conditioning tells the model which realization.</strong> An unconditional model produces <em>a</em> plausible field, never <em>the</em> field behind a particular observation — that information was destroyed. To reconstruct, we must sample <span class="math notranslate nohighlight">\(p(\mathbf{x}_0\mid\mathbf{y})\)</span> rather than <span class="math notranslate nohighlight">\(p(\mathbf{x}_0)\)</span>.</p>
-<p>The connection to everything above is exact. Ordinary least squares returns <span class="math notranslate nohighlight">\(\mathbb{E}[y\mid x]\)</span> — the <em>conditional mean</em>, a single best estimate whose variance is only <span class="math notranslate nohighlight">\(r^2\sigma_y^2\)</span>. The residual <span class="math notranslate nohighlight">\((1-r^2)\sigma_y^2\)</span> is discarded, which is precisely why regression-based downscaling produces fields that are too smooth. A conditional diffusion model learns the <em>full</em> conditional distribution, so it restores the <span class="math notranslate nohighlight">\((1-r^2)\)</span> fraction — not as white noise, but with the spatial and temporal structure learned from data:</p>
+<p>The connection to everything above is exact. Ordinary least squares returns the <em>conditional mean</em> of the predictand given the predictor — written <span class="math notranslate nohighlight">\(\mathbb{E}[y\mid x]\)</span> in the regression sections, and <span class="math notranslate nohighlight">\(\mathbb{E}[\mathbf{x}_0\mid\mathbf{y}]\)</span> in the notation of this note. It is a single best estimate, and its variance is only <span class="math notranslate nohighlight">\(r^2\)</span> times the variance of the target. The residual <span class="math notranslate nohighlight">\((1-r^2)\)</span> fraction is discarded, which is precisely why regression-based downscaling produces fields that are too smooth. A conditional diffusion model learns the <em>full</em> conditional distribution, so it restores that <span class="math notranslate nohighlight">\((1-r^2)\)</span> fraction — not as white noise, but with the spatial and temporal structure learned from data:</p>
 <div class="pst-scrollable-table-container"><table class="table">
 <thead>
 <tr class="row-odd"><th class="head"><p></p></th>

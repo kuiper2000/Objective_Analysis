@@ -476,6 +476,41 @@ White noise is the special case of AR1 with $a = 0$ (i.e. $\rho(\tau > 0) = 0$).
 
 **Diffusion models** (also called Denoising Diffusion Probabilistic Models, DDPMs) have become the dominant generative model architecture in machine learning — used for image synthesis, weather downscaling, and bias correction. At their core, they are built on a process that is mathematically identical to AR(1).
 
+:::{admonition} Read this first — the notation changes here
+:class: warning
+Machine learning uses $x$ and $y$ in **the opposite sense** to the regression sections above. Statistics fixed $(x,y) = (\text{predictor},\text{response})$; generative ML fixed $\mathbf{x} = $ the field being modelled and $\mathbf{y} = $ the conditioning information. Both are entrenched, so this note keeps the ML convention — every diffusion paper you go on to read will use it — but you must hold the mapping in mind:
+
+| | in the regression sections above | in this side note |
+|---|---|---|
+| the thing you are **given** (predictor) | $x$ | $\mathbf{y}$ |
+| the thing you **want** (predictand) | $y$ | $\mathbf{x}_0$ |
+| what the subscript $t$ means | physical time | index of the noise ladder, $0\dots T$ |
+
+So $\mathbb{E}[y\mid x]$ in the regression sections and $\mathbb{E}[\mathbf{x}_0\mid\mathbf{y}]$ here denote **the same operation** — the letters are simply exchanged.
+
+**Symbols used below**
+
+| symbol | meaning | shape |
+|---|---|---|
+| $\mathbf{x}_0$ | the clean high-resolution field you want | e.g. 1 km precipitation, $10^4$–$10^6$ values |
+| $\mathbf{x}_t$ | that same field after $t$ noising steps | **always the same shape as $\mathbf{x}_0$** |
+| $\mathbf{y}$ | the coarse field you actually have | e.g. 25 km GCM output, far fewer values |
+| $t$ | position on the noise ladder, *not* time | $0$ (clean) to $T$ (pure noise) |
+
+**A six-point example.** Let the high-resolution truth be $\mathbf{x}_0 = [\,2.1,\ -0.4,\ 1.3,\ -1.8,\ 0.6,\ -2.2\,]$, and let the coarse model resolve only blocks of three, so it reports block means $\mathbf{y} = [\,1.00,\ -1.13\,]$. The noising ladder is then
+
+| $t$ | $\sqrt{\bar\alpha_t}$ | $\mathbf{x}_t$ |
+|---|---|---|
+| 0 | 1.00 | $[2.10,\ -0.39,\ 1.31,\ -1.81,\ 0.60,\ -2.21]$ |
+| 100 | 0.88 | $[2.12,\ -0.38,\ 1.50,\ -2.47,\ 1.28,\ -1.98]$ |
+| 250 | 0.45 | $[1.55,\ -0.30,\ 0.25,\ -0.40,\ 1.01,\ -1.17]$ |
+| 399 | 0.13 | $[0.13,\ 0.63,\ -0.69,\ -1.74,\ 0.47,\ -0.96]$ |
+
+Three things to notice: $\mathbf{y}$ **never appears in that table** — it is never noised, and is supplied unchanged to the network at every reverse step; $\mathbf{x}_t$ is **never a 2-vector**, because the subscript changes the noise level, not the resolution; and $t$ is **not time**. The task is to produce a plausible 6-vector whose block means are $[1.00,-1.13]$ and whose fine structure looks like real data. Infinitely many exist — which is why we *sample* rather than *solve*.
+
+In `conditional_diffusion_demo.py` these are exactly the variables `x0`, `yobs = A @ x0`, and the running `x` inside `ddpm_sample`.
+:::
+
 **The forward process — adding noise step by step**
 
 Given a data sample $\mathbf{x}_0$ (e.g., a high-resolution precipitation field), a diffusion model defines a sequence of increasingly noisy versions $\mathbf{x}_1, \mathbf{x}_2, \dots, \mathbf{x}_T$:
@@ -516,7 +551,7 @@ $$\mathbb{E}[\mathbf{x}_0\mid\mathbf{x}_t] = \frac{\mathbf{x}_t - \sqrt{1-\bar{\
 
 **2. The conditioning tells the model which realization.** An unconditional model produces *a* plausible field, never *the* field behind a particular observation — that information was destroyed. To reconstruct, we must sample $p(\mathbf{x}_0\mid\mathbf{y})$ rather than $p(\mathbf{x}_0)$.
 
-The connection to everything above is exact. Ordinary least squares returns $\mathbb{E}[y\mid x]$ — the *conditional mean*, a single best estimate whose variance is only $r^2\sigma_y^2$. The residual $(1-r^2)\sigma_y^2$ is discarded, which is precisely why regression-based downscaling produces fields that are too smooth. A conditional diffusion model learns the *full* conditional distribution, so it restores the $(1-r^2)$ fraction — not as white noise, but with the spatial and temporal structure learned from data:
+The connection to everything above is exact. Ordinary least squares returns the *conditional mean* of the predictand given the predictor — written $\mathbb{E}[y\mid x]$ in the regression sections, and $\mathbb{E}[\mathbf{x}_0\mid\mathbf{y}]$ in the notation of this note. It is a single best estimate, and its variance is only $r^2$ times the variance of the target. The residual $(1-r^2)$ fraction is discarded, which is precisely why regression-based downscaling produces fields that are too smooth. A conditional diffusion model learns the *full* conditional distribution, so it restores that $(1-r^2)$ fraction — not as white noise, but with the spatial and temporal structure learned from data:
 
 | | what it returns | variance | tied to this $\mathbf{y}$? |
 |---|---|---|---|
