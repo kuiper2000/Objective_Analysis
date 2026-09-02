@@ -606,9 +606,60 @@ In `conditional_diffusion_demo.py` the data distribution is deliberately chosen 
 If the network learned the score of $p_t$ *perfectly*, it would reproduce the training fields exactly and generate nothing new — because the score of a KDE points back at the samples used to build it. Real diffusion models generalise only because a finite network cannot fit that target exactly. Perfect optimisation of the training objective would be memorisation; useful generation is a controlled failure to reach it. This is worth remembering before trusting a generative downscaling product to produce genuinely unseen extremes.
 :::
 
+**Where the training objective comes from**
+
+Above, the training rule was stated informally: *add noise you generated yourself, then ask the network to guess it*. That rule is not a heuristic — it is what remains after a chain of exact simplifications, and the derivation is worth seeing because every step reduces to something already familiar from least squares.
+
+*Step 1 — write down both processes.* The forward process is a Markov chain (each noising step depends only on the previous one), and the reverse process is a second Markov chain whose transitions the network supplies:
+
+$$q(\mathbf{x}_{1:T}\mid\mathbf{x}_0) = \prod_{t=1}^{T} q(\mathbf{x}_t\mid\mathbf{x}_{t-1}), \qquad p_\theta(\mathbf{x}_{0:T}) = p(\mathbf{x}_T)\prod_{t=1}^{T} p_\theta(\mathbf{x}_{t-1}\mid\mathbf{x}_t)$$
+
+Here $q$ is fixed and known (it is just noise addition); $p_\theta$ starts from pure noise $p(\mathbf{x}_T)=\mathcal{N}(\mathbf{0},\mathbf{I})$ and must be learned.
+
+*Step 2 — bound the likelihood (the ELBO).* We would like to maximise the likelihood $p_\theta(\mathbf{x}_0)$ of generating real data, i.e. minimise $-\log p_\theta(\mathbf{x}_0)$. That is intractable, because it requires summing over every possible noising path that could have produced $\mathbf{x}_0$. The standard remedy is to multiply and divide by the known forward density and apply Jensen's inequality, giving the **evidence lower bound**:
+
+$$-\log p_\theta(\mathbf{x}_0) \;\le\; \mathbb{E}_q\left[-\log\frac{p_\theta(\mathbf{x}_{0:T})}{q(\mathbf{x}_{1:T}\mid\mathbf{x}_0)}\right] \;=\; \underbrace{L_T}_{\text{no }\theta} + \sum_{t=2}^{T} L_{t-1} + \underbrace{L_0}_{\text{final step}}$$
+
+$L_T = D_{\mathrm{KL}}(q(\mathbf{x}_T\mid\mathbf{x}_0)\,\|\,p(\mathbf{x}_T))$ contains no trainable parameters, so it is dropped. $L_0$ describes the last reconstruction step from $\mathbf{x}_1$ to $\mathbf{x}_0$, where almost no noise remains and there is correspondingly little to learn, so it is dropped in practice. What is left is the middle sum, and every term in it is a KL divergence.
+
+*Step 3 — match two Gaussians.* Each remaining term compares the **true posterior** with the network's **approximate posterior**:
+
+$$L_{t-1} = D_{\mathrm{KL}}\big(\,q(\mathbf{x}_{t-1}\mid\mathbf{x}_t,\mathbf{x}_0)\ \big\|\ p_\theta(\mathbf{x}_{t-1}\mid\mathbf{x}_t)\,\big)$$
+
+The left-hand distribution is tractable *because it is conditioned on the clean $\mathbf{x}_0$* — knowing where you started makes the exact reverse step available in closed form, $q(\mathbf{x}_{t-1}\mid\mathbf{x}_t,\mathbf{x}_0)=\mathcal{N}(\tilde{\boldsymbol{\mu}}_t(\mathbf{x}_t,\mathbf{x}_0),\ \tilde\beta_t\mathbf{I})$. The network's variance is *fixed* to a constant $\sigma_t^2$ rather than learned, so only the mean $\boldsymbol{\mu}_\theta$ has to be predicted. The KL divergence between two Gaussians of equal, fixed variance collapses to the squared distance between their means:
+
+$$L_{t-1} = \frac{1}{2\sigma_t^2}\big\|\tilde{\boldsymbol{\mu}}_t(\mathbf{x}_t,\mathbf{x}_0)-\boldsymbol{\mu}_\theta(\mathbf{x}_t,t)\big\|^2 + \text{const}$$
+
+This is the same fact that makes least squares the natural loss under Gaussian errors, which is why the chapter's $Q=\sum(\hat y_i-y_i)^2$ appears here unchanged.
+
+*Step 4 — reparameterise.* The closed form for $\tilde{\boldsymbol{\mu}}_t$ is an awkward weighted combination of $\mathbf{x}_0$ and $\mathbf{x}_t$. But the forward process $\mathbf{x}_t=\sqrt{\bar\alpha_t}\mathbf{x}_0+\sqrt{1-\bar\alpha_t}\boldsymbol{\epsilon}$ can be rearranged,
+
+$$\mathbf{x}_0 = \frac{\mathbf{x}_t-\sqrt{1-\bar\alpha_t}\,\boldsymbol{\epsilon}}{\sqrt{\bar\alpha_t}}$$
+
+and substituting this removes $\mathbf{x}_0$ entirely, leaving the true mean as a function of $\mathbf{x}_t$ and the actual noise only:
+
+$$\tilde{\boldsymbol{\mu}}_t = \frac{1}{\sqrt{\alpha_t}}\left(\mathbf{x}_t - \frac{\beta_t}{\sqrt{1-\bar\alpha_t}}\,\boldsymbol{\epsilon}\right)$$
+
+Since the network also sees $\mathbf{x}_t$, we give it the *same* functional form and let it supply only the noise term:
+
+$$\boldsymbol{\mu}_\theta = \frac{1}{\sqrt{\alpha_t}}\left(\mathbf{x}_t - \frac{\beta_t}{\sqrt{1-\bar\alpha_t}}\,\boldsymbol{\epsilon}_\theta(\mathbf{x}_t,t)\right)$$
+
+*Step 5 — everything cancels.* Subtracting the two, the terms proportional to $\mathbf{x}_t$ are identical on both sides and vanish:
+
+$$\big\|\tilde{\boldsymbol{\mu}}_t-\boldsymbol{\mu}_\theta\big\|^2 = \frac{\beta_t^2}{\alpha_t(1-\bar\alpha_t)}\big\|\boldsymbol{\epsilon}-\boldsymbol{\epsilon}_\theta(\mathbf{x}_t,t)\big\|^2$$
+
+Dropping the $t$-dependent prefactor — that is, weighting all noise levels equally — leaves the objective actually used in practice:
+
+$$\boxed{\ L_{\text{simple}} = \mathbb{E}_{t,\,\mathbf{x}_0,\,\boldsymbol{\epsilon}}\Big[\big\|\boldsymbol{\epsilon}-\boldsymbol{\epsilon}_\theta(\mathbf{x}_t,t)\big\|^2\Big]\ }$$
+
+Minimising a divergence between complicated distributions has collapsed into making the network's guess of the noise match the noise actually added. Two remarks worth making to a class:
+
+- The reverse update quoted earlier in this note, $\mathbf{x}_{t-1} = \tfrac{1}{\sqrt{\alpha_t}}(\mathbf{x}_t-\tfrac{\beta_t}{\sqrt{1-\bar\alpha_t}}\boldsymbol{\epsilon}_\theta)+\sqrt{\beta_t}\,\mathbf{z}$, is *exactly* $\boldsymbol{\mu}_\theta$ from Step 4 plus noise. The sampler is not a separate construction; it is the learned posterior mean.
+- Discarding the prefactor $\beta_t^2/[2\sigma_t^2\alpha_t(1-\bar\alpha_t)]$ means $L_{\text{simple}}$ is an **unweighted** least-squares fit across noise levels, whereas the ELBO prescribes a **weighted** one. This is the same weighted-versus-unweighted choice met in ordinary regression; here the unweighted version de-emphasises the very small-$t$ terms and is found to train better.
+
 **Where the score–noise identity comes from**
 
-The relation $\boldsymbol{\epsilon}_\theta(\mathbf{x}_t,t) \approx -\sqrt{1-\bar\alpha_t}\,\nabla_{\mathbf{x}}\log p_t(\mathbf{x}_t)$ used above looks mysterious, but it is two lines of calculus followed by a result you have already proved in this chapter.
+The relation $\boldsymbol{\epsilon}_\theta(\mathbf{x}_t,t) \approx -\sqrt{1-\bar\alpha_t}\,\nabla_{\mathbf{x}}\log p_t(\mathbf{x}_t)$ used above looks mysterious, but given $L_{\text{simple}}$ it is two lines of calculus followed by a result you have already proved in this chapter.
 
 *Step 1 — if you knew $\mathbf{x}_0$, it is just the derivative of a Gaussian.* Recall $\boldsymbol{\epsilon} = (\mathbf{x}_t - \sqrt{\bar\alpha_t}\mathbf{x}_0)/\sqrt{1-\bar\alpha_t}$. For a *known* starting point, $q(\mathbf{x}_t\mid\mathbf{x}_0)$ is an ordinary Gaussian, so
 
@@ -624,7 +675,7 @@ The marginal score is the **posterior average of the conditional scores**. Subst
 
 $$\mathbb{E}[\boldsymbol{\epsilon}\mid\mathbf{x}_t] = -\sqrt{1-\bar\alpha_t}\,\nabla\log p_t(\mathbf{x}_t)$$
 
-*Step 3 — why the trained network equals that.* The training loss is $\mathbb{E}\|\boldsymbol{\epsilon}_\theta(\mathbf{x}_t,t)-\boldsymbol{\epsilon}\|^2$, which is an ordinary least-squares regression of $\boldsymbol{\epsilon}$ on $\mathbf{x}_t$ — and this chapter has already established what least squares returns: the **conditional mean of the target given the predictor**. Hence the optimum is $\boldsymbol{\epsilon}_\theta^\star = \mathbb{E}[\boldsymbol{\epsilon}\mid\mathbf{x}_t]$, which is the identity. The $\approx$ is only because a real network has finite capacity and finite training; the identity itself is exact.
+*Step 3 — why the trained network equals that.* The objective derived above, $L_{\text{simple}} = \mathbb{E}\|\boldsymbol{\epsilon}-\boldsymbol{\epsilon}_\theta(\mathbf{x}_t,t)\|^2$, is an ordinary least-squares regression of $\boldsymbol{\epsilon}$ on $\mathbf{x}_t$ — and this chapter has already established what least squares returns: the **conditional mean of the target given the predictor**. Hence the optimum is $\boldsymbol{\epsilon}_\theta^\star = \mathbb{E}[\boldsymbol{\epsilon}\mid\mathbf{x}_t]$, which is the identity. The $\approx$ is only because a real network has finite capacity and finite training; the identity itself is exact.
 
 This is the punchline worth stating explicitly to a class: **the network is doing plain least-squares regression, and the score identity is what makes that regression secretly a density estimate.** You never write down $p_t$, yet minimising a squared error hands you its gradient. Tweedie's formula then follows in one line by applying $\mathbb{E}[\,\cdot\mid\mathbf{x}_t]$ to $\mathbf{x}_0=(\mathbf{x}_t-\sqrt{1-\bar\alpha_t}\boldsymbol{\epsilon})/\sqrt{\bar\alpha_t}$.
 
