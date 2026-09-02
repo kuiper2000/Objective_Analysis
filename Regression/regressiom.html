@@ -856,8 +856,40 @@ Z_2 &amp;= \frac{1}{2}\ln\left(\frac{1+r_2}{1-r_2}\right)
 <div class="note admonition">
 <p class="admonition-title">Side note: diffusion models in machine learning and their connection to AR processes</p>
 <p><strong>Diffusion models</strong> (also called Denoising Diffusion Probabilistic Models, DDPMs) have become the dominant generative model architecture in machine learning — used for image synthesis, weather downscaling, and bias correction. At their core, they are built on a process that is mathematically identical to AR(1).</p>
+<p><strong>Two derivations, and why this note gives both</strong></p>
+<p>A diffusion model can be arrived at along two independent routes. They were developed separately, and were only later shown to describe the same algorithm (Song et al., 2021). This note follows both, because they answer different questions:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>route</p></th>
+<th class="head"><p>the question it answers</p></th>
+<th class="head"><p>what it hands you</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>variational</strong> (Ho et al., 2020)</p></td>
+<td><p><em>why is the training loss what it is?</em></p></td>
+<td><p>the likelihood bound collapses to <span class="math notranslate nohighlight">\(L_{\text{simple}}\)</span>: predict the noise you added</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>score matching</strong> (Vincent, 2011; Song &amp; Ermon, 2019)</p></td>
+<td><p><em>what has the trained network actually learned?</em></p></td>
+<td><p><span class="math notranslate nohighlight">\(\boldsymbol{\epsilon}_\theta\)</span> is a scaled estimate of <span class="math notranslate nohighlight">\(\nabla\log p_t\)</span></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>The distinction is one this chapter has already drawn once, about the regression slope. You can define <span class="math notranslate nohighlight">\(a_1\)</span> <strong>operationally</strong>, as the number that minimises <span class="math notranslate nohighlight">\(Q=\sum(\hat y_i - y_i)^2\)</span> — correct, but it tells you nothing beyond the recipe. The result <span class="math notranslate nohighlight">\(a_1 = \overline{x'y'}/\overline{x'^2}\)</span> instead says what <span class="math notranslate nohighlight">\(a_1\)</span> <strong>is</strong>: a property of the joint distribution of <span class="math notranslate nohighlight">\(x\)</span> and <span class="math notranslate nohighlight">\(y\)</span>, independent of the fitting procedure that produced it. <span class="math notranslate nohighlight">\(L_{\text{simple}}\)</span> defines <span class="math notranslate nohighlight">\(\boldsymbol{\epsilon}_\theta\)</span> operationally; the score identity says what <span class="math notranslate nohighlight">\(\boldsymbol{\epsilon}_\theta\)</span> is.</p>
+<p>Why you need each:</p>
+<ul class="simple">
+<li><p>To <strong>implement</strong> a diffusion model, the variational route is enough. The score need never be mentioned — the original DDPM paper barely does.</p></li>
+<li><p>To <strong>interpret</strong> one, you need the score. Everything intuitive below is stated in score language: the kernel-density picture of <span class="math notranslate nohighlight">\(p_t\)</span>, the reading of <span class="math notranslate nohighlight">\(t\)</span> as a bandwidth knob, denoising as a weighted vote among training fields, and the memorisation-versus-generalisation argument.</p></li>
+<li><p>To <strong>modify</strong> one, you need the score. Because the normalising constant vanishes under the gradient, Bayes’ rule becomes <em>addition</em>:</p></li>
+</ul>
+<div class="math notranslate nohighlight">
+\[\nabla_{\mathbf{x}}\log p(\mathbf{x}\mid\mathbf{y}) = \nabla_{\mathbf{x}}\log p(\mathbf{x}) + \nabla_{\mathbf{x}}\log p(\mathbf{y}\mid\mathbf{x})\]</div>
+<p>So a single unconditional model, trained once on high-resolution fields, can afterwards be conditioned on coarse model output, station observations or satellite retrievals by attaching the appropriate likelihood <em>at sampling time</em> — with no retraining. In the purely variational picture there is no handle on this: each new observation type means feeding <span class="math notranslate nohighlight">\(\mathbf{y}\)</span> to the network as an input and training a new model. The same view also yields deterministic samplers (20–50 steps rather than 1000) and exact likelihoods.</p>
+<p>That last point is the one worth remembering for downscaling: it converts “one trained model per data source” into “one prior, many observation operators” — which is precisely the structure of data assimilation.</p>
 <div class="warning admonition">
-<p class="admonition-title">Read this first — the notation changes here</p>
+<p class="admonition-title">Notation — the symbols change meaning here</p>
 <p>Machine learning uses <span class="math notranslate nohighlight">\(x\)</span> and <span class="math notranslate nohighlight">\(y\)</span> in <strong>the opposite sense</strong> to the regression sections above. Statistics fixed <span class="math notranslate nohighlight">\((x,y) = (\text{predictor},\text{response})\)</span>; generative ML fixed <span class="math notranslate nohighlight">\(\mathbf{x} = \)</span> the field being modelled and <span class="math notranslate nohighlight">\(\mathbf{y} = \)</span> the conditioning information. Both are entrenched, so this note keeps the ML convention — every diffusion paper you go on to read will use it — but you must hold the mapping in mind:</p>
 <div class="pst-scrollable-table-container"><table class="table">
 <thead>
@@ -1069,28 +1101,8 @@ Z_2 &amp;= \frac{1}{2}\ln\left(\frac{1+r_2}{1-r_2}\right)
 <li><p>Discarding the prefactor <span class="math notranslate nohighlight">\(\beta_t^2/[2\sigma_t^2\alpha_t(1-\bar\alpha_t)]\)</span> means <span class="math notranslate nohighlight">\(L_{\text{simple}}\)</span> is an <strong>unweighted</strong> least-squares fit across noise levels, whereas the ELBO prescribes a <strong>weighted</strong> one. This is the same weighted-versus-unweighted choice met in ordinary regression; here the unweighted version de-emphasises the very small-<span class="math notranslate nohighlight">\(t\)</span> terms and is found to train better.</p></li>
 </ul>
 <p><strong>A second reading: <span class="math notranslate nohighlight">\(\boldsymbol{\epsilon}_\theta\)</span> as an estimate of the score</strong></p>
-<p>The derivation just given is the one in the original DDPM paper (Ho et al., 2020), and it is purely <strong>variational</strong>: likelihood <span class="math notranslate nohighlight">\(\rightarrow\)</span> bound <span class="math notranslate nohighlight">\(\rightarrow\)</span> KL <span class="math notranslate nohighlight">\(\rightarrow\)</span> cancellation. Notice that the score <span class="math notranslate nohighlight">\(\nabla\log p_t\)</span> never appeared anywhere in it.</p>
-<p>This is worth pausing on, because diffusion models were arrived at twice, by two independent routes:</p>
-<div class="pst-scrollable-table-container"><table class="table">
-<thead>
-<tr class="row-odd"><th class="head"><p>route</p></th>
-<th class="head"><p>the question it asks</p></th>
-<th class="head"><p>what <span class="math notranslate nohighlight">\(\boldsymbol{\epsilon}_\theta\)</span> <em>is</em></p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p><strong>variational</strong> (Ho et al., 2020) — the derivation above</p></td>
-<td><p>what loss makes <span class="math notranslate nohighlight">\(p_\theta\)</span> a good generative model?</p></td>
-<td><p>whatever parameterises the reverse posterior mean</p></td>
-</tr>
-<tr class="row-odd"><td><p><strong>score matching</strong> (Vincent, 2011; Song &amp; Ermon, 2019)</p></td>
-<td><p>how do I estimate <span class="math notranslate nohighlight">\(\nabla\log p_t\)</span> from samples, and then walk uphill in density?</p></td>
-<td><p>a scaled estimate of the score</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<p>The two were later shown to be the same algorithm (Song et al., 2021). That equivalence is exactly the identity quoted at the start of this note, and it is worth establishing explicitly — because the loss you actually code up comes from the <em>variational</em> route, while every intuitive statement made earlier (the KDE picture, the bandwidth-annealing reading of <span class="math notranslate nohighlight">\(t\)</span>, the weighted vote among training fields, Tweedie’s formula) belongs to the <em>score</em> language. Without the bridge below, those are two unrelated stories about the same network.</p>
+<p>The derivation just given is the <strong>variational</strong> route promised at the start of this note: likelihood <span class="math notranslate nohighlight">\(\rightarrow\)</span> bound <span class="math notranslate nohighlight">\(\rightarrow\)</span> KL <span class="math notranslate nohighlight">\(\rightarrow\)</span> cancellation. Notice that the score <span class="math notranslate nohighlight">\(\nabla\log p_t\)</span> never appeared anywhere in it — the whole derivation goes through without it.</p>
+<p>We now build the bridge to the <strong>score-matching</strong> route, which is what makes the trained network interpretable and modifiable. This is the step that licenses everything intuitive said earlier — the KDE picture of <span class="math notranslate nohighlight">\(p_t\)</span>, the bandwidth reading of <span class="math notranslate nohighlight">\(t\)</span>, the weighted vote among training fields, Tweedie’s formula — none of which can even be stated in variational language. Without it, those are two unrelated stories about the same network.</p>
 <p>Given <span class="math notranslate nohighlight">\(L_{\text{simple}}\)</span>, the bridge is two lines of calculus followed by a result already proved in this chapter.</p>
 <p><em>Step 1 — if you knew <span class="math notranslate nohighlight">\(\mathbf{x}_0\)</span>, it is just the derivative of a Gaussian.</em> Recall <span class="math notranslate nohighlight">\(\boldsymbol{\epsilon} = (\mathbf{x}_t - \sqrt{\bar\alpha_t}\mathbf{x}_0)/\sqrt{1-\bar\alpha_t}\)</span>. For a <em>known</em> starting point, <span class="math notranslate nohighlight">\(q(\mathbf{x}_t\mid\mathbf{x}_0)\)</span> is an ordinary Gaussian, so</p>
 <div class="math notranslate nohighlight">

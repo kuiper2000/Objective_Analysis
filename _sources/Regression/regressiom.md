@@ -476,7 +476,30 @@ White noise is the special case of AR1 with $a = 0$ (i.e. $\rho(\tau > 0) = 0$).
 
 **Diffusion models** (also called Denoising Diffusion Probabilistic Models, DDPMs) have become the dominant generative model architecture in machine learning — used for image synthesis, weather downscaling, and bias correction. At their core, they are built on a process that is mathematically identical to AR(1).
 
-:::{admonition} Read this first — the notation changes here
+**Two derivations, and why this note gives both**
+
+A diffusion model can be arrived at along two independent routes. They were developed separately, and were only later shown to describe the same algorithm (Song et al., 2021). This note follows both, because they answer different questions:
+
+| route | the question it answers | what it hands you |
+|---|---|---|
+| **variational** (Ho et al., 2020) | *why is the training loss what it is?* | the likelihood bound collapses to $L_{\text{simple}}$: predict the noise you added |
+| **score matching** (Vincent, 2011; Song & Ermon, 2019) | *what has the trained network actually learned?* | $\boldsymbol{\epsilon}_\theta$ is a scaled estimate of $\nabla\log p_t$ |
+
+The distinction is one this chapter has already drawn once, about the regression slope. You can define $a_1$ **operationally**, as the number that minimises $Q=\sum(\hat y_i - y_i)^2$ — correct, but it tells you nothing beyond the recipe. The result $a_1 = \overline{x'y'}/\overline{x'^2}$ instead says what $a_1$ **is**: a property of the joint distribution of $x$ and $y$, independent of the fitting procedure that produced it. $L_{\text{simple}}$ defines $\boldsymbol{\epsilon}_\theta$ operationally; the score identity says what $\boldsymbol{\epsilon}_\theta$ is.
+
+Why you need each:
+
+- To **implement** a diffusion model, the variational route is enough. The score need never be mentioned — the original DDPM paper barely does.
+- To **interpret** one, you need the score. Everything intuitive below is stated in score language: the kernel-density picture of $p_t$, the reading of $t$ as a bandwidth knob, denoising as a weighted vote among training fields, and the memorisation-versus-generalisation argument.
+- To **modify** one, you need the score. Because the normalising constant vanishes under the gradient, Bayes' rule becomes *addition*:
+
+$$\nabla_{\mathbf{x}}\log p(\mathbf{x}\mid\mathbf{y}) = \nabla_{\mathbf{x}}\log p(\mathbf{x}) + \nabla_{\mathbf{x}}\log p(\mathbf{y}\mid\mathbf{x})$$
+
+So a single unconditional model, trained once on high-resolution fields, can afterwards be conditioned on coarse model output, station observations or satellite retrievals by attaching the appropriate likelihood *at sampling time* — with no retraining. In the purely variational picture there is no handle on this: each new observation type means feeding $\mathbf{y}$ to the network as an input and training a new model. The same view also yields deterministic samplers (20–50 steps rather than 1000) and exact likelihoods.
+
+That last point is the one worth remembering for downscaling: it converts "one trained model per data source" into "one prior, many observation operators" — which is precisely the structure of data assimilation.
+
+:::{admonition} Notation — the symbols change meaning here
 :class: warning
 Machine learning uses $x$ and $y$ in **the opposite sense** to the regression sections above. Statistics fixed $(x,y) = (\text{predictor},\text{response})$; generative ML fixed $\mathbf{x} = $ the field being modelled and $\mathbf{y} = $ the conditioning information. Both are entrenched, so this note keeps the ML convention — every diffusion paper you go on to read will use it — but you must hold the mapping in mind:
 
@@ -659,16 +682,9 @@ Minimising a divergence between complicated distributions has collapsed into mak
 
 **A second reading: $\boldsymbol{\epsilon}_\theta$ as an estimate of the score**
 
-The derivation just given is the one in the original DDPM paper (Ho et al., 2020), and it is purely **variational**: likelihood $\rightarrow$ bound $\rightarrow$ KL $\rightarrow$ cancellation. Notice that the score $\nabla\log p_t$ never appeared anywhere in it.
+The derivation just given is the **variational** route promised at the start of this note: likelihood $\rightarrow$ bound $\rightarrow$ KL $\rightarrow$ cancellation. Notice that the score $\nabla\log p_t$ never appeared anywhere in it — the whole derivation goes through without it.
 
-This is worth pausing on, because diffusion models were arrived at twice, by two independent routes:
-
-| route | the question it asks | what $\boldsymbol{\epsilon}_\theta$ *is* |
-|---|---|---|
-| **variational** (Ho et al., 2020) — the derivation above | what loss makes $p_\theta$ a good generative model? | whatever parameterises the reverse posterior mean |
-| **score matching** (Vincent, 2011; Song & Ermon, 2019) | how do I estimate $\nabla\log p_t$ from samples, and then walk uphill in density? | a scaled estimate of the score |
-
-The two were later shown to be the same algorithm (Song et al., 2021). That equivalence is exactly the identity quoted at the start of this note, and it is worth establishing explicitly — because the loss you actually code up comes from the *variational* route, while every intuitive statement made earlier (the KDE picture, the bandwidth-annealing reading of $t$, the weighted vote among training fields, Tweedie's formula) belongs to the *score* language. Without the bridge below, those are two unrelated stories about the same network.
+We now build the bridge to the **score-matching** route, which is what makes the trained network interpretable and modifiable. This is the step that licenses everything intuitive said earlier — the KDE picture of $p_t$, the bandwidth reading of $t$, the weighted vote among training fields, Tweedie's formula — none of which can even be stated in variational language. Without it, those are two unrelated stories about the same network.
 
 Given $L_{\text{simple}}$, the bridge is two lines of calculus followed by a result already proved in this chapter.
 
