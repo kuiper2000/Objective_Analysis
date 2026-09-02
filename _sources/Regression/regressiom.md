@@ -480,22 +480,28 @@ White noise is the special case of AR1 with $a = 0$ (i.e. $\rho(\tau > 0) = 0$).
 
 This note is long because it does three separate jobs: it explains the *mechanism*, it derives the *training objective*, and it ties both back to the regression material in this chapter. The map:
 
+Each subsection below is labelled with its number, so this table can be used as an index.
+
 | # | subsection | the question it answers |
 |---|---|---|
-| 1 | *Two derivations…*, *Notation…* | why are there two derivations, and what do the symbols mean? |
-| 2 | *The forward process*, *The reverse process* | what does the algorithm actually do? |
-| 3 | *Where does the "noisy data distribution" come from?* | what is $p_t$? — a blurred copy of your data, i.e. a KDE |
-| 4 | *Where the training objective comes from* | why is the loss $\|\boldsymbol{\epsilon}-\boldsymbol{\epsilon}_\theta\|^2$? — the variational bound |
-| 5 | *A second reading…*, *How to read the identity* | what has the trained network learned? — the score |
-| 6 | *Watching it happen* | what does the process actually look like? — an animation |
-| 7 | *Application to downscaling*, *Why conditioning is necessary* | what is it for, and why must it be conditioned? — the $r^2$ link |
-| 8 | *Summary* | how does all of it map back onto AR(1)? |
+| **1a** | *Two derivations, and why this note gives both* | why are there two derivations? |
+| **1b** | *Notation — the symbols change meaning here* | what do $\mathbf{x}_0$, $\mathbf{x}_t$, $\mathbf{y}$ and $t$ mean? |
+| **2a** | *The forward process* | how is the data destroyed? |
+| **2b** | *The reverse process* | how is it rebuilt? |
+| **3** | *Where does the "noisy data distribution" come from?* | what is $p_t$? — a blurred copy of your data, i.e. a KDE |
+| **4** | *Where the training objective comes from* | why is the loss $\|\boldsymbol{\epsilon}-\boldsymbol{\epsilon}_\theta\|^2$? — the variational bound |
+| **5a** | *A second reading: $\boldsymbol{\epsilon}_\theta$ as an estimate of the score* | what has the trained network learned? |
+| **5b** | *How to read the identity* | how should that formula be interpreted? |
+| **6** | *Watching it happen* | what does the process actually look like? — an animation |
+| **7a** | *Application to downscaling* | what is it for? |
+| **7b** | *Why conditioning is necessary* | why must it be conditioned? — the $r^2$ link |
+| **8** | *Summary of the AR1–diffusion connection* | how does all of it map back onto AR(1)? |
 
 The order is: **mechanism** (1–2), then **theory** (3–5), then **illustration and use** (6–8). Nothing depends on anything below it, so it can be read straight through.
 
 For a first pass or a lecture, read **1 → 2 → 6 → 7 → 8** — that is, what the algorithm does, what it looks like, and what it is for — and skip the derivations in 3–5 entirely. They are needed only to justify the loss and to interpret what the network has learned.
 
-**Two derivations, and why this note gives both**
+**1a. Two derivations, and why this note gives both**
 
 A diffusion model can be arrived at along two independent routes. They were developed separately, and were only later shown to describe the same algorithm (Song et al., 2021). This note follows both, because they answer different questions:
 
@@ -518,7 +524,7 @@ So a single unconditional model, trained once on high-resolution fields, can aft
 
 That last point is the one worth remembering for downscaling: it converts "one trained model per data source" into "one prior, many observation operators" — which is precisely the structure of data assimilation.
 
-:::{admonition} Notation — the symbols change meaning here
+:::{admonition} 1b. Notation — the symbols change meaning here
 :class: warning
 Machine learning uses $x$ and $y$ in **the opposite sense** to the regression sections above. Statistics fixed $(x,y) = (\text{predictor},\text{response})$; generative ML fixed $\mathbf{x} = $ the field being modelled and $\mathbf{y} = $ the conditioning information. Both are entrenched, so this note keeps the ML convention — every diffusion paper you go on to read will use it — but you must hold the mapping in mind:
 
@@ -553,7 +559,7 @@ Three things to notice: $\mathbf{y}$ **never appears in that table** — it is n
 In `conditional_diffusion_demo.py` these are exactly the variables `x0`, `yobs = A @ x0`, and the running `x` inside `ddpm_sample`.
 :::
 
-**The forward process — adding noise step by step**
+**2a. The forward process — adding noise step by step**
 
 Given a data sample $\mathbf{x}_0$ (e.g., a high-resolution precipitation field), a diffusion model defines a sequence of increasingly noisy versions $\mathbf{x}_1, \mathbf{x}_2, \dots, \mathbf{x}_T$:
 
@@ -569,7 +575,7 @@ $$\mathbf{x}_t = \sqrt{\bar{\alpha}_t}\,\mathbf{x}_0 + \sqrt{1-\bar{\alpha}_t}\,
 
 This is the closed-form solution for the AR(1) recursion: $\bar{\alpha}_t$ plays the role of $a^t$ (the t-step autocorrelation) in our notation.
 
-**The reverse process — learning to denoise**
+**2b. The reverse process — learning to denoise**
 
 The model learns the reverse: given $\mathbf{x}_t$, predict $\mathbf{x}_{t-1}$ (i.e., remove one step of noise). This reverse distribution is intractable analytically, so a neural network (usually a **U-Net**) $\boldsymbol{\epsilon}_\theta(\mathbf{x}_t, t)$ is trained to predict the noise $\boldsymbol{\epsilon}$ that was added at step $t$. Sampling then iterates:
 
@@ -577,7 +583,7 @@ $$\mathbf{x}_{t-1} = \frac{1}{\sqrt{1-\beta_t}}\!\left(\mathbf{x}_t - \frac{\bet
 
 starting from $\mathbf{x}_T \sim \mathcal{N}(\mathbf{0},\mathbf{I})$ and working backwards to $\mathbf{x}_0$.
 
-**Where does the "noisy data distribution" come from?**
+**3. Where does the "noisy data distribution" come from?**
 
 To run the reverse process, the network must know which direction makes a noisy field look more like real data. That direction is the **score**, $\nabla_{\mathbf{x}}\log p_t(\mathbf{x}_t)$ — the gradient of the log-density of $p_t$, "the distribution of the data after $t$ steps of noise have been added." A fair question is: who decides what that distribution is? The answer is that **nobody does — it is not chosen, it is a consequence.** You only ever pick two things, and $p_t$ follows automatically:
 
@@ -609,7 +615,7 @@ In `conditional_diffusion_demo.py` the data distribution is deliberately chosen 
 If the network learned the score of $p_t$ *perfectly*, it would reproduce the training fields exactly and generate nothing new — because the score of a KDE points back at the samples used to build it. Real diffusion models generalise only because a finite network cannot fit that target exactly. Perfect optimisation of the training objective would be memorisation; useful generation is a controlled failure to reach it. This is worth remembering before trusting a generative downscaling product to produce genuinely unseen extremes.
 :::
 
-**Where the training objective comes from**
+**4. Where the training objective comes from**
 
 Above, the training rule was stated informally: *add noise you generated yourself, then ask the network to guess it*. That rule is not a heuristic — it is what remains after a chain of exact simplifications, and the derivation is worth seeing because every step reduces to something already familiar from least squares.
 
@@ -660,7 +666,7 @@ Minimising a divergence between complicated distributions has collapsed into mak
 - The reverse update quoted earlier in this note, $\mathbf{x}_{t-1} = \tfrac{1}{\sqrt{\alpha_t}}(\mathbf{x}_t-\tfrac{\beta_t}{\sqrt{1-\bar\alpha_t}}\boldsymbol{\epsilon}_\theta)+\sqrt{\beta_t}\,\mathbf{z}$, is *exactly* $\boldsymbol{\mu}_\theta$ from Step 4 plus noise. The sampler is not a separate construction; it is the learned posterior mean.
 - Discarding the prefactor $\beta_t^2/[2\sigma_t^2\alpha_t(1-\bar\alpha_t)]$ means $L_{\text{simple}}$ is an **unweighted** least-squares fit across noise levels, whereas the ELBO prescribes a **weighted** one. This is the same weighted-versus-unweighted choice met in ordinary regression; here the unweighted version de-emphasises the very small-$t$ terms and is found to train better.
 
-**A second reading: $\boldsymbol{\epsilon}_\theta$ as an estimate of the score**
+**5a. A second reading: $\boldsymbol{\epsilon}_\theta$ as an estimate of the score**
 
 The derivation just given is the **variational** route promised at the start of this note: likelihood $\rightarrow$ bound $\rightarrow$ KL $\rightarrow$ cancellation. Notice that the score $\nabla\log p_t$ never appeared anywhere in it — the whole derivation goes through without it.
 
@@ -695,7 +701,7 @@ Computing both sides independently for the four-mode mixture used below — the 
 | 250 | 0.30 | 0.164649 | 0.164322 | $3.3\times10^{-4}$ |
 | 350 | 1.50 | 1.341690 | 1.341872 | $1.8\times10^{-4}$ |
 
-**How to read the identity**
+**5b. How to read the identity**
 
 *It is a change of units.* If $\mathbf{x}$ carries units $[X]$, then $\nabla_{\mathbf{x}}\log p_t$ has units $[X]^{-1}$, while $\sigma_t \equiv \sqrt{1-\bar\alpha_t}$ is a standard deviation with units $[X]$. Their product is dimensionless — as $\boldsymbol{\epsilon}\sim\mathcal{N}(\mathbf{0},\mathbf{I})$ must be. The score and the noise-prediction are **the same vector field measured on two different rulers**, and $\sigma_t$ is the exchange rate.
 
@@ -721,7 +727,7 @@ Two limits are worth checking by hand. At $t=T$, $p_T=\mathcal{N}(\mathbf{0},\ma
 
 This also explains a design choice visible in every implementation: one could equally train the network to output $\mathbf{x}_0$, or the score directly, since all three are related by the algebra above. Predicting $\boldsymbol{\epsilon}$ is preferred because its *target* has unit variance at every $t$, keeping the regression well-conditioned — the same reason one standardises predictors before a multiple regression.
 
-**Watching it happen: a wiggly PDF through both processes**
+**6. Watching it happen: a wiggly PDF through both processes**
 
 The animation below runs a deliberately non-Gaussian ("wiggly") distribution all the way out to noise and back. The top panel is the distribution; the bottom panel follows 22 individual particles continuously through the forward pass and then back through the reverse pass.
 
@@ -762,11 +768,11 @@ The exact-score sampler is statistically indistinguishable from a fresh draw —
 ```
 :::
 
-**Application to downscaling**
+**7a. Application to downscaling**
 
 For climate downscaling, $\mathbf{x}_0$ is a high-resolution field (e.g., 1 km precipitation) and the U-Net is **conditioned** on a low-resolution field $\mathbf{y}$ (e.g., 25 km GCM output). The model learns the conditional distribution $p(\mathbf{x}_0 \mid \mathbf{y})$, allowing it to generate statistically realistic high-resolution fields consistent with the coarse model output.
 
-**Why conditioning is necessary — and how it maps onto $r^2$**
+**7b. Why conditioning is necessary — and how it maps onto $r^2$**
 
 A natural objection: if the forward process destroys everything ($\mathbf{x}_T$ is pure noise regardless of $\mathbf{x}_0$), how can the reverse process know what is signal and what is noise? The answer has two parts, and it is worth keeping them separate:
 
@@ -801,7 +807,7 @@ Unconditional vs. regression vs. conditional reconstruction of an AR1 field from
 Note that the correlation with the truth *drops* from 0.86 to 0.66 when the residual variance is added back. The conditional sample is a **worse point estimate** than the regression mean but a **better field**, because it has the correct spectrum. This is the same bias–variance trade that motivates using $\hat y$ for prediction but $\hat y + \text{residual}$ for anything requiring realistic variability (extremes, thresholds, spatial gradients).
 :::
 
-**Summary of the AR1–diffusion connection**
+**8. Summary of the AR1–diffusion connection**
 
 | AR(1) concept | Diffusion model equivalent |
 |---|---|

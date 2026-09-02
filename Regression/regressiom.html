@@ -858,6 +858,7 @@ Z_2 &amp;= \frac{1}{2}\ln\left(\frac{1+r_2}{1-r_2}\right)
 <p><strong>Diffusion models</strong> (also called Denoising Diffusion Probabilistic Models, DDPMs) have become the dominant generative model architecture in machine learning — used for image synthesis, weather downscaling, and bias correction. At their core, they are built on a process that is mathematically identical to AR(1).</p>
 <p><strong>What is in this note, and in what order</strong></p>
 <p>This note is long because it does three separate jobs: it explains the <em>mechanism</em>, it derives the <em>training objective</em>, and it ties both back to the regression material in this chapter. The map:</p>
+<p>Each subsection below is labelled with its number, so this table can be used as an index.</p>
 <div class="pst-scrollable-table-container"><table class="table">
 <thead>
 <tr class="row-odd"><th class="head"><p>#</p></th>
@@ -866,36 +867,52 @@ Z_2 &amp;= \frac{1}{2}\ln\left(\frac{1+r_2}{1-r_2}\right)
 </tr>
 </thead>
 <tbody>
-<tr class="row-even"><td><p>1</p></td>
-<td><p><em>Two derivations…</em>, <em>Notation…</em></p></td>
-<td><p>why are there two derivations, and what do the symbols mean?</p></td>
+<tr class="row-even"><td><p><strong>1a</strong></p></td>
+<td><p><em>Two derivations, and why this note gives both</em></p></td>
+<td><p>why are there two derivations?</p></td>
 </tr>
-<tr class="row-odd"><td><p>2</p></td>
-<td><p><em>The forward process</em>, <em>The reverse process</em></p></td>
-<td><p>what does the algorithm actually do?</p></td>
+<tr class="row-odd"><td><p><strong>1b</strong></p></td>
+<td><p><em>Notation — the symbols change meaning here</em></p></td>
+<td><p>what do <span class="math notranslate nohighlight">\(\mathbf{x}_0\)</span>, <span class="math notranslate nohighlight">\(\mathbf{x}_t\)</span>, <span class="math notranslate nohighlight">\(\mathbf{y}\)</span> and <span class="math notranslate nohighlight">\(t\)</span> mean?</p></td>
 </tr>
-<tr class="row-even"><td><p>3</p></td>
+<tr class="row-even"><td><p><strong>2a</strong></p></td>
+<td><p><em>The forward process</em></p></td>
+<td><p>how is the data destroyed?</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>2b</strong></p></td>
+<td><p><em>The reverse process</em></p></td>
+<td><p>how is it rebuilt?</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>3</strong></p></td>
 <td><p><em>Where does the “noisy data distribution” come from?</em></p></td>
 <td><p>what is <span class="math notranslate nohighlight">\(p_t\)</span>? — a blurred copy of your data, i.e. a KDE</p></td>
 </tr>
-<tr class="row-odd"><td><p>4</p></td>
+<tr class="row-odd"><td><p><strong>4</strong></p></td>
 <td><p><em>Where the training objective comes from</em></p></td>
 <td><p>why is the loss <span class="math notranslate nohighlight">\(|\boldsymbol{\epsilon}-\boldsymbol{\epsilon}_\theta|^2\)</span>? — the variational bound</p></td>
 </tr>
-<tr class="row-even"><td><p>5</p></td>
-<td><p><em>A second reading…</em>, <em>How to read the identity</em></p></td>
-<td><p>what has the trained network learned? — the score</p></td>
+<tr class="row-even"><td><p><strong>5a</strong></p></td>
+<td><p><em>A second reading: <span class="math notranslate nohighlight">\(\boldsymbol{\epsilon}_\theta\)</span> as an estimate of the score</em></p></td>
+<td><p>what has the trained network learned?</p></td>
 </tr>
-<tr class="row-odd"><td><p>6</p></td>
+<tr class="row-odd"><td><p><strong>5b</strong></p></td>
+<td><p><em>How to read the identity</em></p></td>
+<td><p>how should that formula be interpreted?</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>6</strong></p></td>
 <td><p><em>Watching it happen</em></p></td>
 <td><p>what does the process actually look like? — an animation</p></td>
 </tr>
-<tr class="row-even"><td><p>7</p></td>
-<td><p><em>Application to downscaling</em>, <em>Why conditioning is necessary</em></p></td>
-<td><p>what is it for, and why must it be conditioned? — the <span class="math notranslate nohighlight">\(r^2\)</span> link</p></td>
+<tr class="row-odd"><td><p><strong>7a</strong></p></td>
+<td><p><em>Application to downscaling</em></p></td>
+<td><p>what is it for?</p></td>
 </tr>
-<tr class="row-odd"><td><p>8</p></td>
-<td><p><em>Summary</em></p></td>
+<tr class="row-even"><td><p><strong>7b</strong></p></td>
+<td><p><em>Why conditioning is necessary</em></p></td>
+<td><p>why must it be conditioned? — the <span class="math notranslate nohighlight">\(r^2\)</span> link</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>8</strong></p></td>
+<td><p><em>Summary of the AR1–diffusion connection</em></p></td>
 <td><p>how does all of it map back onto AR(1)?</p></td>
 </tr>
 </tbody>
@@ -903,7 +920,7 @@ Z_2 &amp;= \frac{1}{2}\ln\left(\frac{1+r_2}{1-r_2}\right)
 </div>
 <p>The order is: <strong>mechanism</strong> (1–2), then <strong>theory</strong> (3–5), then <strong>illustration and use</strong> (6–8). Nothing depends on anything below it, so it can be read straight through.</p>
 <p>For a first pass or a lecture, read <strong>1 → 2 → 6 → 7 → 8</strong> — that is, what the algorithm does, what it looks like, and what it is for — and skip the derivations in 3–5 entirely. They are needed only to justify the loss and to interpret what the network has learned.</p>
-<p><strong>Two derivations, and why this note gives both</strong></p>
+<p><strong>1a. Two derivations, and why this note gives both</strong></p>
 <p>A diffusion model can be arrived at along two independent routes. They were developed separately, and were only later shown to describe the same algorithm (Song et al., 2021). This note follows both, because they answer different questions:</p>
 <div class="pst-scrollable-table-container"><table class="table">
 <thead>
@@ -936,7 +953,7 @@ Z_2 &amp;= \frac{1}{2}\ln\left(\frac{1+r_2}{1-r_2}\right)
 <p>So a single unconditional model, trained once on high-resolution fields, can afterwards be conditioned on coarse model output, station observations or satellite retrievals by attaching the appropriate likelihood <em>at sampling time</em> — with no retraining. In the purely variational picture there is no handle on this: each new observation type means feeding <span class="math notranslate nohighlight">\(\mathbf{y}\)</span> to the network as an input and training a new model. The same view also yields deterministic samplers (20–50 steps rather than 1000) and exact likelihoods.</p>
 <p>That last point is the one worth remembering for downscaling: it converts “one trained model per data source” into “one prior, many observation operators” — which is precisely the structure of data assimilation.</p>
 <div class="warning admonition">
-<p class="admonition-title">Notation — the symbols change meaning here</p>
+<p class="admonition-title">1b. Notation — the symbols change meaning here</p>
 <p>Machine learning uses <span class="math notranslate nohighlight">\(x\)</span> and <span class="math notranslate nohighlight">\(y\)</span> in <strong>the opposite sense</strong> to the regression sections above. Statistics fixed <span class="math notranslate nohighlight">\((x,y) = (\text{predictor},\text{response})\)</span>; generative ML fixed <span class="math notranslate nohighlight">\(\mathbf{x} = \)</span> the field being modelled and <span class="math notranslate nohighlight">\(\mathbf{y} = \)</span> the conditioning information. Both are entrenched, so this note keeps the ML convention — every diffusion paper you go on to read will use it — but you must hold the mapping in mind:</p>
 <div class="pst-scrollable-table-container"><table class="table">
 <thead>
@@ -1021,7 +1038,7 @@ Z_2 &amp;= \frac{1}{2}\ln\left(\frac{1+r_2}{1-r_2}\right)
 <p>Three things to notice: <span class="math notranslate nohighlight">\(\mathbf{y}\)</span> <strong>never appears in that table</strong> — it is never noised, and is supplied unchanged to the network at every reverse step; <span class="math notranslate nohighlight">\(\mathbf{x}_t\)</span> is <strong>never a 2-vector</strong>, because the subscript changes the noise level, not the resolution; and <span class="math notranslate nohighlight">\(t\)</span> is <strong>not time</strong>. The task is to produce a plausible 6-vector whose block means are <span class="math notranslate nohighlight">\([1.00,-1.13]\)</span> and whose fine structure looks like real data. Infinitely many exist — which is why we <em>sample</em> rather than <em>solve</em>.</p>
 <p>In <code class="docutils literal notranslate"><span class="pre">conditional_diffusion_demo.py</span></code> these are exactly the variables <code class="docutils literal notranslate"><span class="pre">x0</span></code>, <code class="docutils literal notranslate"><span class="pre">yobs</span> <span class="pre">=</span> <span class="pre">A</span> <span class="pre">&#64;</span> <span class="pre">x0</span></code>, and the running <code class="docutils literal notranslate"><span class="pre">x</span></code> inside <code class="docutils literal notranslate"><span class="pre">ddpm_sample</span></code>.</p>
 </div>
-<p><strong>The forward process — adding noise step by step</strong></p>
+<p><strong>2a. The forward process — adding noise step by step</strong></p>
 <p>Given a data sample <span class="math notranslate nohighlight">\(\mathbf{x}_0\)</span> (e.g., a high-resolution precipitation field), a diffusion model defines a sequence of increasingly noisy versions <span class="math notranslate nohighlight">\(\mathbf{x}_1, \mathbf{x}_2, \dots, \mathbf{x}_T\)</span>:</p>
 <div class="math notranslate nohighlight">
 \[\mathbf{x}_t = \sqrt{1-\beta_t}\,\mathbf{x}_{t-1} + \sqrt{\beta_t}\,\boldsymbol{\epsilon}_t, \qquad \boldsymbol{\epsilon}_t \sim \mathcal{N}(\mathbf{0}, \mathbf{I})\]</div>
@@ -1031,12 +1048,12 @@ Z_2 &amp;= \frac{1}{2}\ln\left(\frac{1+r_2}{1-r_2}\right)
 <div class="math notranslate nohighlight">
 \[\mathbf{x}_t = \sqrt{\bar{\alpha}_t}\,\mathbf{x}_0 + \sqrt{1-\bar{\alpha}_t}\,\boldsymbol{\epsilon}, \qquad \bar{\alpha}_t = \prod_{s=1}^{t}(1-\beta_s)\]</div>
 <p>This is the closed-form solution for the AR(1) recursion: <span class="math notranslate nohighlight">\(\bar{\alpha}_t\)</span> plays the role of <span class="math notranslate nohighlight">\(a^t\)</span> (the t-step autocorrelation) in our notation.</p>
-<p><strong>The reverse process — learning to denoise</strong></p>
+<p><strong>2b. The reverse process — learning to denoise</strong></p>
 <p>The model learns the reverse: given <span class="math notranslate nohighlight">\(\mathbf{x}_t\)</span>, predict <span class="math notranslate nohighlight">\(\mathbf{x}_{t-1}\)</span> (i.e., remove one step of noise). This reverse distribution is intractable analytically, so a neural network (usually a <strong>U-Net</strong>) <span class="math notranslate nohighlight">\(\boldsymbol{\epsilon}_\theta(\mathbf{x}_t, t)\)</span> is trained to predict the noise <span class="math notranslate nohighlight">\(\boldsymbol{\epsilon}\)</span> that was added at step <span class="math notranslate nohighlight">\(t\)</span>. Sampling then iterates:</p>
 <div class="math notranslate nohighlight">
 \[\mathbf{x}_{t-1} = \frac{1}{\sqrt{1-\beta_t}}\!\left(\mathbf{x}_t - \frac{\beta_t}{\sqrt{1-\bar{\alpha}_t}}\,\boldsymbol{\epsilon}_\theta(\mathbf{x}_t, t)\right) + \sqrt{\beta_t}\,\mathbf{z}, \qquad \mathbf{z} \sim \mathcal{N}(\mathbf{0},\mathbf{I})\]</div>
 <p>starting from <span class="math notranslate nohighlight">\(\mathbf{x}_T \sim \mathcal{N}(\mathbf{0},\mathbf{I})\)</span> and working backwards to <span class="math notranslate nohighlight">\(\mathbf{x}_0\)</span>.</p>
-<p><strong>Where does the “noisy data distribution” come from?</strong></p>
+<p><strong>3. Where does the “noisy data distribution” come from?</strong></p>
 <p>To run the reverse process, the network must know which direction makes a noisy field look more like real data. That direction is the <strong>score</strong>, <span class="math notranslate nohighlight">\(\nabla_{\mathbf{x}}\log p_t(\mathbf{x}_t)\)</span> — the gradient of the log-density of <span class="math notranslate nohighlight">\(p_t\)</span>, “the distribution of the data after <span class="math notranslate nohighlight">\(t\)</span> steps of noise have been added.” A fair question is: who decides what that distribution is? The answer is that <strong>nobody does — it is not chosen, it is a consequence.</strong> You only ever pick two things, and <span class="math notranslate nohighlight">\(p_t\)</span> follows automatically:</p>
 <ol class="arabic simple">
 <li><p>your <strong>data</strong> (the training archive: all the precipitation fields you have), and</p></li>
@@ -1060,7 +1077,7 @@ Z_2 &amp;= \frac{1}{2}\ln\left(\frac{1+r_2}{1-r_2}\right)
 <p class="admonition-title">A caveat that follows from the KDE view</p>
 <p>If the network learned the score of <span class="math notranslate nohighlight">\(p_t\)</span> <em>perfectly</em>, it would reproduce the training fields exactly and generate nothing new — because the score of a KDE points back at the samples used to build it. Real diffusion models generalise only because a finite network cannot fit that target exactly. Perfect optimisation of the training objective would be memorisation; useful generation is a controlled failure to reach it. This is worth remembering before trusting a generative downscaling product to produce genuinely unseen extremes.</p>
 </div>
-<p><strong>Where the training objective comes from</strong></p>
+<p><strong>4. Where the training objective comes from</strong></p>
 <p>Above, the training rule was stated informally: <em>add noise you generated yourself, then ask the network to guess it</em>. That rule is not a heuristic — it is what remains after a chain of exact simplifications, and the derivation is worth seeing because every step reduces to something already familiar from least squares.</p>
 <p><em>Step 1 — write down both processes.</em> The forward process is a Markov chain (each noising step depends only on the previous one), and the reverse process is a second Markov chain whose transitions the network supplies:</p>
 <div class="math notranslate nohighlight">
@@ -1097,7 +1114,7 @@ Z_2 &amp;= \frac{1}{2}\ln\left(\frac{1+r_2}{1-r_2}\right)
 <li><p>The reverse update quoted earlier in this note, <span class="math notranslate nohighlight">\(\mathbf{x}_{t-1} = \tfrac{1}{\sqrt{\alpha_t}}(\mathbf{x}_t-\tfrac{\beta_t}{\sqrt{1-\bar\alpha_t}}\boldsymbol{\epsilon}_\theta)+\sqrt{\beta_t}\,\mathbf{z}\)</span>, is <em>exactly</em> <span class="math notranslate nohighlight">\(\boldsymbol{\mu}_\theta\)</span> from Step 4 plus noise. The sampler is not a separate construction; it is the learned posterior mean.</p></li>
 <li><p>Discarding the prefactor <span class="math notranslate nohighlight">\(\beta_t^2/[2\sigma_t^2\alpha_t(1-\bar\alpha_t)]\)</span> means <span class="math notranslate nohighlight">\(L_{\text{simple}}\)</span> is an <strong>unweighted</strong> least-squares fit across noise levels, whereas the ELBO prescribes a <strong>weighted</strong> one. This is the same weighted-versus-unweighted choice met in ordinary regression; here the unweighted version de-emphasises the very small-<span class="math notranslate nohighlight">\(t\)</span> terms and is found to train better.</p></li>
 </ul>
-<p><strong>A second reading: <span class="math notranslate nohighlight">\(\boldsymbol{\epsilon}_\theta\)</span> as an estimate of the score</strong></p>
+<p><strong>5a. A second reading: <span class="math notranslate nohighlight">\(\boldsymbol{\epsilon}_\theta\)</span> as an estimate of the score</strong></p>
 <p>The derivation just given is the <strong>variational</strong> route promised at the start of this note: likelihood <span class="math notranslate nohighlight">\(\rightarrow\)</span> bound <span class="math notranslate nohighlight">\(\rightarrow\)</span> KL <span class="math notranslate nohighlight">\(\rightarrow\)</span> cancellation. Notice that the score <span class="math notranslate nohighlight">\(\nabla\log p_t\)</span> never appeared anywhere in it — the whole derivation goes through without it.</p>
 <p>We now build the bridge to the <strong>score-matching</strong> route, which is what makes the trained network interpretable and modifiable. This is the step that licenses everything intuitive said earlier — the KDE picture of <span class="math notranslate nohighlight">\(p_t\)</span>, the bandwidth reading of <span class="math notranslate nohighlight">\(t\)</span>, the weighted vote among training fields, Tweedie’s formula — none of which can even be stated in variational language. Without it, those are two unrelated stories about the same network.</p>
 <p>Given <span class="math notranslate nohighlight">\(L_{\text{simple}}\)</span>, the bridge is two lines of calculus followed by a result already proved in this chapter.</p>
@@ -1151,7 +1168,7 @@ Z_2 &amp;= \frac{1}{2}\ln\left(\frac{1+r_2}{1-r_2}\right)
 </tbody>
 </table>
 </div>
-<p><strong>How to read the identity</strong></p>
+<p><strong>5b. How to read the identity</strong></p>
 <p><em>It is a change of units.</em> If <span class="math notranslate nohighlight">\(\mathbf{x}\)</span> carries units <span class="math notranslate nohighlight">\([X]\)</span>, then <span class="math notranslate nohighlight">\(\nabla_{\mathbf{x}}\log p_t\)</span> has units <span class="math notranslate nohighlight">\([X]^{-1}\)</span>, while <span class="math notranslate nohighlight">\(\sigma_t \equiv \sqrt{1-\bar\alpha_t}\)</span> is a standard deviation with units <span class="math notranslate nohighlight">\([X]\)</span>. Their product is dimensionless — as <span class="math notranslate nohighlight">\(\boldsymbol{\epsilon}\sim\mathcal{N}(\mathbf{0},\mathbf{I})\)</span> must be. The score and the noise-prediction are <strong>the same vector field measured on two different rulers</strong>, and <span class="math notranslate nohighlight">\(\sigma_t\)</span> is the exchange rate.</p>
 <p><em>It is a <span class="math notranslate nohighlight">\(z\)</span>-score.</em> Take a single Gaussian <span class="math notranslate nohighlight">\(p=\mathcal{N}(\mu,\sigma_t^2)\)</span>:</p>
 <div class="math notranslate nohighlight">
@@ -1198,7 +1215,7 @@ Z_2 &amp;= \frac{1}{2}\ln\left(\frac{1+r_2}{1-r_2}\right)
 </div>
 <p>Two limits are worth checking by hand. At <span class="math notranslate nohighlight">\(t=T\)</span>, <span class="math notranslate nohighlight">\(p_T=\mathcal{N}(\mathbf{0},\mathbf{I})\)</span> so <span class="math notranslate nohighlight">\(\nabla\log p_T=-\mathbf{x}_T\)</span> and <span class="math notranslate nohighlight">\(\sigma_T\approx1\)</span>, giving <span class="math notranslate nohighlight">\(\boldsymbol{\epsilon}_\theta=\mathbf{x}_T\)</span> — correct, since at pure noise everything you see <em>is</em> the noise. At <span class="math notranslate nohighlight">\(t\to0\)</span>, <span class="math notranslate nohighlight">\(\boldsymbol{\epsilon}_\theta\to\mathbf{0}\)</span>: here <span class="math notranslate nohighlight">\(\mathbf{x}_t\approx\mathbf{x}_0+\sigma_t\boldsymbol{\epsilon}\)</span> with <span class="math notranslate nohighlight">\(\sigma_t\)</span> tiny, so <span class="math notranslate nohighlight">\(\mathbf{x}_t\)</span> pins down <span class="math notranslate nohighlight">\(\mathbf{x}_0\)</span> but says almost nothing about <span class="math notranslate nohighlight">\(\boldsymbol{\epsilon}\)</span>. When a predictor carries no information (<span class="math notranslate nohighlight">\(r^2\to0\)</span>) the least-squares prediction collapses to the unconditional mean, which for <span class="math notranslate nohighlight">\(\boldsymbol{\epsilon}\)</span> is zero — ordinary regression shrinkage. Note the score itself does <em>not</em> diverge here, because this <span class="math notranslate nohighlight">\(p_0\)</span> is a smooth mixture; it would diverge for an empirical <span class="math notranslate nohighlight">\(p_0\)</span> built from delta spikes, which is the memorisation regime discussed above.</p>
 <p>This also explains a design choice visible in every implementation: one could equally train the network to output <span class="math notranslate nohighlight">\(\mathbf{x}_0\)</span>, or the score directly, since all three are related by the algebra above. Predicting <span class="math notranslate nohighlight">\(\boldsymbol{\epsilon}\)</span> is preferred because its <em>target</em> has unit variance at every <span class="math notranslate nohighlight">\(t\)</span>, keeping the regression well-conditioned — the same reason one standardises predictors before a multiple regression.</p>
-<p><strong>Watching it happen: a wiggly PDF through both processes</strong></p>
+<p><strong>6. Watching it happen: a wiggly PDF through both processes</strong></p>
 <p>The animation below runs a deliberately non-Gaussian (“wiggly”) distribution all the way out to noise and back. The top panel is the distribution; the bottom panel follows 22 individual particles continuously through the forward pass and then back through the reverse pass.</p>
 <figure class="align-center" id="id3">
 <a class="reference internal image-reference" href="../_images/diffusion_wiggle_demo.gif"><img alt="../_images/diffusion_wiggle_demo.gif" src="../_images/diffusion_wiggle_demo.gif" style="width: 100%;" />
@@ -1494,9 +1511,9 @@ Z_2 &amp;= \frac{1}{2}\ln\left(\frac{1+r_2}{1-r_2}\right)
 </pre></div>
 </div>
 </div>
-<p><strong>Application to downscaling</strong></p>
+<p><strong>7a. Application to downscaling</strong></p>
 <p>For climate downscaling, <span class="math notranslate nohighlight">\(\mathbf{x}_0\)</span> is a high-resolution field (e.g., 1 km precipitation) and the U-Net is <strong>conditioned</strong> on a low-resolution field <span class="math notranslate nohighlight">\(\mathbf{y}\)</span> (e.g., 25 km GCM output). The model learns the conditional distribution <span class="math notranslate nohighlight">\(p(\mathbf{x}_0 \mid \mathbf{y})\)</span>, allowing it to generate statistically realistic high-resolution fields consistent with the coarse model output.</p>
-<p><strong>Why conditioning is necessary — and how it maps onto <span class="math notranslate nohighlight">\(r^2\)</span></strong></p>
+<p><strong>7b. Why conditioning is necessary — and how it maps onto <span class="math notranslate nohighlight">\(r^2\)</span></strong></p>
 <p>A natural objection: if the forward process destroys everything (<span class="math notranslate nohighlight">\(\mathbf{x}_T\)</span> is pure noise regardless of <span class="math notranslate nohighlight">\(\mathbf{x}_0\)</span>), how can the reverse process know what is signal and what is noise? The answer has two parts, and it is worth keeping them separate:</p>
 <p><strong>1. The learned prior tells the model what data looks like.</strong> The trained network is (up to scaling) an estimate of the score of the noisy data distribution, <span class="math notranslate nohighlight">\(\boldsymbol{\epsilon}_\theta(\mathbf{x}_t,t) \approx -\sqrt{1-\bar\alpha_t}\,\nabla_{\mathbf{x}}\log p_t(\mathbf{x}_t)\)</span>, the relation established above — so that by Tweedie’s formula</p>
 <div class="math notranslate nohighlight">
@@ -1544,7 +1561,7 @@ Z_2 &amp;= \frac{1}{2}\ln\left(\frac{1+r_2}{1-r_2}\right)
 </figure>
 <p>Note that the correlation with the truth <em>drops</em> from 0.86 to 0.66 when the residual variance is added back. The conditional sample is a <strong>worse point estimate</strong> than the regression mean but a <strong>better field</strong>, because it has the correct spectrum. This is the same bias–variance trade that motivates using <span class="math notranslate nohighlight">\(\hat y\)</span> for prediction but <span class="math notranslate nohighlight">\(\hat y + \text{residual}\)</span> for anything requiring realistic variability (extremes, thresholds, spatial gradients).</p>
 </div>
-<p><strong>Summary of the AR1–diffusion connection</strong></p>
+<p><strong>8. Summary of the AR1–diffusion connection</strong></p>
 <div class="pst-scrollable-table-container"><table class="table">
 <thead>
 <tr class="row-odd"><th class="head"><p>AR(1) concept</p></th>
