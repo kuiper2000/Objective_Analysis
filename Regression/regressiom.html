@@ -875,30 +875,34 @@ Z_2 &amp;= \frac{1}{2}\ln\left(\frac{1+r_2}{1-r_2}\right)
 <td><p>what does the algorithm actually do?</p></td>
 </tr>
 <tr class="row-even"><td><p>3</p></td>
-<td><p><em>Application to downscaling</em>, <em>Why conditioning is necessary</em></p></td>
-<td><p>what is it for, and why must it be conditioned? — the <span class="math notranslate nohighlight">\(r^2\)</span> link</p></td>
-</tr>
-<tr class="row-odd"><td><p>4</p></td>
 <td><p><em>Where does the “noisy data distribution” come from?</em></p></td>
 <td><p>what is <span class="math notranslate nohighlight">\(p_t\)</span>? — a blurred copy of your data, i.e. a KDE</p></td>
 </tr>
-<tr class="row-even"><td><p>5</p></td>
+<tr class="row-odd"><td><p>4</p></td>
 <td><p><em>Where the training objective comes from</em></p></td>
 <td><p>why is the loss <span class="math notranslate nohighlight">\(|\boldsymbol{\epsilon}-\boldsymbol{\epsilon}_\theta|^2\)</span>? — the variational bound</p></td>
 </tr>
-<tr class="row-odd"><td><p>6</p></td>
+<tr class="row-even"><td><p>5</p></td>
 <td><p><em>A second reading…</em>, <em>How to read the identity</em></p></td>
 <td><p>what has the trained network learned? — the score</p></td>
 </tr>
+<tr class="row-odd"><td><p>6</p></td>
+<td><p><em>Watching it happen</em></p></td>
+<td><p>what does the process actually look like? — an animation</p></td>
+</tr>
 <tr class="row-even"><td><p>7</p></td>
-<td><p><em>Watching it happen</em>, <em>Summary</em></p></td>
-<td><p>what does it look like, and how does it map onto AR(1)?</p></td>
+<td><p><em>Application to downscaling</em>, <em>Why conditioning is necessary</em></p></td>
+<td><p>what is it for, and why must it be conditioned? — the <span class="math notranslate nohighlight">\(r^2\)</span> link</p></td>
+</tr>
+<tr class="row-odd"><td><p>8</p></td>
+<td><p><em>Summary</em></p></td>
+<td><p>how does all of it map back onto AR(1)?</p></td>
 </tr>
 </tbody>
 </table>
 </div>
-<p>Sections 1–3 are the conceptual core and are self-contained; 4–6 are the derivations; 7 is illustration. For a first pass or a lecture, read <strong>1 → 2 → 3 → 7</strong> and skip the derivations entirely.</p>
-<p>One deliberate forward reference: section 3 quotes the identity <span class="math notranslate nohighlight">\(\boldsymbol{\epsilon}_\theta \approx -\sqrt{1-\bar\alpha_t}\,\nabla\log p_t\)</span>, which is not proved until section 6. On a first pass, take it on trust — it says only that the network’s output points toward more realistic-looking data.</p>
+<p>The order is: <strong>mechanism</strong> (1–2), then <strong>theory</strong> (3–5), then <strong>illustration and use</strong> (6–8). Nothing depends on anything below it, so it can be read straight through.</p>
+<p>For a first pass or a lecture, read <strong>1 → 2 → 6 → 7 → 8</strong> — that is, what the algorithm does, what it looks like, and what it is for — and skip the derivations in 3–5 entirely. They are needed only to justify the loss and to interpret what the network has learned.</p>
 <p><strong>Two derivations, and why this note gives both</strong></p>
 <p>A diffusion model can be arrived at along two independent routes. They were developed separately, and were only later shown to describe the same algorithm (Song et al., 2021). This note follows both, because they answer different questions:</p>
 <div class="pst-scrollable-table-container"><table class="table">
@@ -1032,58 +1036,8 @@ Z_2 &amp;= \frac{1}{2}\ln\left(\frac{1+r_2}{1-r_2}\right)
 <div class="math notranslate nohighlight">
 \[\mathbf{x}_{t-1} = \frac{1}{\sqrt{1-\beta_t}}\!\left(\mathbf{x}_t - \frac{\beta_t}{\sqrt{1-\bar{\alpha}_t}}\,\boldsymbol{\epsilon}_\theta(\mathbf{x}_t, t)\right) + \sqrt{\beta_t}\,\mathbf{z}, \qquad \mathbf{z} \sim \mathcal{N}(\mathbf{0},\mathbf{I})\]</div>
 <p>starting from <span class="math notranslate nohighlight">\(\mathbf{x}_T \sim \mathcal{N}(\mathbf{0},\mathbf{I})\)</span> and working backwards to <span class="math notranslate nohighlight">\(\mathbf{x}_0\)</span>.</p>
-<p><strong>Application to downscaling</strong></p>
-<p>For climate downscaling, <span class="math notranslate nohighlight">\(\mathbf{x}_0\)</span> is a high-resolution field (e.g., 1 km precipitation) and the U-Net is <strong>conditioned</strong> on a low-resolution field <span class="math notranslate nohighlight">\(\mathbf{y}\)</span> (e.g., 25 km GCM output). The model learns the conditional distribution <span class="math notranslate nohighlight">\(p(\mathbf{x}_0 \mid \mathbf{y})\)</span>, allowing it to generate statistically realistic high-resolution fields consistent with the coarse model output.</p>
-<p><strong>Why conditioning is necessary — and how it maps onto <span class="math notranslate nohighlight">\(r^2\)</span></strong></p>
-<p>A natural objection: if the forward process destroys everything (<span class="math notranslate nohighlight">\(\mathbf{x}_T\)</span> is pure noise regardless of <span class="math notranslate nohighlight">\(\mathbf{x}_0\)</span>), how can the reverse process know what is signal and what is noise? The answer has two parts, and it is worth keeping them separate:</p>
-<p><strong>1. The learned prior tells the model what data looks like.</strong> The trained network is (up to scaling) an estimate of the score of the noisy data distribution, <span class="math notranslate nohighlight">\(\boldsymbol{\epsilon}_\theta(\mathbf{x}_t,t) \approx -\sqrt{1-\bar\alpha_t}\,\nabla_{\mathbf{x}}\log p_t(\mathbf{x}_t)\)</span> — a relation taken on trust for now and derived later in this note — so that by Tweedie’s formula</p>
-<div class="math notranslate nohighlight">
-\[\mathbb{E}[\mathbf{x}_0\mid\mathbf{x}_t] = \frac{\mathbf{x}_t - \sqrt{1-\bar{\alpha}_t}\,\boldsymbol{\epsilon}_\theta(\mathbf{x}_t,t)}{\sqrt{\bar{\alpha}_t}}\]</div>
-<p>“Signal” is defined as <em>the direction of the training-data manifold</em>. This is why <strong>unconditional</strong> diffusion models work at all — no conditioning input is required to generate a realistic field. (The network is always conditioned on <span class="math notranslate nohighlight">\(t\)</span>, but that only tells it the current noise level.)</p>
-<p><strong>2. The conditioning tells the model which realization.</strong> An unconditional model produces <em>a</em> plausible field, never <em>the</em> field behind a particular observation — that information was destroyed. To reconstruct, we must sample <span class="math notranslate nohighlight">\(p(\mathbf{x}_0\mid\mathbf{y})\)</span> rather than <span class="math notranslate nohighlight">\(p(\mathbf{x}_0)\)</span>.</p>
-<p>The connection to everything above is exact. Ordinary least squares returns the <em>conditional mean</em> of the predictand given the predictor — written <span class="math notranslate nohighlight">\(\mathbb{E}[y\mid x]\)</span> in the regression sections, and <span class="math notranslate nohighlight">\(\mathbb{E}[\mathbf{x}_0\mid\mathbf{y}]\)</span> in the notation of this note. It is a single best estimate, and its variance is only <span class="math notranslate nohighlight">\(r^2\)</span> times the variance of the target. The residual <span class="math notranslate nohighlight">\((1-r^2)\)</span> fraction is discarded, which is precisely why regression-based downscaling produces fields that are too smooth. A conditional diffusion model learns the <em>full</em> conditional distribution, so it restores that <span class="math notranslate nohighlight">\((1-r^2)\)</span> fraction — not as white noise, but with the spatial and temporal structure learned from data:</p>
-<div class="pst-scrollable-table-container"><table class="table">
-<thead>
-<tr class="row-odd"><th class="head"><p></p></th>
-<th class="head"><p>what it returns</p></th>
-<th class="head"><p>variance</p></th>
-<th class="head"><p>tied to this <span class="math notranslate nohighlight">\(\mathbf{y}\)</span>?</p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p>Unconditional diffusion</p></td>
-<td><p>a draw from <span class="math notranslate nohighlight">\(p(\mathbf{x}_0)\)</span></p></td>
-<td><p>correct</p></td>
-<td><p><strong>no</strong></p></td>
-</tr>
-<tr class="row-odd"><td><p>Regression / OLS</p></td>
-<td><p><span class="math notranslate nohighlight">\(\mathbb{E}[\mathbf{x}_0\mid\mathbf{y}]\)</span></p></td>
-<td><p><span class="math notranslate nohighlight">\(r^2\sigma^2\)</span> — <strong>too smooth</strong></p></td>
-<td><p>yes</p></td>
-</tr>
-<tr class="row-even"><td><p>Conditional diffusion</p></td>
-<td><p>a draw from <span class="math notranslate nohighlight">\(p(\mathbf{x}_0\mid\mathbf{y})\)</span></p></td>
-<td><p>correct</p></td>
-<td><p>yes</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<p>In short: <strong>regression gives the best guess; conditional diffusion gives a plausible draw.</strong> The prior narrows the possibilities from “any array of numbers” to “realistic weather”; the conditioning narrows them further to “realistic weather consistent with this particular day.”</p>
-<div class="tip admonition">
-<p class="admonition-title">Figure / in-class demonstration</p>
-<p><em>Figure: <code class="docutils literal notranslate"><span class="pre">conditional_diffusion_demo.py</span></code></em> — a 1-D toy downscaling problem in which the prior is AR1 red noise (<span class="math notranslate nohighlight">\(\alpha=0.85\)</span>, <span class="math notranslate nohighlight">\(n=240\)</span>), so the “neural network” <span class="math notranslate nohighlight">\(\boldsymbol{\epsilon}_\theta\)</span> is available in <strong>closed form</strong> and a genuine DDPM reverse loop can be run with no training. The coarse “GCM” field is the block mean over 12 points, which explains <span class="math notranslate nohighlight">\(r^2 = 0.63\)</span> of the variance.</p>
-<figure class="align-center" id="id3">
-<a class="reference internal image-reference" href="../_images/conditional_diffusion_demo.png"><img alt="../_images/conditional_diffusion_demo.png" src="../_images/conditional_diffusion_demo.png" style="width: 100%;" />
-</a>
-<figcaption>
-<p><span class="caption-number">Fig. 2 </span><span class="caption-text">Unconditional vs. regression vs. conditional reconstruction of an AR1 field from its block means. <strong>(1)</strong> The unconditional diffusion sample has the correct variance (0.92) but correlates with the truth at only <span class="math notranslate nohighlight">\(+0.002\)</span> — statistically perfect, informationally useless. <strong>(2)</strong> The regression mean <span class="math notranslate nohighlight">\(\mathbb{E}[x_0|y]\)</span> locates the signal well (corr <span class="math notranslate nohighlight">\(+0.86\)</span>) but its variance is <span class="math notranslate nohighlight">\(0.61 \approx r^2 = 0.63\)</span>; the shading shows the discarded <span class="math notranslate nohighlight">\(1-r^2\)</span>. <strong>(3)</strong> Conditional diffusion samples honour the coarse field exactly <em>and</em> recover the full variance (0.96), matching the analytic <span class="math notranslate nohighlight">\(p(x_0|y)\)</span>.</span><a class="headerlink" href="#id3" title="Link to this image">#</a></p>
-</figcaption>
-</figure>
-<p>Note that the correlation with the truth <em>drops</em> from 0.86 to 0.66 when the residual variance is added back. The conditional sample is a <strong>worse point estimate</strong> than the regression mean but a <strong>better field</strong>, because it has the correct spectrum. This is the same bias–variance trade that motivates using <span class="math notranslate nohighlight">\(\hat y\)</span> for prediction but <span class="math notranslate nohighlight">\(\hat y + \text{residual}\)</span> for anything requiring realistic variability (extremes, thresholds, spatial gradients).</p>
-</div>
 <p><strong>Where does the “noisy data distribution” come from?</strong></p>
-<p>The score above is the score of <span class="math notranslate nohighlight">\(p_t\)</span>, “the distribution of the data after <span class="math notranslate nohighlight">\(t\)</span> steps of noise have been added.” A fair question is: who decides what that distribution is? The answer is that <strong>nobody does — it is not chosen, it is a consequence.</strong> You only ever pick two things, and <span class="math notranslate nohighlight">\(p_t\)</span> follows automatically:</p>
+<p>To run the reverse process, the network must know which direction makes a noisy field look more like real data. That direction is the <strong>score</strong>, <span class="math notranslate nohighlight">\(\nabla_{\mathbf{x}}\log p_t(\mathbf{x}_t)\)</span> — the gradient of the log-density of <span class="math notranslate nohighlight">\(p_t\)</span>, “the distribution of the data after <span class="math notranslate nohighlight">\(t\)</span> steps of noise have been added.” A fair question is: who decides what that distribution is? The answer is that <strong>nobody does — it is not chosen, it is a consequence.</strong> You only ever pick two things, and <span class="math notranslate nohighlight">\(p_t\)</span> follows automatically:</p>
 <ol class="arabic simple">
 <li><p>your <strong>data</strong> (the training archive: all the precipitation fields you have), and</p></li>
 <li><p>your <strong>noise schedule</strong> (how much noise to add at each step).</p></li>
@@ -1246,25 +1200,25 @@ Z_2 &amp;= \frac{1}{2}\ln\left(\frac{1+r_2}{1-r_2}\right)
 <p>This also explains a design choice visible in every implementation: one could equally train the network to output <span class="math notranslate nohighlight">\(\mathbf{x}_0\)</span>, or the score directly, since all three are related by the algebra above. Predicting <span class="math notranslate nohighlight">\(\boldsymbol{\epsilon}\)</span> is preferred because its <em>target</em> has unit variance at every <span class="math notranslate nohighlight">\(t\)</span>, keeping the regression well-conditioned — the same reason one standardises predictors before a multiple regression.</p>
 <p><strong>Watching it happen: a wiggly PDF through both processes</strong></p>
 <p>The animation below runs a deliberately non-Gaussian (“wiggly”) distribution all the way out to noise and back. The top panel is the distribution; the bottom panel follows 22 individual particles continuously through the forward pass and then back through the reverse pass.</p>
-<figure class="align-center" id="id4">
+<figure class="align-center" id="id3">
 <a class="reference internal image-reference" href="../_images/diffusion_wiggle_demo.gif"><img alt="../_images/diffusion_wiggle_demo.gif" src="../_images/diffusion_wiggle_demo.gif" style="width: 100%;" />
 </a>
 <figcaption>
-<p><span class="caption-number">Fig. 3 </span><span class="caption-text">Forward and reverse diffusion of a four-mode (“wiggly”) PDF. <strong>Forward</strong> (blue): each bump widens and contracts toward the origin until the four modes have merged into a single indistinguishable <span class="math notranslate nohighlight">\(\mathcal{N}(0,1)\)</span> — the wiggles are erased. <strong>Reverse</strong> (green): starting from that noise, the wiggles re-emerge and the original shape is recovered. <strong>Bottom:</strong> the particle paths fan out during the forward pass and re-collapse into the four modes during the reverse pass — but each particle lands in a <em>different</em> mode from the one it started in.</span><a class="headerlink" href="#id4" title="Link to this image">#</a></p>
+<p><span class="caption-number">Fig. 2 </span><span class="caption-text">Forward and reverse diffusion of a four-mode (“wiggly”) PDF. <strong>Forward</strong> (blue): each bump widens and contracts toward the origin until the four modes have merged into a single indistinguishable <span class="math notranslate nohighlight">\(\mathcal{N}(0,1)\)</span> — the wiggles are erased. <strong>Reverse</strong> (green): starting from that noise, the wiggles re-emerge and the original shape is recovered. <strong>Bottom:</strong> the particle paths fan out during the forward pass and re-collapse into the four modes during the reverse pass — but each particle lands in a <em>different</em> mode from the one it started in.</span><a class="headerlink" href="#id3" title="Link to this image">#</a></p>
 </figcaption>
 </figure>
 <p>Three things are worth pointing out to a class:</p>
 <ul class="simple">
 <li><p><strong>The forward pass is where the information dies.</strong> Watch the two central bumps merge first: they are closest together, so they become indistinguishable earliest. By the time the width reaches <span class="math notranslate nohighlight">\(\approx 1\)</span>, no trace of “which bump” survives.</p></li>
-<li><p><strong>The distribution comes back; the sample does not.</strong> Averaged over the tracked particles, the distance between where a particle started and where it ended is <span class="math notranslate nohighlight">\(1.52\)</span> — comparable to the width of the whole distribution. Each particle is reconstructed as a <em>valid</em> draw, not as <em>its own</em> original value. This is the same point as the conditioning discussion above: without <span class="math notranslate nohighlight">\(\mathbf{y}\)</span>, there is nothing to say which bump you came from.</p></li>
+<li><p><strong>The distribution comes back; the sample does not.</strong> Averaged over the tracked particles, the distance between where a particle started and where it ended is <span class="math notranslate nohighlight">\(1.52\)</span> — comparable to the width of the whole distribution. Each particle is reconstructed as a <em>valid</em> draw, not as <em>its own</em> original value. This is the same point taken up in the conditioning discussion below: without <span class="math notranslate nohighlight">\(\mathbf{y}\)</span>, there is nothing to say which bump you came from.</p></li>
 <li><p><strong>The moments are recovered, not memorised.</strong> Original: mean <span class="math notranslate nohighlight">\(0.029\)</span>, sd <span class="math notranslate nohighlight">\(1.714\)</span>, skew <span class="math notranslate nohighlight">\(0.071\)</span>, excess kurtosis <span class="math notranslate nohighlight">\(-1.164\)</span>. Reconstruction: <span class="math notranslate nohighlight">\(0.040\)</span>, <span class="math notranslate nohighlight">\(1.705\)</span>, <span class="math notranslate nohighlight">\(0.058\)</span>, <span class="math notranslate nohighlight">\(-1.169\)</span>.</p></li>
 </ul>
 <p>The static comparison makes the “similar but not identical” point precise, and shows what happens when the score is learned from a <em>finite archive</em> rather than known exactly:</p>
-<figure class="align-center" id="id5">
+<figure class="align-center" id="id4">
 <a class="reference internal image-reference" href="../_images/diffusion_wiggle_demo.png"><img alt="../_images/diffusion_wiggle_demo.png" src="../_images/diffusion_wiggle_demo.png" style="width: 100%;" />
 </a>
 <figcaption>
-<p><span class="caption-number">Fig. 4 </span><span class="caption-text">Black dashed: the true <span class="math notranslate nohighlight">\(p_0\)</span>. Green: the reverse pass using the exact score — it recovers the shape faithfully. Red: the reverse pass using a score estimated from only 300 training samples — the fourth mode is too heavy, the first too light, and a spurious bump appears near <span class="math notranslate nohighlight">\(x=-3.3\)</span>. The red curve is an honest picture of what a diffusion model trained on a small archive actually gives you.</span><a class="headerlink" href="#id5" title="Link to this image">#</a></p>
+<p><span class="caption-number">Fig. 3 </span><span class="caption-text">Black dashed: the true <span class="math notranslate nohighlight">\(p_0\)</span>. Green: the reverse pass using the exact score — it recovers the shape faithfully. Red: the reverse pass using a score estimated from only 300 training samples — the fourth mode is too heavy, the first too light, and a spurious bump appears near <span class="math notranslate nohighlight">\(x=-3.3\)</span>. The red curve is an honest picture of what a diffusion model trained on a small archive actually gives you.</span><a class="headerlink" href="#id4" title="Link to this image">#</a></p>
 </figcaption>
 </figure>
 <p>A quantitative memorisation check makes the difference concrete. Measuring the mean distance from each generated sample to the <em>nearest training sample</em>, and comparing against the same statistic for a genuinely fresh draw from <span class="math notranslate nohighlight">\(p_0\)</span>:</p>
@@ -1539,6 +1493,56 @@ Z_2 &amp;= \frac{1}{2}\ln\left(\frac{1+r_2}{1-r_2}\right)
       <span class="s2">&quot;   &lt;- ~0 means it is reproducing its training data&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
+</div>
+<p><strong>Application to downscaling</strong></p>
+<p>For climate downscaling, <span class="math notranslate nohighlight">\(\mathbf{x}_0\)</span> is a high-resolution field (e.g., 1 km precipitation) and the U-Net is <strong>conditioned</strong> on a low-resolution field <span class="math notranslate nohighlight">\(\mathbf{y}\)</span> (e.g., 25 km GCM output). The model learns the conditional distribution <span class="math notranslate nohighlight">\(p(\mathbf{x}_0 \mid \mathbf{y})\)</span>, allowing it to generate statistically realistic high-resolution fields consistent with the coarse model output.</p>
+<p><strong>Why conditioning is necessary — and how it maps onto <span class="math notranslate nohighlight">\(r^2\)</span></strong></p>
+<p>A natural objection: if the forward process destroys everything (<span class="math notranslate nohighlight">\(\mathbf{x}_T\)</span> is pure noise regardless of <span class="math notranslate nohighlight">\(\mathbf{x}_0\)</span>), how can the reverse process know what is signal and what is noise? The answer has two parts, and it is worth keeping them separate:</p>
+<p><strong>1. The learned prior tells the model what data looks like.</strong> The trained network is (up to scaling) an estimate of the score of the noisy data distribution, <span class="math notranslate nohighlight">\(\boldsymbol{\epsilon}_\theta(\mathbf{x}_t,t) \approx -\sqrt{1-\bar\alpha_t}\,\nabla_{\mathbf{x}}\log p_t(\mathbf{x}_t)\)</span>, the relation established above — so that by Tweedie’s formula</p>
+<div class="math notranslate nohighlight">
+\[\mathbb{E}[\mathbf{x}_0\mid\mathbf{x}_t] = \frac{\mathbf{x}_t - \sqrt{1-\bar{\alpha}_t}\,\boldsymbol{\epsilon}_\theta(\mathbf{x}_t,t)}{\sqrt{\bar{\alpha}_t}}\]</div>
+<p>“Signal” is defined as <em>the direction of the training-data manifold</em>. This is why <strong>unconditional</strong> diffusion models work at all — no conditioning input is required to generate a realistic field. (The network is always conditioned on <span class="math notranslate nohighlight">\(t\)</span>, but that only tells it the current noise level.)</p>
+<p><strong>2. The conditioning tells the model which realization.</strong> An unconditional model produces <em>a</em> plausible field, never <em>the</em> field behind a particular observation — that information was destroyed. To reconstruct, we must sample <span class="math notranslate nohighlight">\(p(\mathbf{x}_0\mid\mathbf{y})\)</span> rather than <span class="math notranslate nohighlight">\(p(\mathbf{x}_0)\)</span>.</p>
+<p>The connection to everything above is exact. Ordinary least squares returns the <em>conditional mean</em> of the predictand given the predictor — written <span class="math notranslate nohighlight">\(\mathbb{E}[y\mid x]\)</span> in the regression sections, and <span class="math notranslate nohighlight">\(\mathbb{E}[\mathbf{x}_0\mid\mathbf{y}]\)</span> in the notation of this note. It is a single best estimate, and its variance is only <span class="math notranslate nohighlight">\(r^2\)</span> times the variance of the target. The residual <span class="math notranslate nohighlight">\((1-r^2)\)</span> fraction is discarded, which is precisely why regression-based downscaling produces fields that are too smooth. A conditional diffusion model learns the <em>full</em> conditional distribution, so it restores that <span class="math notranslate nohighlight">\((1-r^2)\)</span> fraction — not as white noise, but with the spatial and temporal structure learned from data:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p></p></th>
+<th class="head"><p>what it returns</p></th>
+<th class="head"><p>variance</p></th>
+<th class="head"><p>tied to this <span class="math notranslate nohighlight">\(\mathbf{y}\)</span>?</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Unconditional diffusion</p></td>
+<td><p>a draw from <span class="math notranslate nohighlight">\(p(\mathbf{x}_0)\)</span></p></td>
+<td><p>correct</p></td>
+<td><p><strong>no</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p>Regression / OLS</p></td>
+<td><p><span class="math notranslate nohighlight">\(\mathbb{E}[\mathbf{x}_0\mid\mathbf{y}]\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(r^2\sigma^2\)</span> — <strong>too smooth</strong></p></td>
+<td><p>yes</p></td>
+</tr>
+<tr class="row-even"><td><p>Conditional diffusion</p></td>
+<td><p>a draw from <span class="math notranslate nohighlight">\(p(\mathbf{x}_0\mid\mathbf{y})\)</span></p></td>
+<td><p>correct</p></td>
+<td><p>yes</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>In short: <strong>regression gives the best guess; conditional diffusion gives a plausible draw.</strong> The prior narrows the possibilities from “any array of numbers” to “realistic weather”; the conditioning narrows them further to “realistic weather consistent with this particular day.”</p>
+<div class="tip admonition">
+<p class="admonition-title">Figure / in-class demonstration</p>
+<p><em>Figure: <code class="docutils literal notranslate"><span class="pre">conditional_diffusion_demo.py</span></code></em> — a 1-D toy downscaling problem in which the prior is AR1 red noise (<span class="math notranslate nohighlight">\(\alpha=0.85\)</span>, <span class="math notranslate nohighlight">\(n=240\)</span>), so the “neural network” <span class="math notranslate nohighlight">\(\boldsymbol{\epsilon}_\theta\)</span> is available in <strong>closed form</strong> and a genuine DDPM reverse loop can be run with no training. The coarse “GCM” field is the block mean over 12 points, which explains <span class="math notranslate nohighlight">\(r^2 = 0.63\)</span> of the variance.</p>
+<figure class="align-center" id="id5">
+<a class="reference internal image-reference" href="../_images/conditional_diffusion_demo.png"><img alt="../_images/conditional_diffusion_demo.png" src="../_images/conditional_diffusion_demo.png" style="width: 100%;" />
+</a>
+<figcaption>
+<p><span class="caption-number">Fig. 4 </span><span class="caption-text">Unconditional vs. regression vs. conditional reconstruction of an AR1 field from its block means. <strong>(1)</strong> The unconditional diffusion sample has the correct variance (0.92) but correlates with the truth at only <span class="math notranslate nohighlight">\(+0.002\)</span> — statistically perfect, informationally useless. <strong>(2)</strong> The regression mean <span class="math notranslate nohighlight">\(\mathbb{E}[x_0|y]\)</span> locates the signal well (corr <span class="math notranslate nohighlight">\(+0.86\)</span>) but its variance is <span class="math notranslate nohighlight">\(0.61 \approx r^2 = 0.63\)</span>; the shading shows the discarded <span class="math notranslate nohighlight">\(1-r^2\)</span>. <strong>(3)</strong> Conditional diffusion samples honour the coarse field exactly <em>and</em> recover the full variance (0.96), matching the analytic <span class="math notranslate nohighlight">\(p(x_0|y)\)</span>.</span><a class="headerlink" href="#id5" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<p>Note that the correlation with the truth <em>drops</em> from 0.86 to 0.66 when the residual variance is added back. The conditional sample is a <strong>worse point estimate</strong> than the regression mean but a <strong>better field</strong>, because it has the correct spectrum. This is the same bias–variance trade that motivates using <span class="math notranslate nohighlight">\(\hat y\)</span> for prediction but <span class="math notranslate nohighlight">\(\hat y + \text{residual}\)</span> for anything requiring realistic variability (extremes, thresholds, spatial gradients).</p>
 </div>
 <p><strong>Summary of the AR1–diffusion connection</strong></p>
 <div class="pst-scrollable-table-container"><table class="table">

@@ -484,15 +484,16 @@ This note is long because it does three separate jobs: it explains the *mechanis
 |---|---|---|
 | 1 | *Two derivations…*, *Notation…* | why are there two derivations, and what do the symbols mean? |
 | 2 | *The forward process*, *The reverse process* | what does the algorithm actually do? |
-| 3 | *Application to downscaling*, *Why conditioning is necessary* | what is it for, and why must it be conditioned? — the $r^2$ link |
-| 4 | *Where does the "noisy data distribution" come from?* | what is $p_t$? — a blurred copy of your data, i.e. a KDE |
-| 5 | *Where the training objective comes from* | why is the loss $\|\boldsymbol{\epsilon}-\boldsymbol{\epsilon}_\theta\|^2$? — the variational bound |
-| 6 | *A second reading…*, *How to read the identity* | what has the trained network learned? — the score |
-| 7 | *Watching it happen*, *Summary* | what does it look like, and how does it map onto AR(1)? |
+| 3 | *Where does the "noisy data distribution" come from?* | what is $p_t$? — a blurred copy of your data, i.e. a KDE |
+| 4 | *Where the training objective comes from* | why is the loss $\|\boldsymbol{\epsilon}-\boldsymbol{\epsilon}_\theta\|^2$? — the variational bound |
+| 5 | *A second reading…*, *How to read the identity* | what has the trained network learned? — the score |
+| 6 | *Watching it happen* | what does the process actually look like? — an animation |
+| 7 | *Application to downscaling*, *Why conditioning is necessary* | what is it for, and why must it be conditioned? — the $r^2$ link |
+| 8 | *Summary* | how does all of it map back onto AR(1)? |
 
-Sections 1–3 are the conceptual core and are self-contained; 4–6 are the derivations; 7 is illustration. For a first pass or a lecture, read **1 → 2 → 3 → 7** and skip the derivations entirely.
+The order is: **mechanism** (1–2), then **theory** (3–5), then **illustration and use** (6–8). Nothing depends on anything below it, so it can be read straight through.
 
-One deliberate forward reference: section 3 quotes the identity $\boldsymbol{\epsilon}_\theta \approx -\sqrt{1-\bar\alpha_t}\,\nabla\log p_t$, which is not proved until section 6. On a first pass, take it on trust — it says only that the network's output points toward more realistic-looking data.
+For a first pass or a lecture, read **1 → 2 → 6 → 7 → 8** — that is, what the algorithm does, what it looks like, and what it is for — and skip the derivations in 3–5 entirely. They are needed only to justify the loss and to interpret what the network has learned.
 
 **Two derivations, and why this note gives both**
 
@@ -576,48 +577,9 @@ $$\mathbf{x}_{t-1} = \frac{1}{\sqrt{1-\beta_t}}\!\left(\mathbf{x}_t - \frac{\bet
 
 starting from $\mathbf{x}_T \sim \mathcal{N}(\mathbf{0},\mathbf{I})$ and working backwards to $\mathbf{x}_0$.
 
-**Application to downscaling**
-
-For climate downscaling, $\mathbf{x}_0$ is a high-resolution field (e.g., 1 km precipitation) and the U-Net is **conditioned** on a low-resolution field $\mathbf{y}$ (e.g., 25 km GCM output). The model learns the conditional distribution $p(\mathbf{x}_0 \mid \mathbf{y})$, allowing it to generate statistically realistic high-resolution fields consistent with the coarse model output.
-
-**Why conditioning is necessary — and how it maps onto $r^2$**
-
-A natural objection: if the forward process destroys everything ($\mathbf{x}_T$ is pure noise regardless of $\mathbf{x}_0$), how can the reverse process know what is signal and what is noise? The answer has two parts, and it is worth keeping them separate:
-
-**1. The learned prior tells the model what data looks like.** The trained network is (up to scaling) an estimate of the score of the noisy data distribution, $\boldsymbol{\epsilon}_\theta(\mathbf{x}_t,t) \approx -\sqrt{1-\bar\alpha_t}\,\nabla_{\mathbf{x}}\log p_t(\mathbf{x}_t)$ — a relation taken on trust for now and derived later in this note — so that by Tweedie's formula
-
-$$\mathbb{E}[\mathbf{x}_0\mid\mathbf{x}_t] = \frac{\mathbf{x}_t - \sqrt{1-\bar{\alpha}_t}\,\boldsymbol{\epsilon}_\theta(\mathbf{x}_t,t)}{\sqrt{\bar{\alpha}_t}}$$
-
-"Signal" is defined as *the direction of the training-data manifold*. This is why **unconditional** diffusion models work at all — no conditioning input is required to generate a realistic field. (The network is always conditioned on $t$, but that only tells it the current noise level.)
-
-**2. The conditioning tells the model which realization.** An unconditional model produces *a* plausible field, never *the* field behind a particular observation — that information was destroyed. To reconstruct, we must sample $p(\mathbf{x}_0\mid\mathbf{y})$ rather than $p(\mathbf{x}_0)$.
-
-The connection to everything above is exact. Ordinary least squares returns the *conditional mean* of the predictand given the predictor — written $\mathbb{E}[y\mid x]$ in the regression sections, and $\mathbb{E}[\mathbf{x}_0\mid\mathbf{y}]$ in the notation of this note. It is a single best estimate, and its variance is only $r^2$ times the variance of the target. The residual $(1-r^2)$ fraction is discarded, which is precisely why regression-based downscaling produces fields that are too smooth. A conditional diffusion model learns the *full* conditional distribution, so it restores that $(1-r^2)$ fraction — not as white noise, but with the spatial and temporal structure learned from data:
-
-| | what it returns | variance | tied to this $\mathbf{y}$? |
-|---|---|---|---|
-| Unconditional diffusion | a draw from $p(\mathbf{x}_0)$ | correct | **no** |
-| Regression / OLS | $\mathbb{E}[\mathbf{x}_0\mid\mathbf{y}]$ | $r^2\sigma^2$ — **too smooth** | yes |
-| Conditional diffusion | a draw from $p(\mathbf{x}_0\mid\mathbf{y})$ | correct | yes |
-
-In short: **regression gives the best guess; conditional diffusion gives a plausible draw.** The prior narrows the possibilities from "any array of numbers" to "realistic weather"; the conditioning narrows them further to "realistic weather consistent with this particular day."
-
-:::{admonition} Figure / in-class demonstration
-:class: tip
-*Figure: `conditional_diffusion_demo.py`* — a 1-D toy downscaling problem in which the prior is AR1 red noise ($\alpha=0.85$, $n=240$), so the "neural network" $\boldsymbol{\epsilon}_\theta$ is available in **closed form** and a genuine DDPM reverse loop can be run with no training. The coarse "GCM" field is the block mean over 12 points, which explains $r^2 = 0.63$ of the variance.
-
-```{figure} conditional_diffusion_demo.png
-:width: 100%
-:align: center
-Unconditional vs. regression vs. conditional reconstruction of an AR1 field from its block means. **(1)** The unconditional diffusion sample has the correct variance (0.92) but correlates with the truth at only $+0.002$ — statistically perfect, informationally useless. **(2)** The regression mean $\mathbb{E}[x_0|y]$ locates the signal well (corr $+0.86$) but its variance is $0.61 \approx r^2 = 0.63$; the shading shows the discarded $1-r^2$. **(3)** Conditional diffusion samples honour the coarse field exactly *and* recover the full variance (0.96), matching the analytic $p(x_0|y)$.
-```
-
-Note that the correlation with the truth *drops* from 0.86 to 0.66 when the residual variance is added back. The conditional sample is a **worse point estimate** than the regression mean but a **better field**, because it has the correct spectrum. This is the same bias–variance trade that motivates using $\hat y$ for prediction but $\hat y + \text{residual}$ for anything requiring realistic variability (extremes, thresholds, spatial gradients).
-:::
-
 **Where does the "noisy data distribution" come from?**
 
-The score above is the score of $p_t$, "the distribution of the data after $t$ steps of noise have been added." A fair question is: who decides what that distribution is? The answer is that **nobody does — it is not chosen, it is a consequence.** You only ever pick two things, and $p_t$ follows automatically:
+To run the reverse process, the network must know which direction makes a noisy field look more like real data. That direction is the **score**, $\nabla_{\mathbf{x}}\log p_t(\mathbf{x}_t)$ — the gradient of the log-density of $p_t$, "the distribution of the data after $t$ steps of noise have been added." A fair question is: who decides what that distribution is? The answer is that **nobody does — it is not chosen, it is a consequence.** You only ever pick two things, and $p_t$ follows automatically:
 
 1. your **data** (the training archive: all the precipitation fields you have), and
 2. your **noise schedule** (how much noise to add at each step).
@@ -772,7 +734,7 @@ Forward and reverse diffusion of a four-mode ("wiggly") PDF. **Forward** (blue):
 Three things are worth pointing out to a class:
 
 - **The forward pass is where the information dies.** Watch the two central bumps merge first: they are closest together, so they become indistinguishable earliest. By the time the width reaches $\approx 1$, no trace of "which bump" survives.
-- **The distribution comes back; the sample does not.** Averaged over the tracked particles, the distance between where a particle started and where it ended is $1.52$ — comparable to the width of the whole distribution. Each particle is reconstructed as a *valid* draw, not as *its own* original value. This is the same point as the conditioning discussion above: without $\mathbf{y}$, there is nothing to say which bump you came from.
+- **The distribution comes back; the sample does not.** Averaged over the tracked particles, the distance between where a particle started and where it ended is $1.52$ — comparable to the width of the whole distribution. Each particle is reconstructed as a *valid* draw, not as *its own* original value. This is the same point taken up in the conditioning discussion below: without $\mathbf{y}$, there is nothing to say which bump you came from.
 - **The moments are recovered, not memorised.** Original: mean $0.029$, sd $1.714$, skew $0.071$, excess kurtosis $-1.164$. Reconstruction: $0.040$, $1.705$, $0.058$, $-1.169$.
 
 The static comparison makes the "similar but not identical" point precise, and shows what happens when the score is learned from a *finite archive* rather than known exactly:
@@ -798,6 +760,45 @@ The exact-score sampler is statistically indistinguishable from a fresh draw —
 ```{literalinclude} diffusion_wiggle_demo.py
 :language: python
 ```
+:::
+
+**Application to downscaling**
+
+For climate downscaling, $\mathbf{x}_0$ is a high-resolution field (e.g., 1 km precipitation) and the U-Net is **conditioned** on a low-resolution field $\mathbf{y}$ (e.g., 25 km GCM output). The model learns the conditional distribution $p(\mathbf{x}_0 \mid \mathbf{y})$, allowing it to generate statistically realistic high-resolution fields consistent with the coarse model output.
+
+**Why conditioning is necessary — and how it maps onto $r^2$**
+
+A natural objection: if the forward process destroys everything ($\mathbf{x}_T$ is pure noise regardless of $\mathbf{x}_0$), how can the reverse process know what is signal and what is noise? The answer has two parts, and it is worth keeping them separate:
+
+**1. The learned prior tells the model what data looks like.** The trained network is (up to scaling) an estimate of the score of the noisy data distribution, $\boldsymbol{\epsilon}_\theta(\mathbf{x}_t,t) \approx -\sqrt{1-\bar\alpha_t}\,\nabla_{\mathbf{x}}\log p_t(\mathbf{x}_t)$, the relation established above — so that by Tweedie's formula
+
+$$\mathbb{E}[\mathbf{x}_0\mid\mathbf{x}_t] = \frac{\mathbf{x}_t - \sqrt{1-\bar{\alpha}_t}\,\boldsymbol{\epsilon}_\theta(\mathbf{x}_t,t)}{\sqrt{\bar{\alpha}_t}}$$
+
+"Signal" is defined as *the direction of the training-data manifold*. This is why **unconditional** diffusion models work at all — no conditioning input is required to generate a realistic field. (The network is always conditioned on $t$, but that only tells it the current noise level.)
+
+**2. The conditioning tells the model which realization.** An unconditional model produces *a* plausible field, never *the* field behind a particular observation — that information was destroyed. To reconstruct, we must sample $p(\mathbf{x}_0\mid\mathbf{y})$ rather than $p(\mathbf{x}_0)$.
+
+The connection to everything above is exact. Ordinary least squares returns the *conditional mean* of the predictand given the predictor — written $\mathbb{E}[y\mid x]$ in the regression sections, and $\mathbb{E}[\mathbf{x}_0\mid\mathbf{y}]$ in the notation of this note. It is a single best estimate, and its variance is only $r^2$ times the variance of the target. The residual $(1-r^2)$ fraction is discarded, which is precisely why regression-based downscaling produces fields that are too smooth. A conditional diffusion model learns the *full* conditional distribution, so it restores that $(1-r^2)$ fraction — not as white noise, but with the spatial and temporal structure learned from data:
+
+| | what it returns | variance | tied to this $\mathbf{y}$? |
+|---|---|---|---|
+| Unconditional diffusion | a draw from $p(\mathbf{x}_0)$ | correct | **no** |
+| Regression / OLS | $\mathbb{E}[\mathbf{x}_0\mid\mathbf{y}]$ | $r^2\sigma^2$ — **too smooth** | yes |
+| Conditional diffusion | a draw from $p(\mathbf{x}_0\mid\mathbf{y})$ | correct | yes |
+
+In short: **regression gives the best guess; conditional diffusion gives a plausible draw.** The prior narrows the possibilities from "any array of numbers" to "realistic weather"; the conditioning narrows them further to "realistic weather consistent with this particular day."
+
+:::{admonition} Figure / in-class demonstration
+:class: tip
+*Figure: `conditional_diffusion_demo.py`* — a 1-D toy downscaling problem in which the prior is AR1 red noise ($\alpha=0.85$, $n=240$), so the "neural network" $\boldsymbol{\epsilon}_\theta$ is available in **closed form** and a genuine DDPM reverse loop can be run with no training. The coarse "GCM" field is the block mean over 12 points, which explains $r^2 = 0.63$ of the variance.
+
+```{figure} conditional_diffusion_demo.png
+:width: 100%
+:align: center
+Unconditional vs. regression vs. conditional reconstruction of an AR1 field from its block means. **(1)** The unconditional diffusion sample has the correct variance (0.92) but correlates with the truth at only $+0.002$ — statistically perfect, informationally useless. **(2)** The regression mean $\mathbb{E}[x_0|y]$ locates the signal well (corr $+0.86$) but its variance is $0.61 \approx r^2 = 0.63$; the shading shows the discarded $1-r^2$. **(3)** Conditional diffusion samples honour the coarse field exactly *and* recover the full variance (0.96), matching the analytic $p(x_0|y)$.
+```
+
+Note that the correlation with the truth *drops* from 0.86 to 0.66 when the residual variance is added back. The conditional sample is a **worse point estimate** than the regression mean but a **better field**, because it has the correct spectrum. This is the same bias–variance trade that motivates using $\hat y$ for prediction but $\hat y + \text{residual}$ for anything requiring realistic variability (extremes, thresholds, spatial gradients).
 :::
 
 **Summary of the AR1–diffusion connection**
