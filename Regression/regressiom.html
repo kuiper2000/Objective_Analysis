@@ -961,7 +961,7 @@ Z_2 &amp;= \frac{1}{2}\ln\left(\frac{1+r_2}{1-r_2}\right)
 <p>For climate downscaling, <span class="math notranslate nohighlight">\(\mathbf{x}_0\)</span> is a high-resolution field (e.g., 1 km precipitation) and the U-Net is <strong>conditioned</strong> on a low-resolution field <span class="math notranslate nohighlight">\(\mathbf{y}\)</span> (e.g., 25 km GCM output). The model learns the conditional distribution <span class="math notranslate nohighlight">\(p(\mathbf{x}_0 \mid \mathbf{y})\)</span>, allowing it to generate statistically realistic high-resolution fields consistent with the coarse model output.</p>
 <p><strong>Why conditioning is necessary — and how it maps onto <span class="math notranslate nohighlight">\(r^2\)</span></strong></p>
 <p>A natural objection: if the forward process destroys everything (<span class="math notranslate nohighlight">\(\mathbf{x}_T\)</span> is pure noise regardless of <span class="math notranslate nohighlight">\(\mathbf{x}_0\)</span>), how can the reverse process know what is signal and what is noise? The answer has two parts, and it is worth keeping them separate:</p>
-<p><strong>1. The learned prior tells the model what data looks like.</strong> The trained network is (up to scaling) an estimate of the score of the noisy data distribution, <span class="math notranslate nohighlight">\(\boldsymbol{\epsilon}_\theta(\mathbf{x}_t,t) \approx -\sqrt{1-\bar\alpha_t}\,\nabla_{\mathbf{x}}\log p_t(\mathbf{x}_t)\)</span>, so that by Tweedie’s formula</p>
+<p><strong>1. The learned prior tells the model what data looks like.</strong> The trained network is (up to scaling) an estimate of the score of the noisy data distribution, <span class="math notranslate nohighlight">\(\boldsymbol{\epsilon}_\theta(\mathbf{x}_t,t) \approx -\sqrt{1-\bar\alpha_t}\,\nabla_{\mathbf{x}}\log p_t(\mathbf{x}_t)\)</span> — a relation taken on trust for now and derived later in this note — so that by Tweedie’s formula</p>
 <div class="math notranslate nohighlight">
 \[\mathbb{E}[\mathbf{x}_0\mid\mathbf{x}_t] = \frac{\mathbf{x}_t - \sqrt{1-\bar{\alpha}_t}\,\boldsymbol{\epsilon}_\theta(\mathbf{x}_t,t)}{\sqrt{\bar{\alpha}_t}}\]</div>
 <p>“Signal” is defined as <em>the direction of the training-data manifold</em>. This is why <strong>unconditional</strong> diffusion models work at all — no conditioning input is required to generate a realistic field. (The network is always conditioned on <span class="math notranslate nohighlight">\(t\)</span>, but that only tells it the current noise level.)</p>
@@ -1025,7 +1025,7 @@ Z_2 &amp;= \frac{1}{2}\ln\left(\frac{1+r_2}{1-r_2}\right)
 <blockquote>
 <div><p>Take a training field. Pick a random <span class="math notranslate nohighlight">\(t\)</span>. Add noise <em>that you generated yourself, so you know exactly what it was</em>. Ask the network to guess the noise you added.</p>
 </div></blockquote>
-<p>Because you generated the noise, you have the right answer for free, and the ordinary least-squares fit to this task provably converges to the score of <span class="math notranslate nohighlight">\(p_t\)</span>. The intractable integral never appears anywhere in the training code. That — not the noise-adding, which is trivial — is the actual engineering insight behind diffusion models.</p>
+<p>Because you generated the noise, you have the right answer for free, and the intractable integral never appears anywhere in the training code. That — not the noise-adding, which is trivial — is the actual engineering insight behind diffusion models. Two things still have to be justified, and the next two subsections do exactly that: <em>where this loss comes from</em> (it is the residue of a variational bound, not a guess), and <em>why fitting it recovers the score of <span class="math notranslate nohighlight">\(p_t\)</span></em>.</p>
 <p>In <code class="docutils literal notranslate"><span class="pre">conditional_diffusion_demo.py</span></code> the data distribution is deliberately chosen to be AR1 red noise, i.e. a Gaussian. A Gaussian blurred by a Gaussian is still Gaussian, so there the integral <em>does</em> close, giving <span class="math notranslate nohighlight">\(p_t = \mathcal{N}(\mathbf{0},\ \bar\alpha_t\Sigma + (1-\bar\alpha_t)\mathbf{I})\)</span>. That is why the demo needs no training at all — it can write down the exact answer that a real network would have to learn.</p>
 <div class="warning admonition">
 <p class="admonition-title">A caveat that follows from the KDE view</p>
@@ -1068,8 +1068,30 @@ Z_2 &amp;= \frac{1}{2}\ln\left(\frac{1+r_2}{1-r_2}\right)
 <li><p>The reverse update quoted earlier in this note, <span class="math notranslate nohighlight">\(\mathbf{x}_{t-1} = \tfrac{1}{\sqrt{\alpha_t}}(\mathbf{x}_t-\tfrac{\beta_t}{\sqrt{1-\bar\alpha_t}}\boldsymbol{\epsilon}_\theta)+\sqrt{\beta_t}\,\mathbf{z}\)</span>, is <em>exactly</em> <span class="math notranslate nohighlight">\(\boldsymbol{\mu}_\theta\)</span> from Step 4 plus noise. The sampler is not a separate construction; it is the learned posterior mean.</p></li>
 <li><p>Discarding the prefactor <span class="math notranslate nohighlight">\(\beta_t^2/[2\sigma_t^2\alpha_t(1-\bar\alpha_t)]\)</span> means <span class="math notranslate nohighlight">\(L_{\text{simple}}\)</span> is an <strong>unweighted</strong> least-squares fit across noise levels, whereas the ELBO prescribes a <strong>weighted</strong> one. This is the same weighted-versus-unweighted choice met in ordinary regression; here the unweighted version de-emphasises the very small-<span class="math notranslate nohighlight">\(t\)</span> terms and is found to train better.</p></li>
 </ul>
-<p><strong>Where the score–noise identity comes from</strong></p>
-<p>The relation <span class="math notranslate nohighlight">\(\boldsymbol{\epsilon}_\theta(\mathbf{x}_t,t) \approx -\sqrt{1-\bar\alpha_t}\,\nabla_{\mathbf{x}}\log p_t(\mathbf{x}_t)\)</span> used above looks mysterious, but given <span class="math notranslate nohighlight">\(L_{\text{simple}}\)</span> it is two lines of calculus followed by a result you have already proved in this chapter.</p>
+<p><strong>A second reading: <span class="math notranslate nohighlight">\(\boldsymbol{\epsilon}_\theta\)</span> as an estimate of the score</strong></p>
+<p>The derivation just given is the one in the original DDPM paper (Ho et al., 2020), and it is purely <strong>variational</strong>: likelihood <span class="math notranslate nohighlight">\(\rightarrow\)</span> bound <span class="math notranslate nohighlight">\(\rightarrow\)</span> KL <span class="math notranslate nohighlight">\(\rightarrow\)</span> cancellation. Notice that the score <span class="math notranslate nohighlight">\(\nabla\log p_t\)</span> never appeared anywhere in it.</p>
+<p>This is worth pausing on, because diffusion models were arrived at twice, by two independent routes:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>route</p></th>
+<th class="head"><p>the question it asks</p></th>
+<th class="head"><p>what <span class="math notranslate nohighlight">\(\boldsymbol{\epsilon}_\theta\)</span> <em>is</em></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>variational</strong> (Ho et al., 2020) — the derivation above</p></td>
+<td><p>what loss makes <span class="math notranslate nohighlight">\(p_\theta\)</span> a good generative model?</p></td>
+<td><p>whatever parameterises the reverse posterior mean</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>score matching</strong> (Vincent, 2011; Song &amp; Ermon, 2019)</p></td>
+<td><p>how do I estimate <span class="math notranslate nohighlight">\(\nabla\log p_t\)</span> from samples, and then walk uphill in density?</p></td>
+<td><p>a scaled estimate of the score</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>The two were later shown to be the same algorithm (Song et al., 2021). That equivalence is exactly the identity quoted at the start of this note, and it is worth establishing explicitly — because the loss you actually code up comes from the <em>variational</em> route, while every intuitive statement made earlier (the KDE picture, the bandwidth-annealing reading of <span class="math notranslate nohighlight">\(t\)</span>, the weighted vote among training fields, Tweedie’s formula) belongs to the <em>score</em> language. Without the bridge below, those are two unrelated stories about the same network.</p>
+<p>Given <span class="math notranslate nohighlight">\(L_{\text{simple}}\)</span>, the bridge is two lines of calculus followed by a result already proved in this chapter.</p>
 <p><em>Step 1 — if you knew <span class="math notranslate nohighlight">\(\mathbf{x}_0\)</span>, it is just the derivative of a Gaussian.</em> Recall <span class="math notranslate nohighlight">\(\boldsymbol{\epsilon} = (\mathbf{x}_t - \sqrt{\bar\alpha_t}\mathbf{x}_0)/\sqrt{1-\bar\alpha_t}\)</span>. For a <em>known</em> starting point, <span class="math notranslate nohighlight">\(q(\mathbf{x}_t\mid\mathbf{x}_0)\)</span> is an ordinary Gaussian, so</p>
 <div class="math notranslate nohighlight">
 \[\nabla_{\mathbf{x}_t}\log q(\mathbf{x}_t\mid\mathbf{x}_0) = -\frac{\mathbf{x}_t-\sqrt{\bar\alpha_t}\mathbf{x}_0}{1-\bar\alpha_t} = -\frac{\boldsymbol{\epsilon}}{\sqrt{1-\bar\alpha_t}}\]</div>

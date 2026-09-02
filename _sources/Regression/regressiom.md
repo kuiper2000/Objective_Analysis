@@ -543,7 +543,7 @@ For climate downscaling, $\mathbf{x}_0$ is a high-resolution field (e.g., 1 km p
 
 A natural objection: if the forward process destroys everything ($\mathbf{x}_T$ is pure noise regardless of $\mathbf{x}_0$), how can the reverse process know what is signal and what is noise? The answer has two parts, and it is worth keeping them separate:
 
-**1. The learned prior tells the model what data looks like.** The trained network is (up to scaling) an estimate of the score of the noisy data distribution, $\boldsymbol{\epsilon}_\theta(\mathbf{x}_t,t) \approx -\sqrt{1-\bar\alpha_t}\,\nabla_{\mathbf{x}}\log p_t(\mathbf{x}_t)$, so that by Tweedie's formula
+**1. The learned prior tells the model what data looks like.** The trained network is (up to scaling) an estimate of the score of the noisy data distribution, $\boldsymbol{\epsilon}_\theta(\mathbf{x}_t,t) \approx -\sqrt{1-\bar\alpha_t}\,\nabla_{\mathbf{x}}\log p_t(\mathbf{x}_t)$ — a relation taken on trust for now and derived later in this note — so that by Tweedie's formula
 
 $$\mathbb{E}[\mathbf{x}_0\mid\mathbf{x}_t] = \frac{\mathbf{x}_t - \sqrt{1-\bar{\alpha}_t}\,\boldsymbol{\epsilon}_\theta(\mathbf{x}_t,t)}{\sqrt{\bar{\alpha}_t}}$$
 
@@ -597,7 +597,7 @@ That is exactly a Gaussian KDE with bandwidth $h_t = \sqrt{1-\bar\alpha_t}$. **T
 
 > Take a training field. Pick a random $t$. Add noise *that you generated yourself, so you know exactly what it was*. Ask the network to guess the noise you added.
 
-Because you generated the noise, you have the right answer for free, and the ordinary least-squares fit to this task provably converges to the score of $p_t$. The intractable integral never appears anywhere in the training code. That — not the noise-adding, which is trivial — is the actual engineering insight behind diffusion models.
+Because you generated the noise, you have the right answer for free, and the intractable integral never appears anywhere in the training code. That — not the noise-adding, which is trivial — is the actual engineering insight behind diffusion models. Two things still have to be justified, and the next two subsections do exactly that: *where this loss comes from* (it is the residue of a variational bound, not a guess), and *why fitting it recovers the score of $p_t$*.
 
 In `conditional_diffusion_demo.py` the data distribution is deliberately chosen to be AR1 red noise, i.e. a Gaussian. A Gaussian blurred by a Gaussian is still Gaussian, so there the integral *does* close, giving $p_t = \mathcal{N}(\mathbf{0},\ \bar\alpha_t\Sigma + (1-\bar\alpha_t)\mathbf{I})$. That is why the demo needs no training at all — it can write down the exact answer that a real network would have to learn.
 
@@ -657,9 +657,20 @@ Minimising a divergence between complicated distributions has collapsed into mak
 - The reverse update quoted earlier in this note, $\mathbf{x}_{t-1} = \tfrac{1}{\sqrt{\alpha_t}}(\mathbf{x}_t-\tfrac{\beta_t}{\sqrt{1-\bar\alpha_t}}\boldsymbol{\epsilon}_\theta)+\sqrt{\beta_t}\,\mathbf{z}$, is *exactly* $\boldsymbol{\mu}_\theta$ from Step 4 plus noise. The sampler is not a separate construction; it is the learned posterior mean.
 - Discarding the prefactor $\beta_t^2/[2\sigma_t^2\alpha_t(1-\bar\alpha_t)]$ means $L_{\text{simple}}$ is an **unweighted** least-squares fit across noise levels, whereas the ELBO prescribes a **weighted** one. This is the same weighted-versus-unweighted choice met in ordinary regression; here the unweighted version de-emphasises the very small-$t$ terms and is found to train better.
 
-**Where the score–noise identity comes from**
+**A second reading: $\boldsymbol{\epsilon}_\theta$ as an estimate of the score**
 
-The relation $\boldsymbol{\epsilon}_\theta(\mathbf{x}_t,t) \approx -\sqrt{1-\bar\alpha_t}\,\nabla_{\mathbf{x}}\log p_t(\mathbf{x}_t)$ used above looks mysterious, but given $L_{\text{simple}}$ it is two lines of calculus followed by a result you have already proved in this chapter.
+The derivation just given is the one in the original DDPM paper (Ho et al., 2020), and it is purely **variational**: likelihood $\rightarrow$ bound $\rightarrow$ KL $\rightarrow$ cancellation. Notice that the score $\nabla\log p_t$ never appeared anywhere in it.
+
+This is worth pausing on, because diffusion models were arrived at twice, by two independent routes:
+
+| route | the question it asks | what $\boldsymbol{\epsilon}_\theta$ *is* |
+|---|---|---|
+| **variational** (Ho et al., 2020) — the derivation above | what loss makes $p_\theta$ a good generative model? | whatever parameterises the reverse posterior mean |
+| **score matching** (Vincent, 2011; Song & Ermon, 2019) | how do I estimate $\nabla\log p_t$ from samples, and then walk uphill in density? | a scaled estimate of the score |
+
+The two were later shown to be the same algorithm (Song et al., 2021). That equivalence is exactly the identity quoted at the start of this note, and it is worth establishing explicitly — because the loss you actually code up comes from the *variational* route, while every intuitive statement made earlier (the KDE picture, the bandwidth-annealing reading of $t$, the weighted vote among training fields, Tweedie's formula) belongs to the *score* language. Without the bridge below, those are two unrelated stories about the same network.
+
+Given $L_{\text{simple}}$, the bridge is two lines of calculus followed by a result already proved in this chapter.
 
 *Step 1 — if you knew $\mathbf{x}_0$, it is just the derivative of a Gaussian.* Recall $\boldsymbol{\epsilon} = (\mathbf{x}_t - \sqrt{\bar\alpha_t}\mathbf{x}_0)/\sqrt{1-\bar\alpha_t}$. For a *known* starting point, $q(\mathbf{x}_t\mid\mathbf{x}_0)$ is an ordinary Gaussian, so
 
