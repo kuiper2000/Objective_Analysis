@@ -856,6 +856,49 @@ Z_2 &amp;= \frac{1}{2}\ln\left(\frac{1+r_2}{1-r_2}\right)
 <div class="note admonition">
 <p class="admonition-title">Side note: diffusion models in machine learning and their connection to AR processes</p>
 <p><strong>Diffusion models</strong> (also called Denoising Diffusion Probabilistic Models, DDPMs) have become the dominant generative model architecture in machine learning — used for image synthesis, weather downscaling, and bias correction. At their core, they are built on a process that is mathematically identical to AR(1).</p>
+<p><strong>What is in this note, and in what order</strong></p>
+<p>This note is long because it does three separate jobs: it explains the <em>mechanism</em>, it derives the <em>training objective</em>, and it ties both back to the regression material in this chapter. The map:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>#</p></th>
+<th class="head"><p>subsection</p></th>
+<th class="head"><p>the question it answers</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>1</p></td>
+<td><p><em>Two derivations…</em>, <em>Notation…</em></p></td>
+<td><p>why are there two derivations, and what do the symbols mean?</p></td>
+</tr>
+<tr class="row-odd"><td><p>2</p></td>
+<td><p><em>The forward process</em>, <em>The reverse process</em></p></td>
+<td><p>what does the algorithm actually do?</p></td>
+</tr>
+<tr class="row-even"><td><p>3</p></td>
+<td><p><em>Application to downscaling</em>, <em>Why conditioning is necessary</em></p></td>
+<td><p>what is it for, and why must it be conditioned? — the <span class="math notranslate nohighlight">\(r^2\)</span> link</p></td>
+</tr>
+<tr class="row-odd"><td><p>4</p></td>
+<td><p><em>Where does the “noisy data distribution” come from?</em></p></td>
+<td><p>what is <span class="math notranslate nohighlight">\(p_t\)</span>? — a blurred copy of your data, i.e. a KDE</p></td>
+</tr>
+<tr class="row-even"><td><p>5</p></td>
+<td><p><em>Where the training objective comes from</em></p></td>
+<td><p>why is the loss <span class="math notranslate nohighlight">\(|\boldsymbol{\epsilon}-\boldsymbol{\epsilon}_\theta|^2\)</span>? — the variational bound</p></td>
+</tr>
+<tr class="row-odd"><td><p>6</p></td>
+<td><p><em>A second reading…</em>, <em>How to read the identity</em></p></td>
+<td><p>what has the trained network learned? — the score</p></td>
+</tr>
+<tr class="row-even"><td><p>7</p></td>
+<td><p><em>Watching it happen</em>, <em>Summary</em></p></td>
+<td><p>what does it look like, and how does it map onto AR(1)?</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Sections 1–3 are the conceptual core and are self-contained; 4–6 are the derivations; 7 is illustration. For a first pass or a lecture, read <strong>1 → 2 → 3 → 7</strong> and skip the derivations entirely.</p>
+<p>One deliberate forward reference: section 3 quotes the identity <span class="math notranslate nohighlight">\(\boldsymbol{\epsilon}_\theta \approx -\sqrt{1-\bar\alpha_t}\,\nabla\log p_t\)</span>, which is not proved until section 6. On a first pass, take it on trust — it says only that the network’s output points toward more realistic-looking data.</p>
 <p><strong>Two derivations, and why this note gives both</strong></p>
 <p>A diffusion model can be arrived at along two independent routes. They were developed separately, and were only later shown to describe the same algorithm (Song et al., 2021). This note follows both, because they answer different questions:</p>
 <div class="pst-scrollable-table-container"><table class="table">

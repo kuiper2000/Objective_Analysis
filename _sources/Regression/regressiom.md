@@ -476,6 +476,24 @@ White noise is the special case of AR1 with $a = 0$ (i.e. $\rho(\tau > 0) = 0$).
 
 **Diffusion models** (also called Denoising Diffusion Probabilistic Models, DDPMs) have become the dominant generative model architecture in machine learning — used for image synthesis, weather downscaling, and bias correction. At their core, they are built on a process that is mathematically identical to AR(1).
 
+**What is in this note, and in what order**
+
+This note is long because it does three separate jobs: it explains the *mechanism*, it derives the *training objective*, and it ties both back to the regression material in this chapter. The map:
+
+| # | subsection | the question it answers |
+|---|---|---|
+| 1 | *Two derivations…*, *Notation…* | why are there two derivations, and what do the symbols mean? |
+| 2 | *The forward process*, *The reverse process* | what does the algorithm actually do? |
+| 3 | *Application to downscaling*, *Why conditioning is necessary* | what is it for, and why must it be conditioned? — the $r^2$ link |
+| 4 | *Where does the "noisy data distribution" come from?* | what is $p_t$? — a blurred copy of your data, i.e. a KDE |
+| 5 | *Where the training objective comes from* | why is the loss $\|\boldsymbol{\epsilon}-\boldsymbol{\epsilon}_\theta\|^2$? — the variational bound |
+| 6 | *A second reading…*, *How to read the identity* | what has the trained network learned? — the score |
+| 7 | *Watching it happen*, *Summary* | what does it look like, and how does it map onto AR(1)? |
+
+Sections 1–3 are the conceptual core and are self-contained; 4–6 are the derivations; 7 is illustration. For a first pass or a lecture, read **1 → 2 → 3 → 7** and skip the derivations entirely.
+
+One deliberate forward reference: section 3 quotes the identity $\boldsymbol{\epsilon}_\theta \approx -\sqrt{1-\bar\alpha_t}\,\nabla\log p_t$, which is not proved until section 6. On a first pass, take it on trust — it says only that the network's output points toward more realistic-looking data.
+
 **Two derivations, and why this note gives both**
 
 A diffusion model can be arrived at along two independent routes. They were developed separately, and were only later shown to describe the same algorithm (Song et al., 2021). This note follows both, because they answer different questions:
