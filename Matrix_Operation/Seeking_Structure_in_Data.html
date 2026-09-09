@@ -1,0 +1,1341 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Week 9-12: Seeking Structure in Data &#8212; Objective Analysis</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=a3416100" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css?v=be8a1c11" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js?v=4a39c7ea"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="../_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'Matrix_Operation/Seeking_Structure_in_Data';</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="prev" title="Week 5-8: Regression &amp; AR1" href="../Regression/regressiom.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../intro.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/logo.png" class="logo__image only-light" alt="Objective Analysis - Home"/>
+    <img src="../_static/logo.png" class="logo__image only-dark pst-js-only" alt="Objective Analysis - Home"/>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../intro.html">
+                    Syllabus
+                </a>
+            </li>
+        </ul>
+        <ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../General_statistical_test/Origin_of_Statisics.html">Week 1-4: Rule101</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Regression/regressiom.html">Week 5-8: Regression &amp; AR1</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Week 9-12: Seeking Structure in Data</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/executablebooks/jupyter-book" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/executablebooks/jupyter-book/issues/new?title=Issue%20on%20page%20%2FMatrix_Operation/Seeking_Structure_in_Data.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/Matrix_Operation/Seeking_Structure_in_Data.md" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.md</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
+
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Week 9-12: Seeking Structure in Data</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#part-1-linear-algebra-review">Part 1 — Linear Algebra Review</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#matrix-notation">Matrix notation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#transpose">Transpose</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#inner-product-where-regression-re-enters">Inner product — where regression re-enters</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#multiplying-matrices">Multiplying matrices</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#covariance-and-correlation-matrices">Covariance and correlation matrices</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#inverse">Inverse</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#types-of-matrices">Types of matrices</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#vector-spaces">Vector spaces</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#testing-for-a-basis-determinants">Testing for a basis: determinants</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#rank">Rank</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#part-2-eigenvalues-and-eigenvectors">Part 2 — Eigenvalues and Eigenvectors</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#solving-for-eigenvectors">Solving for eigenvectors</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#properties-of-eigenvectors">Properties of eigenvectors</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#terminology-precisely">Terminology, precisely</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#part-3-eofs-via-eigenanalysis">Part 3 — EOFs via Eigenanalysis</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#setting-up-the-maximization">Setting up the maximization</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#what-this-buys-you">What this buys you</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#getting-your-original-data-back">Getting your original data back</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#practical-considerations-which-covariance-matrix">Practical considerations: which covariance matrix?</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#summary-eofs-by-eigenanalysis-of-the-covariance-matrix-mathbf-x-m-times-n">Summary: EOFs by eigenanalysis of the covariance matrix, <span class="math notranslate nohighlight">\(\mathbf{X} = [M\times N]\)</span></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#part-4-eofs-via-singular-value-decomposition-svd">Part 4 — EOFs via Singular Value Decomposition (SVD)</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#summary-eofs-with-svd-mathbf-x-m-times-n">Summary: EOFs with SVD, <span class="math notranslate nohighlight">\(\mathbf{X} = [M\times N]\)</span></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#part-5-eofs-with-actual-data">Part 5 — EOFs with Actual Data</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#preparing-the-data">Preparing the data</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#presentation-of-eofs">Presentation of EOFs</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#how-many-eofs-should-be-retained">How many EOFs should be retained?</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#recipe-1-eofs-from-the-temporal-covariance-matrix">Recipe 1: EOFs from the temporal covariance matrix</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#recipe-2-eofs-from-the-spatial-dispersion-matrix">Recipe 2: EOFs from the spatial dispersion matrix</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#recipe-3-eofs-via-svd">Recipe 3: EOFs via SVD</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#part-6-cluster-analysis">Part 6 — Cluster Analysis</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#k-means-clustering">k-means clustering</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#self-organizing-maps-soms">Self-organizing maps (SOMs)</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#summary">Summary</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="week-9-12-seeking-structure-in-data">
+<span id="seeking-structure"></span><h1>Week 9-12: Seeking Structure in Data<a class="headerlink" href="#week-9-12-seeking-structure-in-data" title="Link to this heading">#</a></h1>
+<p>In Weeks 5-8 we asked a two-variable question: given <span class="math notranslate nohighlight">\(x(t)\)</span> and <span class="math notranslate nohighlight">\(y(t)\)</span>, how strongly are they related? That question has an obvious limitation. A climate field is not two time series — it is thousands of grid points, each with its own time series, all correlated with one another in ways we would like to summarize.</p>
+<p>This block is about finding <strong>structure</strong> in that kind of data: coherent spatial patterns that vary together in time, and groupings of observations that resemble one another. The two main tools are <strong>Empirical Orthogonal Function (EOF) analysis</strong> and <strong>cluster analysis</strong>.</p>
+<p>The good news is that nothing here is conceptually new. EOF analysis is regression — the same projection of one vector onto another that gave us the correlation coefficient — applied simultaneously to every grid point, and organized so that the resulting patterns are uncorrelated with each other. What we need first is the language to write “every grid point at once” compactly, which is linear algebra.</p>
+<hr class="docutils" />
+<section id="part-1-linear-algebra-review">
+<h2>Part 1 — Linear Algebra Review<a class="headerlink" href="#part-1-linear-algebra-review" title="Link to this heading">#</a></h2>
+<section id="matrix-notation">
+<h3>Matrix notation<a class="headerlink" href="#matrix-notation" title="Link to this heading">#</a></h3>
+<p>A matrix <span class="math notranslate nohighlight">\(\mathbf{A}\)</span> with <span class="math notranslate nohighlight">\(M\)</span> rows and <span class="math notranslate nohighlight">\(N\)</span> columns (dimensions <span class="math notranslate nohighlight">\(M \times N\)</span>) is ordered as</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\mathbf{A} = \begin{bmatrix}
+a_{11} &amp; a_{12} &amp; a_{13} &amp; \cdots &amp; a_{1n} \\
+a_{21} &amp; a_{22} &amp; a_{23} &amp; \cdots &amp; a_{2n} \\
+a_{31} &amp; a_{32} &amp; a_{33} &amp; \cdots &amp; a_{3n} \\
+\vdots &amp; \vdots &amp; \vdots &amp; &amp; \vdots \\
+a_{m1} &amp; a_{m2} &amp; a_{m3} &amp; \cdots &amp; a_{mn}
+\end{bmatrix}\end{split}\]</div>
+<p>The notation <span class="math notranslate nohighlight">\(a_{ij}\)</span> denotes the element in the <span class="math notranslate nohighlight">\(i\)</span>th row and <span class="math notranslate nohighlight">\(j\)</span>th column, with <span class="math notranslate nohighlight">\(1 \le i \le M\)</span> and <span class="math notranslate nohighlight">\(1 \le j \le N\)</span>.</p>
+<div class="warning admonition">
+<p class="admonition-title">A convention you must fix before you start</p>
+<p>Almost every error in EOF analysis traces back to losing track of which dimension is <strong>space</strong> and which is <strong>time</strong>. Throughout these notes we will use</p>
+<div class="math notranslate nohighlight">
+\[\mathbf{X} = [M \times N] = [\text{sampling} \times \text{space}]\]</div>
+<p>so <span class="math notranslate nohighlight">\(M\)</span> is the number of time steps and <span class="math notranslate nohighlight">\(N\)</span> is the number of grid points — <em>except</em> in the SVD section, where we follow Prof. Hartmann’s convention of space first. Every recipe below states its convention explicitly in the first line. Read it before you code.</p>
+</div>
+</section>
+<section id="transpose">
+<h3>Transpose<a class="headerlink" href="#transpose" title="Link to this heading">#</a></h3>
+<p>The transpose of <span class="math notranslate nohighlight">\(\mathbf{X}\)</span> is written <span class="math notranslate nohighlight">\(\mathbf{X}^T\)</span> and is obtained by flipping rows and columns, so an <span class="math notranslate nohighlight">\(M \times N\)</span> matrix becomes <span class="math notranslate nohighlight">\(N \times M\)</span>. In index notation, if <span class="math notranslate nohighlight">\(\mathbf{X} = \mathbf{Y}^T\)</span> then</p>
+<div class="math notranslate nohighlight">
+\[X_{ij} = Y_{ji}\]</div>
+</section>
+<section id="inner-product-where-regression-re-enters">
+<h3>Inner product — where regression re-enters<a class="headerlink" href="#inner-product-where-regression-re-enters" title="Link to this heading">#</a></h3>
+<p>All vectors are matrices whose second dimension is 1. If <span class="math notranslate nohighlight">\(\mathbf{X}\)</span> and <span class="math notranslate nohighlight">\(\mathbf{Y}\)</span> are two vectors of length <span class="math notranslate nohighlight">\(M \times 1\)</span>, their inner product is</p>
+<div class="math notranslate nohighlight">
+\[\mathbf{X}^T\mathbf{Y} = \sum_{i=1}^{M} x_i y_i = \text{scalar}, \qquad [1 \times M]\cdot[M \times 1] = [1\times1]\]</div>
+<p>This is worth pausing on, because it is the bridge from Weeks 5-8:</p>
+<ul class="simple">
+<li><p>if <span class="math notranslate nohighlight">\(\mathbf{X}\)</span> and <span class="math notranslate nohighlight">\(\mathbf{Y}\)</span> have <strong>mean zero</strong>, then <span class="math notranslate nohighlight">\(\frac{1}{M}\mathbf{X}^T\mathbf{Y}\)</span> is the <strong>covariance</strong> of the two vectors</p></li>
+<li><p>if <span class="math notranslate nohighlight">\(\mathbf{X}\)</span> and <span class="math notranslate nohighlight">\(\mathbf{Y}\)</span> are additionally <strong>standardized</strong> (unit standard deviation), then <span class="math notranslate nohighlight">\(\frac{1}{M}\mathbf{X}^T\mathbf{Y}\)</span> is the <strong>correlation coefficient</strong> — and also the regression coefficient, since for standardized data <span class="math notranslate nohighlight">\(a_1 = r\)</span></p></li>
+</ul>
+<p>So an inner product <em>is</em> a regression. Everything in the EOF sections is built from this one operation.</p>
+</section>
+<section id="multiplying-matrices">
+<h3>Multiplying matrices<a class="headerlink" href="#multiplying-matrices" title="Link to this heading">#</a></h3>
+<p>If <span class="math notranslate nohighlight">\(\mathbf{A}\)</span> is <span class="math notranslate nohighlight">\(M \times N\)</span> and <span class="math notranslate nohighlight">\(\mathbf{B}\)</span> is <span class="math notranslate nohighlight">\(N \times P\)</span>, then</p>
+<div class="math notranslate nohighlight">
+\[\mathbf{A}\mathbf{B} = \mathbf{C}, \qquad [M\times N]\cdot[N\times P] = [M \times P]\]</div>
+<p>The number of <strong>columns</strong> of the first matrix must equal the number of <strong>rows</strong> of the second. Unlike ordinary multiplication, matrix multiplication does not commute — you cannot re-order it.</p>
+<p>To multiply, take the row of the first matrix against the column of the second, multiply element-wise and sum:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{bmatrix} 1 &amp; 2 &amp; 3 \\ -1 &amp; -1 &amp; -3 \end{bmatrix}
+\times
+\begin{bmatrix} 2 &amp; 3 \\ 4 &amp; 2 \\ -1 &amp; 1 \end{bmatrix}
+=
+\begin{bmatrix} 7 &amp; 10 \\ -3 &amp; -8 \end{bmatrix}\end{split}\]</div>
+<div class="math notranslate nohighlight">
+\[[2\times3]\times[3\times2] = [2\times2]\]</div>
+</section>
+<section id="covariance-and-correlation-matrices">
+<h3>Covariance and correlation matrices<a class="headerlink" href="#covariance-and-correlation-matrices" title="Link to this heading">#</a></h3>
+<p>This is the object the entire EOF machinery acts on. Given <span class="math notranslate nohighlight">\(\mathbf{X}\)</span> of dimension <span class="math notranslate nohighlight">\(M \times N\)</span> whose <strong>columns have mean zero</strong>,</p>
+<div class="math notranslate nohighlight">
+\[\boxed{\mathbf{C} = \frac{1}{M}\mathbf{X}^T\mathbf{X}}\]</div>
+<p>is the <strong>covariance matrix</strong>, of dimension <span class="math notranslate nohighlight">\(N \times N\)</span>. Element <span class="math notranslate nohighlight">\(C_{ij}\)</span> is the covariance between grid point <span class="math notranslate nohighlight">\(i\)</span> and grid point <span class="math notranslate nohighlight">\(j\)</span> — i.e. it is the inner product of column <span class="math notranslate nohighlight">\(i\)</span> with column <span class="math notranslate nohighlight">\(j\)</span>, which by the previous section is exactly a covariance.</p>
+<p>If the columns of <span class="math notranslate nohighlight">\(\mathbf{X}\)</span> are <strong>standardized</strong> rather than merely centered, the same expression</p>
+<div class="math notranslate nohighlight">
+\[\mathbf{C} = \frac{1}{M}\mathbf{X}^T\mathbf{X}\]</div>
+<p>is the <strong>correlation matrix</strong>. The formula does not change; what changes is the preprocessing. This distinction returns in Part 3, because standardizing your data means you are eigenanalyzing the correlation matrix whether you intended to or not.</p>
+<p><span class="math notranslate nohighlight">\(\mathbf{C}\)</span> is also sometimes called the <strong>dispersion matrix</strong>. It is always square and always symmetric (<span class="math notranslate nohighlight">\(\mathbf{C} = \mathbf{C}^T\)</span>) — a fact we will lean on heavily.</p>
+</section>
+<section id="inverse">
+<h3>Inverse<a class="headerlink" href="#inverse" title="Link to this heading">#</a></h3>
+<p>The inverse of a square matrix <span class="math notranslate nohighlight">\(\mathbf{X}\)</span> is written <span class="math notranslate nohighlight">\(\mathbf{X}^{-1}\)</span>. This does <strong>not</strong> mean raising the matrix to the <span class="math notranslate nohighlight">\(-1\)</span> power; it denotes the inverse specifically, defined by</p>
+<div class="math notranslate nohighlight">
+\[\mathbf{X}\mathbf{X}^{-1} = \mathbf{X}^{-1}\mathbf{X} = \mathbf{I}\]</div>
+<p>where <span class="math notranslate nohighlight">\(\mathbf{I}\)</span> is the identity matrix — square, with ones on the diagonal and zeros elsewhere.</p>
+<p><strong>Only square matrices have inverses.</strong> (There are “left” and “right” inverses for non-square matrices, but we will not use them here.)</p>
+<p>In ordinary algebra you divide to remove a multiplied variable. With matrices, you multiply by the inverse instead — that is what the inverse is <em>for</em>.</p>
+</section>
+<section id="types-of-matrices">
+<h3>Types of matrices<a class="headerlink" href="#types-of-matrices" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(\mathbf{X}\)</span> is <strong>diagonal</strong> if it is square with values along the diagonal and zeros everywhere else</p></li>
+<li><p><span class="math notranslate nohighlight">\(\mathbf{X}\)</span> is <strong>symmetric</strong> if <span class="math notranslate nohighlight">\(\mathbf{X}^T = \mathbf{X}\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\mathbf{X}\)</span> is <strong>orthonormal</strong> if <span class="math notranslate nohighlight">\(\mathbf{X}^T = \mathbf{X}^{-1}\)</span>, equivalently <span class="math notranslate nohighlight">\(\mathbf{X}^T\mathbf{X} = \mathbf{X}\mathbf{X}^T = \mathbf{I}\)</span></p></li>
+</ul>
+<p>That last one is the useful one. If all off-diagonal elements of <span class="math notranslate nohighlight">\(\mathbf{X}^T\mathbf{X}\)</span> are zero, then <span class="math notranslate nohighlight">\(\mathbf{X}^T = \mathbf{X}^{-1}\)</span>, and all columns of <span class="math notranslate nohighlight">\(\mathbf{X}\)</span> are linearly independent — i.e. uncorrelated with one another. When we find that our EOFs form an orthonormal matrix, transposing will be all the “inverting” we ever need to do.</p>
+</section>
+<section id="vector-spaces">
+<h3>Vector spaces<a class="headerlink" href="#vector-spaces" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(\mathbb{R}^0\)</span>: a single point (e.g. 0)</p></li>
+<li><p><span class="math notranslate nohighlight">\(\mathbb{R}^1\)</span>: the real line</p></li>
+<li><p><span class="math notranslate nohighlight">\(\mathbb{R}^2\)</span>: where all 2-element vectors live</p></li>
+<li><p><span class="math notranslate nohighlight">\(\mathbb{R}^3\)</span>: 3-D space</p></li>
+</ul>
+<p>Vector spaces are <strong>spanned</strong> by a set of <strong>basis vectors</strong>. A basis for <span class="math notranslate nohighlight">\(\mathbb{R}^N\)</span> is a set of <span class="math notranslate nohighlight">\(N\)</span> vectors that, through linear combination, can describe any vector in <span class="math notranslate nohighlight">\(\mathbb{R}^N\)</span>.</p>
+<p>There are infinitely many possible bases for any <span class="math notranslate nohighlight">\(\mathbb{R}^N\)</span>, but the conventional choice is the unit vectors. For <span class="math notranslate nohighlight">\(\mathbb{R}^2\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[\mathbf{e}_1 = (1, 0), \qquad \mathbf{e}_2 = (0, 1)\]</div>
+<p>Any point in <span class="math notranslate nohighlight">\(\mathbb{R}^2\)</span> is a linear combination of these — for example <span class="math notranslate nohighlight">\((3,2) = 3\mathbf{e}_1 + 2\mathbf{e}_2\)</span>. Try it; you can reach anywhere in the plane.</p>
+<p>Now a question. Do these form a basis for <span class="math notranslate nohighlight">\(\mathbb{R}^2\)</span>?</p>
+<div class="math notranslate nohighlight">
+\[\mathbf{e}_1 = (1,0), \qquad \mathbf{e}_2 = (2,0)\]</div>
+<p>No — any point with a non-zero second component is unreachable. The direction <span class="math notranslate nohighlight">\((0,1)\)</span> and all its multiples form the <strong>null space</strong>: the part of the space these vectors cannot reach.</p>
+<p>For <span class="math notranslate nohighlight">\(\mathbb{R}^3\)</span> the unit basis is</p>
+<div class="math notranslate nohighlight">
+\[\mathbf{e}_1 = (1,0,0), \quad \mathbf{e}_2 = (0,1,0), \quad \mathbf{e}_3 = (0,0,1)\]</div>
+<p>By definition basis vectors must be <strong>linearly independent</strong> — each supplies information the others do not.</p>
+</section>
+<section id="testing-for-a-basis-determinants">
+<h3>Testing for a basis: determinants<a class="headerlink" href="#testing-for-a-basis-determinants" title="Link to this heading">#</a></h3>
+<p>To check whether a set of vectors forms a basis, assemble them as the columns of <span class="math notranslate nohighlight">\(\mathbf{A}\)</span> and ask whether there is a non-trivial <span class="math notranslate nohighlight">\(\mathbf{x}\)</span> with</p>
+<div class="math notranslate nohighlight">
+\[\mathbf{A}\mathbf{x} = 0\]</div>
+<p>If such an <span class="math notranslate nohighlight">\(\mathbf{x}\)</span> exists, the vectors fail to span the space and/or are not all independent — there is a non-trivial null space.</p>
+<p>Rather than solving for every <span class="math notranslate nohighlight">\(\mathbf{x}\)</span>, we only need to know whether a solution exists, and there is a shortcut. If</p>
+<div class="math notranslate nohighlight">
+\[\det(\mathbf{A}) = |\mathbf{A}| = 0\]</div>
+<p>then a non-trivial solution to <span class="math notranslate nohighlight">\(\mathbf{A}\mathbf{x} = 0\)</span> exists. Determinants are painful for large matrices but trivial for <span class="math notranslate nohighlight">\(2\times2\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[\det(\mathbf{A}) = a_{11}a_{22} - a_{12}a_{21}\]</div>
+<p>If <span class="math notranslate nohighlight">\(\mathbf{A}\)</span> is square and <span class="math notranslate nohighlight">\(\mathbf{A}\mathbf{x} = 0\)</span> has a non-trivial solution, then <span class="math notranslate nohighlight">\(\mathbf{A}\)</span> is called <strong>singular</strong> or <strong>degenerate</strong>, and it has no inverse.</p>
+</section>
+<section id="rank">
+<h3>Rank<a class="headerlink" href="#rank" title="Link to this heading">#</a></h3>
+<p>The <strong>rank</strong> <span class="math notranslate nohighlight">\(r\)</span> of a matrix is the number of linearly independent columns. If <span class="math notranslate nohighlight">\(\mathbf{A}\)</span> holds the basis vectors of <span class="math notranslate nohighlight">\(\mathbb{R}^2\)</span>,</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\mathbf{A} = \begin{bmatrix} 1 &amp; 0 \\ 0 &amp; 1\end{bmatrix}, \qquad \det\mathbf{A} = 1 \ne 0\end{split}\]</div>
+<p>so the rank is 2. But if</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\mathbf{A} = \begin{bmatrix} 1 &amp; 2 \\ 0 &amp; 0\end{bmatrix}, \qquad \det\mathbf{A} = 0 - 0 = 0\end{split}\]</div>
+<p>the columns are not independent. Here you can see it directly — twice the first column gives the second — but for larger matrices the determinant is what you rely on. The rank of this <span class="math notranslate nohighlight">\(2\times2\)</span> matrix is 1.</p>
+<p>Rank is bounded by the smaller dimension:</p>
+<div class="math notranslate nohighlight">
+\[r \le \min(M, N)\]</div>
+<p>If <span class="math notranslate nohighlight">\(\mathbf{A}\)</span> is <span class="math notranslate nohighlight">\(N \times N\)</span> and <span class="math notranslate nohighlight">\(r &lt; N\)</span>, there is a non-trivial null space; the directions in <span class="math notranslate nohighlight">\(\mathbb{R}^N\)</span> not spanned by the columns of <span class="math notranslate nohighlight">\(\mathbf{A}\)</span> <em>define</em> that null space.</p>
+<ul class="simple">
+<li><p>columns linearly independent <span class="math notranslate nohighlight">\(\Rightarrow\)</span> <span class="math notranslate nohighlight">\(\mathbf{A}\)</span> is <strong>full rank</strong></p></li>
+<li><p>columns not linearly independent <span class="math notranslate nohighlight">\(\Rightarrow\)</span> <span class="math notranslate nohighlight">\(\mathbf{A}\)</span> is <strong>rank deficient</strong></p></li>
+</ul>
+<p>This matters practically: a rank-deficient covariance matrix has fewer non-zero eigenvalues than its dimension, which means fewer meaningful EOFs than grid points. If you have 100 time steps and 40000 grid points, your covariance matrix is <span class="math notranslate nohighlight">\(40000\times40000\)</span> but its rank is at most 100 — so at most 100 EOFs carry any information at all.</p>
+</section>
+</section>
+<hr class="docutils" />
+<section id="part-2-eigenvalues-and-eigenvectors">
+<h2>Part 2 — Eigenvalues and Eigenvectors<a class="headerlink" href="#part-2-eigenvalues-and-eigenvectors" title="Link to this heading">#</a></h2>
+<p>Recall the covariance (dispersion) matrix</p>
+<div class="math notranslate nohighlight">
+\[\mathbf{C} = \frac{1}{M}\mathbf{X}^T\mathbf{X} \qquad \text{or} \qquad \mathbf{C} = \frac{1}{N}\mathbf{X}\mathbf{X}^T\]</div>
+<p>depending on which dimension is the sampling dimension. Either way <span class="math notranslate nohighlight">\(\mathbf{C}\)</span> is square and symmetric.</p>
+<p>Principal Component Analysis is an <strong>eigenanalysis of <span class="math notranslate nohighlight">\(\mathbf{C}\)</span></strong>. Any symmetric matrix <span class="math notranslate nohighlight">\(\mathbf{C}\)</span> can be decomposed as</p>
+<div class="math notranslate nohighlight">
+\[\mathbf{C}\mathbf{e}_i = \lambda_i\mathbf{e}_i\]</div>
+<p>or in full matrix form</p>
+<div class="math notranslate nohighlight">
+\[\boxed{\mathbf{C}\mathbf{E} = \mathbf{E}\boldsymbol{\Lambda}}\]</div>
+<p>where <span class="math notranslate nohighlight">\(\mathbf{E}\)</span> has the eigenvectors <span class="math notranslate nohighlight">\(\mathbf{e}_i\)</span> as its columns, and <span class="math notranslate nohighlight">\(\boldsymbol{\Lambda}\)</span> is diagonal with the eigenvalues <span class="math notranslate nohighlight">\(\lambda_i\)</span> along it.</p>
+<p>The set of eigenvectors and eigenvalues represents a <strong>coordinate transformation into a space where <span class="math notranslate nohighlight">\(\mathbf{C}\)</span> becomes diagonal</strong>. This is the whole idea, and it is worth stating carefully:</p>
+<blockquote>
+<div><p>Because the covariance matrix is diagonal in this new coordinate space, the variations in these new directions are uncorrelated with each other. The eigenvectors define directions in the initial coordinate space along which the maximum possible variance can be explained, and in which variance in one direction is orthogonal to the variance explained by other directions defined by the other eigenvectors. The eigenvalues indicate how much variance is explained by each eigenvector.</p>
+<p>— D. Hartmann notes, Chapter 4</p>
+</div></blockquote>
+<div class="note admonition">
+<p class="admonition-title">Example / deeper dive</p>
+<p><strong>A worked <span class="math notranslate nohighlight">\(2\times2\)</span> eigenanalysis</strong></p>
+<p>Let the data be two points with the means already removed:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\mathbf{A} = \begin{bmatrix} -1 &amp; 1 \\ 1 &amp; -1 \end{bmatrix}\end{split}\]</div>
+<p>The covariance matrix is</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\mathbf{C} = \begin{bmatrix} 1 &amp; -1 \\ -1 &amp; 1 \end{bmatrix}\end{split}\]</div>
+<p>and one can show that</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\mathbf{e}_1 = \begin{bmatrix} -\sqrt{2}/2 \\ \sqrt{2}/2 \end{bmatrix} = \frac{\sqrt2}{2}\begin{bmatrix} -1 \\ 1\end{bmatrix}\end{split}\]</div>
+<p>Note that the norm of <span class="math notranslate nohighlight">\(\mathbf{e}_1\)</span> is 1. Check it against the eigenvalue equation:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{bmatrix} 1 &amp; -1 \\ -1 &amp; 1\end{bmatrix}\begin{bmatrix} -\sqrt2/2 \\ \sqrt2/2\end{bmatrix} = 2\cdot\begin{bmatrix} -\sqrt2/2 \\ \sqrt2/2\end{bmatrix}\end{split}\]</div>
+<p>so <span class="math notranslate nohighlight">\(\lambda_1 = 2\)</span>. It turns out that <span class="math notranslate nohighlight">\(\sum_i \lambda_i\)</span> equals the total variance of <span class="math notranslate nohighlight">\(\mathbf{A}\)</span> — the sum of the diagonal of <span class="math notranslate nohighlight">\(\mathbf{C}\)</span>, which here is 2. So in this problem there is only one non-zero eigenvalue (<span class="math notranslate nohighlight">\(\lambda_2 = 0\)</span>), and the first eigenvector explains <strong>all</strong> the variance.</p>
+<p>That makes sense geometrically: both data points lie on the line <span class="math notranslate nohighlight">\(y = -x\)</span>, so a single direction describes them completely.</p>
+<p>Finally, note that</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\mathbf{e}_1 = \begin{bmatrix} \sqrt2/2 \\ -\sqrt2/2\end{bmatrix}\end{split}\]</div>
+<p>is an equally valid eigenvector. <strong>The overall sign of an eigenvector is arbitrary</strong> — which is why you should never over-interpret the sign of an EOF map without also looking at its PC.</p>
+</div>
+<div class="tip admonition">
+<p class="admonition-title">Figure / in-class demonstration</p>
+<p><em>Figure Example: <code class="docutils literal notranslate"><span class="pre">eigenanalysis_2d.py</span></code></em> — dots denote the points of <span class="math notranslate nohighlight">\(\mathbf{A}\)</span> with means removed, <span class="math notranslate nohighlight">\((-1,1)\)</span> and <span class="math notranslate nohighlight">\((1,-1)\)</span>. Black coordinates denote the original <span class="math notranslate nohighlight">\(x\)</span>–<span class="math notranslate nohighlight">\(y\)</span> axes; purple coordinates denote positions along the new axis <span class="math notranslate nohighlight">\(\mathbf{e}_1\)</span>, i.e. <span class="math notranslate nohighlight">\((-\sqrt2, 0)\)</span> and <span class="math notranslate nohighlight">\((\sqrt2, 0)\)</span>. The two points and the dotted purple line (the direction of <span class="math notranslate nohighlight">\(\mathbf{e}_1\)</span>) lie along <span class="math notranslate nohighlight">\(y = -x\)</span>.</p>
+<p>A second panel adds a third point <span class="math notranslate nohighlight">\((-1.1, -0.2)\)</span> so the points no longer fall exactly on a line. Eigenanalysis now returns two eigenvectors <span class="math notranslate nohighlight">\(\mathbf{e}_1\)</span> and <span class="math notranslate nohighlight">\(\mathbf{e}_2\)</span>, drawn as perpendicular dotted lines through the origin. Eigenvector 1 explains most of the variance; eigenvector 2 accounts for the deviations from it.</p>
+</div>
+<section id="solving-for-eigenvectors">
+<h3>Solving for eigenvectors<a class="headerlink" href="#solving-for-eigenvectors" title="Link to this heading">#</a></h3>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{aligned}
+\mathbf{C}\mathbf{e}_i &amp;= \lambda_i\mathbf{e}_i \\
+\mathbf{C}\mathbf{e}_i - \lambda_i\mathbf{e}_i &amp;= 0 \\
+(\mathbf{C} - \lambda_i\mathbf{I})\mathbf{e}_i &amp;= 0
+\end{aligned}\end{split}\]</div>
+<p>So the eigenvector <span class="math notranslate nohighlight">\(\mathbf{e}_i\)</span> lies in the <strong>null space</strong> of <span class="math notranslate nohighlight">\((\mathbf{C} - \lambda_i\mathbf{I})\)</span> — which is exactly the null-space machinery from Part 1. That matrix only has a null space if it is singular, i.e. if</p>
+<div class="math notranslate nohighlight">
+\[\det(\mathbf{C} - \lambda_i\mathbf{I}) = 0\]</div>
+<p>Solving this is the <strong>eigenvalue problem</strong>, and it appears throughout science and engineering.</p>
+<p>For a real, symmetric <span class="math notranslate nohighlight">\(\mathbf{C}\)</span> the eigenvalues <span class="math notranslate nohighlight">\(\lambda_i\)</span> are positive. If <span class="math notranslate nohighlight">\(\mathbf{C}\)</span> is <span class="math notranslate nohighlight">\(M\times M\)</span> there will be <span class="math notranslate nohighlight">\(M\)</span> eigenvalues and <span class="math notranslate nohighlight">\(M\)</span> eigenvectors — unless <span class="math notranslate nohighlight">\(\mathbf{C}\)</span> is degenerate, in which case there are only <span class="math notranslate nohighlight">\(r\)</span> of them, where <span class="math notranslate nohighlight">\(r\)</span> is the rank.</p>
+</section>
+<section id="properties-of-eigenvectors">
+<h3>Properties of eigenvectors<a class="headerlink" href="#properties-of-eigenvectors" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>the eigenvectors of a matrix form a linearly independent set</p></li>
+<li><p>if <span class="math notranslate nohighlight">\(\mathbf{C}\)</span> (<span class="math notranslate nohighlight">\(M\times M\)</span>) has full rank, the eigenvectors form a basis for <span class="math notranslate nohighlight">\(\mathbb{R}^M\)</span></p></li>
+<li><p>if <span class="math notranslate nohighlight">\(\mathbf{C}\)</span> is singular with rank <span class="math notranslate nohighlight">\(r = k\)</span>, the first <span class="math notranslate nohighlight">\(k\)</span> eigenvectors span the subspace of <span class="math notranslate nohighlight">\(\mathbf{C}\)</span> (<span class="math notranslate nohighlight">\(\mathbb{R}^k\)</span>), and eigenvectors <span class="math notranslate nohighlight">\(k+1 : M\)</span> span the null space of <span class="math notranslate nohighlight">\(\mathbf{C}\)</span></p></li>
+<li><p>if <span class="math notranslate nohighlight">\(\mathbf{C}\)</span> is real and symmetric, the eigenvectors are not merely linearly independent, they are <strong>orthogonal</strong></p></li>
+</ul>
+<p>That last property is what puts the “O” in EOF, and we prove it in Part 3.</p>
+</section>
+<section id="terminology-precisely">
+<h3>Terminology, precisely<a class="headerlink" href="#terminology-precisely" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p><strong>linearly independent</strong>: you cannot reach one vector by a linear combination of the others</p></li>
+<li><p><strong>orthogonal</strong>: the angle between the vectors is <span class="math notranslate nohighlight">\(90^\circ\)</span>; they share no vector space</p></li>
+<li><p><strong>orthonormal</strong>: orthogonal <em>and</em> of unit length (<span class="math notranslate nohighlight">\(\sqrt{x^2+y^2} = 1\)</span>)</p></li>
+</ul>
+</section>
+</section>
+<hr class="docutils" />
+<section id="part-3-eofs-via-eigenanalysis">
+<h2>Part 3 — EOFs via Eigenanalysis<a class="headerlink" href="#part-3-eofs-via-eigenanalysis" title="Link to this heading">#</a></h2>
+<div class="tip admonition">
+<p class="admonition-title">Figure / in-class demonstration</p>
+<p><em>Show intro EOF slides:</em> <code class="docutils literal notranslate"><span class="pre">eofintro.pdf</span></code></p>
+</div>
+<p>A vocabulary note first, since the literature is loose about it:</p>
+<ul class="simple">
+<li><p><strong>EOF</strong> stands for Empirical Orthogonal Functions</p></li>
+<li><p><strong>PCA</strong> stands for Principal Component Analysis</p></li>
+<li><p>the two are practically the same thing</p></li>
+<li><p><strong>PCA</strong> is the more general term, and just implies splitting a matrix into linearly uncorrelated variables called principal components</p></li>
+<li><p><strong>EOF analysis</strong> normally refers to finding the principal components that maximize variance explained — so, a subset of all the PCs</p></li>
+</ul>
+<p>We will cover two routes to EOFs: eigenanalysis of the covariance matrix (this Part) and singular value decomposition (Part 4). <strong>Both give identical answers.</strong></p>
+<section id="setting-up-the-maximization">
+<h3>Setting up the maximization<a class="headerlink" href="#setting-up-the-maximization" title="Link to this heading">#</a></h3>
+<p>Let <span class="math notranslate nohighlight">\(\mathbf{X}\)</span> be <span class="math notranslate nohighlight">\(M \times N\)</span>, rows being times and columns being spatial locations. We want to decompose <span class="math notranslate nohighlight">\(\mathbf{X}\)</span> into orthogonal eigenvectors that explain the most variance. Equivalently, we want to find the <span class="math notranslate nohighlight">\(\mathbf{e}_1\)</span> (dimension <span class="math notranslate nohighlight">\([N\times1]\)</span>, i.e. a spatial pattern) that most resembles the data.</p>
+<p>Building the measure of “resemblance”, one requirement at a time:</p>
+<ol class="arabic simple">
+<li><p>the projection of <span class="math notranslate nohighlight">\(\mathbf{e}_1\)</span> onto the data is measured by the inner product of <span class="math notranslate nohighlight">\(\mathbf{e}_1\)</span> with <span class="math notranslate nohighlight">\(\mathbf{X}\)</span> — this is the resemblance</p></li>
+<li><p>the projection is <strong>squared</strong>, so that positive and negative resemblance count the same (exactly as in linear regression, where we squared the errors)</p></li>
+<li><p>to make the measure independent of the number of observations, divide by <span class="math notranslate nohighlight">\(M\)</span></p></li>
+<li><p>to make it independent of the <em>magnitude</em> of <span class="math notranslate nohighlight">\(\mathbf{e}_1\)</span>, normalize to unit length, <span class="math notranslate nohighlight">\(\mathbf{e}_1^T\mathbf{e}_1 = 1\)</span> — otherwise the projection could be made arbitrarily large just by lengthening <span class="math notranslate nohighlight">\(\mathbf{e}_1\)</span></p></li>
+<li><p>following these rules, the measure of resemblance is</p></li>
+</ol>
+<div class="math notranslate nohighlight">
+\[(\mathbf{X}\mathbf{e}_1)^2\frac{1}{M} = \mathbf{e}_1^T\mathbf{X}^T\mathbf{X}\mathbf{e}_1\frac{1}{M}\]</div>
+<p>which is equivalent to maximizing</p>
+<div class="math notranslate nohighlight">
+\[\mathbf{e}_1^T\mathbf{C}\mathbf{e}_1 \qquad \text{subject to } \mathbf{e}_1^T\mathbf{e}_1 = 1, \qquad \mathbf{C} = \frac{1}{M}\mathbf{X}^T\mathbf{X}\]</div>
+<p>Call the maximum value of this squared projection <span class="math notranslate nohighlight">\(\lambda_1\)</span> — the variance explained by <span class="math notranslate nohighlight">\(\mathbf{e}_1\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[\mathbf{e}_1^T\mathbf{C}\mathbf{e}_1 = \lambda_1\]</div>
+<p>This has exactly the form of the eigenvalue problem from Part 2. Since the norm of <span class="math notranslate nohighlight">\(\mathbf{e}_1\)</span> is one, it becomes</p>
+<div class="math notranslate nohighlight">
+\[\mathbf{C}\mathbf{e}_1 = \mathbf{e}_1\lambda_1\]</div>
+<p>and in full matrix notation (with <span class="math notranslate nohighlight">\(\mathbf{C}\)</span>, <span class="math notranslate nohighlight">\(\boldsymbol{\Lambda}\)</span>, <span class="math notranslate nohighlight">\(\mathbf{E}\)</span> all <span class="math notranslate nohighlight">\(N \times N\)</span>),</p>
+<div class="math notranslate nohighlight">
+\[\mathbf{E}^T\mathbf{C}\mathbf{E} = \boldsymbol{\Lambda} \;\Rightarrow\; \mathbf{E}\mathbf{E}^T\mathbf{C}\mathbf{E} = \mathbf{E}\boldsymbol{\Lambda} \;\Rightarrow\; \mathbf{C}\mathbf{E} = \mathbf{E}\boldsymbol{\Lambda}\]</div>
+<p>using <span class="math notranslate nohighlight">\(\mathbf{E}^T\mathbf{E} = \mathbf{E}\mathbf{E}^T = \mathbf{I}\)</span>.</p>
+<p>So <span class="math notranslate nohighlight">\(\mathbf{e}_1\)</span> <strong>must be an eigenvector of <span class="math notranslate nohighlight">\(\mathbf{C}\)</span></strong>. We find it by eigenanalyzing <span class="math notranslate nohighlight">\(\mathbf{C}\)</span> and taking the eigenvector belonging to the largest eigenvalue. The search for “the pattern that explains the most variance” and the eigenvalue problem are the same problem.</p>
+</section>
+<section id="what-this-buys-you">
+<h3>What this buys you<a class="headerlink" href="#what-this-buys-you" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>the 1st eigenvector explains the most variance in <span class="math notranslate nohighlight">\(\mathbf{X}\)</span> and has the largest eigenvalue</p></li>
+<li><p>the 2nd eigenvector explains the second most, with the 2nd largest eigenvalue</p></li>
+<li><p>the eigenanalysis transforms <span class="math notranslate nohighlight">\(\mathbf{C}\)</span> into a coordinate system where the new dispersion matrix is diagonal (<span class="math notranslate nohighlight">\(\boldsymbol{\Lambda}\)</span>)</p></li>
+<li><p>in that space all the variance is on the diagonal, since the vectors are orthogonal, so the <strong>fraction of variance explained by the <span class="math notranslate nohighlight">\(j\)</span>th eigenvector</strong> is</p></li>
+</ul>
+<div class="math notranslate nohighlight">
+\[\boxed{\text{fraction of variance} = \frac{\lambda_j}{\sum_i \lambda_i}}\]</div>
+<ul class="simple">
+<li><p>EOFs are conventionally ordered by <span class="math notranslate nohighlight">\(\lambda\)</span>, so EOF 1 explains the largest variance and the last EOF the smallest</p></li>
+<li><p><strong>no other linear combination of <span class="math notranslate nohighlight">\(k\)</span> predictors can explain a larger fraction of the variance than the first <span class="math notranslate nohighlight">\(k\)</span> EOF/PC pairs</strong></p></li>
+</ul>
+<p>That final point is the reason EOFs are used for compression and noise reduction: they are optimal in the variance sense, by construction.</p>
+<div class="note admonition">
+<p class="admonition-title">Example / deeper dive</p>
+<p><strong>Proof that eigenvectors are orthogonal</strong></p>
+<p>Suppose we have two eigenvectors <span class="math notranslate nohighlight">\(\mathbf{e}_j\)</span> and <span class="math notranslate nohighlight">\(\mathbf{e}_k\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[\mathbf{C}\mathbf{e}_j = \mathbf{e}_j\lambda_j, \qquad \mathbf{C}\mathbf{e}_k = \mathbf{e}_k\lambda_k\]</div>
+<p>Multiply the <span class="math notranslate nohighlight">\(j\)</span>th equation by <span class="math notranslate nohighlight">\(\mathbf{e}_k^T\)</span> and take the transpose; multiply the <span class="math notranslate nohighlight">\(k\)</span>th by <span class="math notranslate nohighlight">\(\mathbf{e}_j^T\)</span>; subtract. This gives</p>
+<div class="math notranslate nohighlight">
+\[\mathbf{e}_j^T\mathbf{C}^T\mathbf{e}_k - \mathbf{e}_j^T\mathbf{C}\mathbf{e}_k = (\lambda_j - \lambda_k)\mathbf{e}_j^T\mathbf{e}_k\]</div>
+<p>Since <span class="math notranslate nohighlight">\(\mathbf{C}\)</span> is symmetric, <span class="math notranslate nohighlight">\(\mathbf{C} = \mathbf{C}^T\)</span>, so the left-hand side vanishes. Therefore</p>
+<div class="math notranslate nohighlight">
+\[\mathbf{e}_j^T\mathbf{e}_k = 0 \qquad \text{unless} \qquad \lambda_j = \lambda_k\]</div>
+<p><strong>The eigenvectors are orthogonal provided the eigenvalues are distinct.</strong> Hold onto that caveat — it comes back in Part 5, where eigenvalues that are <em>not</em> well separated turn out to be the central practical problem in EOF analysis.</p>
+</div>
+</section>
+<section id="getting-your-original-data-back">
+<h3>Getting your original data back<a class="headerlink" href="#getting-your-original-data-back" title="Link to this heading">#</a></h3>
+<p>We want to keep all the original information in the new coordinate system, so we need the amplitudes that express each state in the EOF basis. Define</p>
+<div class="math notranslate nohighlight">
+\[\boxed{\mathbf{Z} = \mathbf{X}\mathbf{E}}\]</div>
+<p>Then, since <span class="math notranslate nohighlight">\(\mathbf{E}\mathbf{E}^T = \mathbf{I}\)</span>,</p>
+<div class="math notranslate nohighlight">
+\[\mathbf{X} = \mathbf{Z}\mathbf{E}^T\]</div>
+<p>The columns of <span class="math notranslate nohighlight">\(\mathbf{Z}\)</span> are the <strong>principal components (PCs)</strong>, of length <span class="math notranslate nohighlight">\(M\)</span>. They tell you how much a given sample resembles a particular EOF structure.</p>
+<p>To reconstruct a single observation at time <span class="math notranslate nohighlight">\(t\)</span> and location <span class="math notranslate nohighlight">\(i\)</span>, combine the eigenvectors linearly with the PC amplitudes:</p>
+<div class="math notranslate nohighlight">
+\[x_i(t) = \sum_{j=1}^{N} e_{ij}z_j(t)\]</div>
+<p>Concretely, suppose the first eigenvector is</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\mathbf{e}_1 = \begin{bmatrix} e_{11} \\ e_{21} \\ e_{31} \\ e_{41} \\ \vdots\end{bmatrix}\end{split}\]</div>
+<p>Project it onto the original data to get its amplitude at each time step:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{bmatrix}
+x_{11} &amp; x_{12} &amp; \cdots &amp; x_{1n} \\
+x_{21} &amp; x_{22} &amp; \cdots &amp; x_{2n} \\
+\vdots &amp; \vdots &amp; &amp; \vdots \\
+x_{m1} &amp; x_{m2} &amp; \cdots &amp; x_{mn}
+\end{bmatrix}
+\begin{bmatrix} e_{11} \\ e_{21} \\ e_{31} \\ \vdots \end{bmatrix}
+=
+\begin{bmatrix} z_{11} \\ z_{21} \\ z_{31} \\ \vdots \\ z_{m1}\end{bmatrix}\end{split}\]</div>
+<p>that is, <span class="math notranslate nohighlight">\(\mathbf{X}\mathbf{E} = \mathbf{Z}\)</span>.</p>
+<div class="warning admonition">
+<p class="admonition-title">A common mistake</p>
+<p>Project <span class="math notranslate nohighlight">\(\mathbf{e}\)</span> onto the <strong>original data <span class="math notranslate nohighlight">\(\mathbf{X}\)</span></strong>, not onto the covariance matrix <span class="math notranslate nohighlight">\(\mathbf{C}\)</span>. The covariance matrix has already had the time dimension summed out of it — there is no time series left in it to recover.</p>
+</div>
+</section>
+<section id="practical-considerations-which-covariance-matrix">
+<h3>Practical considerations: which covariance matrix?<a class="headerlink" href="#practical-considerations-which-covariance-matrix" title="Link to this heading">#</a></h3>
+<p>The covariance matrix can be formed two ways:</p>
+<div class="math notranslate nohighlight">
+\[\mathbf{C} = \frac{1}{M}\mathbf{X}^T\mathbf{X} \to [N\times N] \qquad \text{or} \qquad \mathbf{C} = \frac{1}{N}\mathbf{X}\mathbf{X}^T \to [M\times M]\]</div>
+<p>So far we have used the first. Which you <em>should</em> use is purely a question of computational cost:</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(M = 20000\)</span> days, <span class="math notranslate nohighlight">\(N = 400\)</span> grid points <span class="math notranslate nohighlight">\(\Rightarrow\)</span> use <span class="math notranslate nohighlight">\(\frac{1}{M}\mathbf{X}^T\mathbf{X}\)</span>, a <span class="math notranslate nohighlight">\(400\times400\)</span> problem. Easy.</p></li>
+<li><p><span class="math notranslate nohighlight">\(M = 100\)</span> days, <span class="math notranslate nohighlight">\(N = 40000\)</span> grid points <span class="math notranslate nohighlight">\(\Rightarrow\)</span> <span class="math notranslate nohighlight">\(\frac{1}{M}\mathbf{X}^T\mathbf{X}\)</span> would be <span class="math notranslate nohighlight">\(40000\times40000\)</span>. Not easy.</p></li>
+</ul>
+<p>In the second case you have two options:</p>
+<ol class="arabic simple">
+<li><p>interpolate your data onto a coarser mesh</p></li>
+<li><p>perform the eigenanalysis on the <strong>spatial dispersion matrix</strong>, <span class="math notranslate nohighlight">\(\mathbf{C} = \frac{1}{N}\mathbf{X}\mathbf{X}^T\)</span>, which is only <span class="math notranslate nohighlight">\(100\times100\)</span></p></li>
+</ol>
+<p>Option 2 gives the same answer, with one twist you must remember: <strong>the eigenvectors are now the PCs, and the PCs are now the EOFs.</strong> The roles swap. Recall from Part 1 that the rank of that giant <span class="math notranslate nohighlight">\(40000\times40000\)</span> matrix was at most 100 anyway — so nothing is lost by working in the smaller space.</p>
+</section>
+<section id="summary-eofs-by-eigenanalysis-of-the-covariance-matrix-mathbf-x-m-times-n">
+<h3>Summary: EOFs by eigenanalysis of the covariance matrix, <span class="math notranslate nohighlight">\(\mathbf{X} = [M\times N]\)</span><a class="headerlink" href="#summary-eofs-by-eigenanalysis-of-the-covariance-matrix-mathbf-x-m-times-n" title="Link to this heading">#</a></h3>
+<ol class="arabic simple">
+<li><p>subtract the mean along the sampling dimension of <span class="math notranslate nohighlight">\(\mathbf{X}\)</span></p></li>
+<li><p>unless data size forces otherwise, define <span class="math notranslate nohighlight">\(\mathbf{C}\)</span> along the sampling dimension so you are left with the <em>space</em> dimension:</p></li>
+</ol>
+<div class="math notranslate nohighlight">
+\[\mathbf{C} = \frac{1}{M}\mathbf{X}^T\mathbf{X} \to [N\times N] \quad \text{if } M \text{ is the sampling dimension}\]</div>
+<div class="math notranslate nohighlight">
+\[\mathbf{C} = \frac{1}{N}\mathbf{X}\mathbf{X}^T \to [M\times M] \quad \text{if } N \text{ is the sampling dimension}\]</div>
+<ol class="arabic simple" start="3">
+<li><p>eigenanalyze <span class="math notranslate nohighlight">\(\mathbf{C}\)</span> by diagonalizing it (<code class="docutils literal notranslate"><span class="pre">eig</span></code> in Matlab, <code class="docutils literal notranslate"><span class="pre">EIGENQL</span></code> in IDL, <code class="docutils literal notranslate"><span class="pre">numpy.linalg.eigh</span></code> in Python)</p></li>
+<li><p>the first EOF is the eigenvector corresponding to the largest eigenvalue</p></li>
+<li><p>to find the PCs, project the data onto the eigenvectors — PCs should have the length of your sampling dimension</p></li>
+<li><p>the fraction of variance explained by the <span class="math notranslate nohighlight">\(i\)</span>th EOF pair is <span class="math notranslate nohighlight">\(\lambda_i/\sum_j\lambda_j\)</span></p></li>
+</ol>
+<div class="tip admonition">
+<p class="admonition-title">Figure / in-class demonstration</p>
+<p><em>Show slides:</em> <code class="docutils literal notranslate"><span class="pre">eof_physicalvars.pdf</span></code></p>
+<p><em>Show webpage:</em> Eigenstyle — <a class="reference external" href="http://blog.thehackerati.com/post/126701202241/eigenstyle">http://blog.thehackerati.com/post/126701202241/eigenstyle</a> (PCA applied to a wardrobe of dresses; a memorable demonstration that “EOF 1” is just “the direction of greatest variance”, whatever the data happen to be).</p>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="part-4-eofs-via-singular-value-decomposition-svd">
+<h2>Part 4 — EOFs via Singular Value Decomposition (SVD)<a class="headerlink" href="#part-4-eofs-via-singular-value-decomposition-svd" title="Link to this heading">#</a></h2>
+<p>There is a second route to the same answer, and in practice it is the one you will use. SVD is more general, more numerically stable, and skips the explicit formation of <span class="math notranslate nohighlight">\(\mathbf{C}\)</span> entirely.</p>
+<p>Any <span class="math notranslate nohighlight">\(M\times N\)</span> matrix can be decomposed into a product of three matrices:</p>
+<div class="math notranslate nohighlight">
+\[\boxed{\mathbf{X} = \mathbf{U}\boldsymbol{\Sigma}\mathbf{V}^T}\]</div>
+<p>where</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(\mathbf{U}\)</span> is <span class="math notranslate nohighlight">\(M\times M\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\boldsymbol{\Sigma}\)</span> is <span class="math notranslate nohighlight">\(M\times N\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\mathbf{V}\)</span> is <span class="math notranslate nohighlight">\(N\times N\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\mathbf{U}\)</span> and <span class="math notranslate nohighlight">\(\mathbf{V}\)</span> are orthogonal</p></li>
+<li><p><span class="math notranslate nohighlight">\(\boldsymbol{\Sigma}\)</span> is diagonal</p></li>
+</ul>
+<p>If we let the <span class="math notranslate nohighlight">\(M\)</span> dimension be <strong>space</strong> and the <span class="math notranslate nohighlight">\(N\)</span> dimension be <strong>time</strong> (following Prof. Hartmann’s notes — note this is the opposite of Part 3), then:</p>
+<ul class="simple">
+<li><p>the columns of <span class="math notranslate nohighlight">\(\mathbf{U}\)</span> are the eigenvectors of <span class="math notranslate nohighlight">\(\mathbf{X}\mathbf{X}^T\)</span> — the <strong>EOFs</strong></p></li>
+<li><p>the columns of <span class="math notranslate nohighlight">\(\mathbf{V}\)</span> (rows of <span class="math notranslate nohighlight">\(\mathbf{V}^T\)</span>) are the eigenvectors of <span class="math notranslate nohighlight">\(\mathbf{X}^T\mathbf{X}\)</span> — the <strong>PCs</strong></p></li>
+<li><p>the <span class="math notranslate nohighlight">\(r\)</span> singular values along the diagonal of <span class="math notranslate nohighlight">\(\boldsymbol{\Sigma}\)</span> are proportional to the square roots of the non-zero eigenvalues of both <span class="math notranslate nohighlight">\(\mathbf{X}\mathbf{X}^T\)</span> and <span class="math notranslate nohighlight">\(\mathbf{X}^T\mathbf{X}\)</span>: <span class="math notranslate nohighlight">\(s_i = \sqrt{\lambda_i}\)</span></p></li>
+<li><p>to get variance explained, square the elements of <span class="math notranslate nohighlight">\(\boldsymbol{\Sigma}\)</span></p></li>
+</ul>
+<div class="warning admonition">
+<p class="admonition-title">Watch your dimension order</p>
+<p>If instead you have <strong>time along <span class="math notranslate nohighlight">\(M\)</span></strong> and <strong>space along <span class="math notranslate nohighlight">\(N\)</span></strong> (the Part 3 convention), then the columns of <span class="math notranslate nohighlight">\(\mathbf{V}\)</span> are the EOFs and the columns of <span class="math notranslate nohighlight">\(\mathbf{U}\)</span> are the PCs. Everything else is identical. The mathematics does not care; you do.</p>
+</div>
+<p>The matrix <span class="math notranslate nohighlight">\(\boldsymbol{\Sigma}\)</span> is odd in that it is not square, yet we care about its diagonal. It can be viewed two ways:</p>
+<ol class="arabic simple">
+<li><p>if <span class="math notranslate nohighlight">\(M &gt; N\)</span>,</p></li>
+</ol>
+<div class="math notranslate nohighlight">
+\[\begin{split}\boldsymbol{\Sigma} = \begin{bmatrix} \mathbf{D} \\ \mathbf{0}\end{bmatrix}\end{split}\]</div>
+<p>where <span class="math notranslate nohighlight">\(\mathbf{D}\)</span> is <span class="math notranslate nohighlight">\(N\times N\)</span> diagonal and <span class="math notranslate nohighlight">\(\mathbf{0}\)</span> is <span class="math notranslate nohighlight">\((M-N)\times N\)</span> zeros. The first <span class="math notranslate nohighlight">\(r\)</span> elements of <span class="math notranslate nohighlight">\(\mathbf{D}\)</span> are the singular values.</p>
+<ol class="arabic simple" start="2">
+<li><p>if <span class="math notranslate nohighlight">\(\mathbf{X}\)</span> is full rank and <span class="math notranslate nohighlight">\(M = N\)</span>, then <span class="math notranslate nohighlight">\(\boldsymbol{\Sigma}\)</span> is genuinely square and diagonal.</p></li>
+</ol>
+<p>If the singular values are ordered with <span class="math notranslate nohighlight">\(\sigma_1\)</span> largest, then the first column of <span class="math notranslate nohighlight">\(\mathbf{U}\)</span> is the leading EOF and the first column of <span class="math notranslate nohighlight">\(\mathbf{V}\)</span> is the leading PC.</p>
+<div class="note admonition">
+<p class="admonition-title">Example / deeper dive</p>
+<p><strong>Why SVD and eigenanalysis give the same EOFs</strong></p>
+<p>Start from the SVD of <span class="math notranslate nohighlight">\(\mathbf{X}\)</span> and square both sides:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{aligned}
+\mathbf{X}\mathbf{X}^T &amp;= (\mathbf{U}\boldsymbol{\Sigma}\mathbf{V}^T)(\mathbf{U}\boldsymbol{\Sigma}\mathbf{V}^T)^T \\
+&amp;= (\mathbf{U}\boldsymbol{\Sigma}\mathbf{V}^T)(\mathbf{V}\boldsymbol{\Sigma}^T\mathbf{U}^T)
+\end{aligned}\end{split}\]</div>
+<p>Since <span class="math notranslate nohighlight">\(\mathbf{V}^T\mathbf{V} = \mathbf{I}\)</span> (the columns of <span class="math notranslate nohighlight">\(\mathbf{U}\)</span> and <span class="math notranslate nohighlight">\(\mathbf{V}\)</span> are made orthonormal),</p>
+<div class="math notranslate nohighlight">
+\[\mathbf{X}\mathbf{X}^T = \mathbf{U}\boldsymbol{\Sigma}^2\mathbf{U}^T\]</div>
+<p>Multiplying both sides by <span class="math notranslate nohighlight">\(\mathbf{U}\)</span>,</p>
+<div class="math notranslate nohighlight">
+\[N\cdot\mathbf{C}\mathbf{U} = \mathbf{U}\boldsymbol{\Sigma}^2\]</div>
+<p>Compare with the eigenanalysis of the covariance matrix, <span class="math notranslate nohighlight">\(\mathbf{C}\mathbf{U} = \mathbf{U}\boldsymbol{\Lambda}\)</span>. Therefore</p>
+<div class="math notranslate nohighlight">
+\[\frac{1}{N}\boldsymbol{\Sigma}^2 = \boldsymbol{\Lambda}\]</div>
+<p>and <span class="math notranslate nohighlight">\(\mathbf{U}\)</span> holds the eigenvectors of <span class="math notranslate nohighlight">\(\mathbf{C}\)</span>. <strong>The two methods are the same calculation.</strong></p>
+<p>Similarly for the PCs: starting again from <span class="math notranslate nohighlight">\(\mathbf{X} = \mathbf{U}\boldsymbol{\Sigma}\mathbf{V}^T\)</span> and writing <span class="math notranslate nohighlight">\(\mathbf{X} = \mathbf{U}\mathbf{Z}\)</span>, we identify</p>
+<div class="math notranslate nohighlight">
+\[\mathbf{Z} = \boldsymbol{\Sigma}\mathbf{V}^T\]</div>
+<p>which is consistent with <span class="math notranslate nohighlight">\(\mathbf{X} = \mathbf{E}\mathbf{Z}\)</span> from the eigenanalysis, since <span class="math notranslate nohighlight">\(\mathbf{U} = \mathbf{E}\)</span>.</p>
+</div>
+<section id="summary-eofs-with-svd-mathbf-x-m-times-n">
+<h3>Summary: EOFs with SVD, <span class="math notranslate nohighlight">\(\mathbf{X} = [M\times N]\)</span><a class="headerlink" href="#summary-eofs-with-svd-mathbf-x-m-times-n" title="Link to this heading">#</a></h3>
+<ol class="arabic simple">
+<li><p>subtract the mean along the sampling dimension of <span class="math notranslate nohighlight">\(\mathbf{X}\)</span></p></li>
+<li><p>decompose <span class="math notranslate nohighlight">\(\mathbf{X}\)</span> with a built-in SVD routine</p></li>
+<li><p>if <span class="math notranslate nohighlight">\(M\)</span> is the sample dimension (time), the EOFs (spatial patterns) are the columns of <span class="math notranslate nohighlight">\(\mathbf{V}\)</span> and the PCs (time series) the columns of <span class="math notranslate nohighlight">\(\mathbf{U}\)</span></p></li>
+<li><p>if <span class="math notranslate nohighlight">\(N\)</span> is the sample dimension (time), the EOFs are <span class="math notranslate nohighlight">\(\mathbf{U}\)</span> and the PCs are <span class="math notranslate nohighlight">\(\mathbf{V}\)</span></p></li>
+<li><p>the fraction of variance explained by the <span class="math notranslate nohighlight">\(i\)</span>th EOF pair is <span class="math notranslate nohighlight">\(\sigma_i^2/\sum_j\sigma_j^2\)</span></p></li>
+</ol>
+</section>
+</section>
+<hr class="docutils" />
+<section id="part-5-eofs-with-actual-data">
+<h2>Part 5 — EOFs with Actual Data<a class="headerlink" href="#part-5-eofs-with-actual-data" title="Link to this heading">#</a></h2>
+<p>The mathematics above is exact. Applying it to real geophysical data introduces a set of choices that the mathematics will not make for you, and which change your answer.</p>
+<section id="preparing-the-data">
+<h3>Preparing the data<a class="headerlink" href="#preparing-the-data" title="Link to this heading">#</a></h3>
+<p><strong>Removing the sampling mean</strong></p>
+<ul class="simple">
+<li><p>it is standard to remove the mean along the sampling dimension</p></li>
+<li><p>this makes your PCs have zero mean</p></li>
+<li><p>you may also want to remove the seasonal cycle (or diurnal cycle) if it is not of interest — otherwise EOF 1 will simply <em>be</em> the seasonal cycle, which you already knew about</p></li>
+</ul>
+<p><strong>Removing the spatial mean</strong></p>
+<ul class="simple">
+<li><p>less common, since you usually want to allow EOFs to have the same sign everywhere</p></li>
+<li><p>exceptions: you care about temperature <em>gradients</em> rather than the full field</p></li>
+<li><p>or you care about the eddy component, so you remove the zonal mean</p></li>
+</ul>
+<p><strong>Standardizing the data</strong></p>
+<p>Sometimes you want to remove amplitude information before the analysis:</p>
+<ul class="simple">
+<li><p>your data combine parameters with different units, and you don’t want the one with the largest units to dominate the variance</p></li>
+<li><p>the variance varies greatly from place to place and that variation is not of interest</p></li>
+</ul>
+<p>To do this, after subtracting the sampling-dimension mean, divide by the standard deviation — your data are now in units of <span class="math notranslate nohighlight">\(\sigma\)</span>. Note the consequence flagged back in Part 1: <strong>you are now eigenanalyzing the correlation matrix, not the covariance matrix.</strong></p>
+<p><strong>Weighting</strong></p>
+<p>Gridded data must be weighted by grid area, or high-latitude grid points — which represent much less area — will be over-represented:</p>
+<ul class="simple">
+<li><p><strong>temporal covariance matrix</strong>: weight by <span class="math notranslate nohighlight">\(\sqrt{\cos\theta}\)</span> (when grid points are multiplied against each other in forming <span class="math notranslate nohighlight">\(\mathbf{C}\)</span>, you recover the full <span class="math notranslate nohighlight">\(\cos\theta\)</span>)</p></li>
+<li><p><strong>spatial dispersion matrix</strong>: weight by <span class="math notranslate nohighlight">\(\cos\theta\)</span>, but carefully — <span class="math notranslate nohighlight">\(\mathbf{C} = \mathbf{X}_{\cos}^T\mathbf{X}_{\cos}\)</span> where the elements of <span class="math notranslate nohighlight">\(\mathbf{X}_{\cos}\)</span> are <span class="math notranslate nohighlight">\(x_{t,\theta}\times\cos(\theta)\)</span></p></li>
+<li><p><strong>SVD</strong>: weight your data by <span class="math notranslate nohighlight">\(\cos\theta\)</span></p></li>
+</ul>
+<p>The resulting EOF will look unphysical and carry unphysical values. That is expected, and is fixed at the presentation stage below.</p>
+<p><strong>Missing data</strong></p>
+<ul class="simple">
+<li><p>most routines will not perform eigenanalysis or SVD with NaNs present</p></li>
+<li><p>the best option is to use only locations with at least <span class="math notranslate nohighlight">\(\alpha\%\)</span> of data present, and to compute EOFs via the covariance matrix so that <span class="math notranslate nohighlight">\(\mathbf{C}\)</span> contains no missing values when passed to the eigenanalysis routine</p></li>
+</ul>
+</section>
+<section id="presentation-of-eofs">
+<h3>Presentation of EOFs<a class="headerlink" href="#presentation-of-eofs" title="Link to this heading">#</a></h3>
+<p>Let <span class="math notranslate nohighlight">\(\mathbf{X}\)</span> be <span class="math notranslate nohighlight">\([M\times N]\)</span> with <span class="math notranslate nohighlight">\(M\)</span> samples and <span class="math notranslate nohighlight">\(N\)</span> locations. From here on we write equations for EOF 1 and PC 1 only; repeat for the others.</p>
+<p>Both EOFs and PCs get plotted in the literature depending on interest. Generally the spatial domain is the more interesting one, since the PC time series is usually noisy.</p>
+<p><strong>Problem:</strong> the EOFs have no physical units, so we need a meaningful way to plot the patterns.</p>
+<p>The procedure:</p>
+<ol class="arabic simple">
+<li><p>calculate the leading PC <span class="math notranslate nohighlight">\(\mathbf{z}_1\)</span> (directly from SVD, or by projection in the eigenanalysis method)</p></li>
+<li><p>standardize <span class="math notranslate nohighlight">\(\mathbf{z}_1\)</span> — the mean is already zero, so just divide by <span class="math notranslate nohighlight">\(\sigma_{z_1}\)</span></p></li>
+<li><p>project the standardized PC back onto your <strong>original anomaly data</strong> and divide by the length of <span class="math notranslate nohighlight">\(\mathbf{z}\)</span>, giving <span class="math notranslate nohighlight">\(\mathbf{d}_1\)</span>: EOF 1 in the units of the original, <em>unweighted</em> data</p></li>
+</ol>
+<p>If the original data is <span class="math notranslate nohighlight">\(\mathbf{X}\)</span> and the weighted data is <span class="math notranslate nohighlight">\(\mathbf{X}_w\)</span>, then following eigenanalysis:</p>
+<div class="math notranslate nohighlight">
+\[\mathbf{z}_1 = \mathbf{X}_w\mathbf{e}_1\]</div>
+<div class="math notranslate nohighlight">
+\[\tilde{\mathbf{z}}_1 = \frac{\mathbf{z}_1 - \mu_{z_1}}{\sigma_{z_1}}\]</div>
+<div class="math notranslate nohighlight">
+\[\boxed{\mathbf{d}_1 = \frac{1}{M}\tilde{\mathbf{z}}_1^T\mathbf{X} = \frac{1}{\text{length}(\mathbf{z}_1)}\tilde{\mathbf{z}}_1^T\mathbf{X}}\]</div>
+<p>Now <span class="math notranslate nohighlight">\(\mathbf{d}_1\)</span> is in physical units, and means: <strong>the anomaly associated with a one-standard-deviation variation of <span class="math notranslate nohighlight">\(\mathbf{z}_1\)</span>.</strong> That is a statement you can put in a figure caption and defend.</p>
+<p>Note this works for both the covariance method and SVD. For SVD there is one fewer step, since the raw PC 1 is handed to you.</p>
+<p>Note also that this last step is a <strong>regression</strong> — projecting a standardized time series onto data, exactly as in Week 5-8. The EOF gave us the pattern; regression gives it units.</p>
+</section>
+<section id="how-many-eofs-should-be-retained">
+<h3>How many EOFs should be retained?<a class="headerlink" href="#how-many-eofs-should-be-retained" title="Link to this heading">#</a></h3>
+<p>This is the question that separates careful EOF analysis from decorative EOF analysis.</p>
+<p><strong>EOFs will always give you an answer.</strong> EOFs of red noise will produce sines and cosines that look thoroughly physical. The rate at which eigenvalues drop off is a function of the redness of the data, not of whether anything meaningful is present.</p>
+<p>Worse, <strong>orthogonality itself imposes a constraint on shape</strong>. Higher-order EOFs are often trying to represent noise while remaining orthogonal to everything before them — so their structure is partly an artifact of the EOFs that preceded them, not of the physics.</p>
+<p>North et al. (1982) argue that the significance of an EOF is a function of how well separated the eigenvalues are. The 95% confidence bounds on an eigenvalue are</p>
+<div class="math notranslate nohighlight">
+\[\boxed{\Delta\lambda = \lambda\sqrt{\frac{2}{N^*}}}\]</div>
+<p>Here <span class="math notranslate nohighlight">\(N^*\)</span> is our friend the <strong>effective degrees of freedom</strong> from Week 5-8 — autocorrelated data has fewer independent samples than it has data points. This is not easy to compute, and note you need a single value representative of the entire data set.</p>
+<p>If the confidence bounds of two eigenvalues overlap, those two EOFs are <strong>effectively degenerate</strong>: they cannot be distinguished, and their individual patterns should not be interpreted. This is the practical face of the caveat from the orthogonality proof in Part 3 — the eigenvectors are only orthogonal (and only uniquely determined) if the eigenvalues are distinct.</p>
+<p>When in doubt, test robustness other ways:</p>
+<ul class="simple">
+<li><p>subdivide your sample and compare EOF structures — are they the same?</p></li>
+<li><p>are your results explainable through theory?</p></li>
+<li><p>are results sensitive to the size of the domain? (high sensitivity suggests you are fitting sines and cosines inside your boundaries)</p></li>
+</ul>
+<div class="tip admonition">
+<p class="admonition-title">Figure / in-class demonstration</p>
+<p><em>Figure: Eigenvalue spectrum with North et al. (1982) bounds</em> — variance explained (%) on the <span class="math notranslate nohighlight">\(y\)</span>-axis (0–20%) against eigenvalue index (1–25), with error bars showing the 95% confidence bounds. Two series: an orange “random sample” curve decaying gradually and smoothly from about 15% to under 5%, and a purple “sample with structure” curve starting near 20% at index 1, dropping sharply to about 7% by index 2, then decaying like the random sample — illustrating a single dominant, well-separated leading EOF.</p>
+</div>
+<p><strong>Wave-like phenomena.</strong> If a travelling wave is present in your data, it appears as <strong>two eigenvalues close together and separated from the rest</strong>. These are the paired sine and cosine components of the wave. Do not interpret them as two independent patterns; they are one propagating feature.</p>
+<div class="tip admonition">
+<p class="admonition-title">Figure / in-class demonstration</p>
+<p><em>Matlab examples:</em> <code class="docutils literal notranslate"><span class="pre">EOF_from_scratch.m</span></code>, <code class="docutils literal notranslate"><span class="pre">EOF_smoothing.m</span></code>, <code class="docutils literal notranslate"><span class="pre">eof_noise_reduction.m</span></code></p>
+</div>
+</section>
+<section id="recipe-1-eofs-from-the-temporal-covariance-matrix">
+<h3>Recipe 1: EOFs from the temporal covariance matrix<a class="headerlink" href="#recipe-1-eofs-from-the-temporal-covariance-matrix" title="Link to this heading">#</a></h3>
+<p>Assume <span class="math notranslate nohighlight">\(\mathbf{X} = [M\times N] = [\text{sampling}\times\text{space}]\)</span>; <span class="math notranslate nohighlight">\(\mathbf{e}_1, \mathbf{d}_1 = [N\times1]\)</span> and <span class="math notranslate nohighlight">\(\mathbf{z}_1 = [M\times1]\)</span>.</p>
+<p><strong>1. Prepare the data</strong></p>
+<ul class="simple">
+<li><p>calculate anomalies along the sampling dimension, call this <span class="math notranslate nohighlight">\(\mathbf{X}\)</span> — may be just the sample mean, or may include removing the seasonal cycle</p></li>
+<li><p>decide whether to standardize (divide by the standard deviation along the sampling dimension) — call this <span class="math notranslate nohighlight">\(\mathbf{X}_w\)</span></p></li>
+<li><p><strong>save your original anomaly matrix <span class="math notranslate nohighlight">\(\mathbf{X}\)</span> — you will need it in step 8</strong></p></li>
+</ul>
+<p><strong>2. Calculate the temporal covariance matrix</strong></p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(\mathbf{C} = \frac{1}{M}\mathbf{X}_w^T\mathbf{X}_w\)</span></p></li>
+<li><p>if area weighting is needed, multiply <span class="math notranslate nohighlight">\(\mathbf{X}\)</span> by <span class="math notranslate nohighlight">\(\sqrt{\cos\theta}\)</span> first (call it <span class="math notranslate nohighlight">\(\mathbf{X}_w\)</span>), then form <span class="math notranslate nohighlight">\(\mathbf{C}\)</span></p></li>
+</ul>
+<p><strong>3. Perform eigenanalysis</strong></p>
+<ul class="simple">
+<li><p>use a built-in routine; it returns eigenvectors <span class="math notranslate nohighlight">\(\mathbf{E}\)</span> and eigenvalues <span class="math notranslate nohighlight">\(\boldsymbol{\Lambda}\)</span></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[E,</span> <span class="pre">Lambda]</span> <span class="pre">=</span> <span class="pre">eig(C);</span></code> in Matlab</p></li>
+</ul>
+<p><strong>4. Calculate and plot variance explained</strong></p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(\lambda_i/\sum_j\lambda_j\)</span></p></li>
+<li><p>plot it and determine which of the first few are distinct — use the North et al. (1982) bounds <span class="math notranslate nohighlight">\(\Delta\lambda = \lambda\sqrt{2/N^*}\)</span> and look for non-overlap</p></li>
+</ul>
+<p><strong>5. Retain the EOFs you are interested in</strong></p>
+<ul class="simple">
+<li><p>keep those with interesting variance explained; this may be only the first column of <span class="math notranslate nohighlight">\(\mathbf{E}\)</span>, denoted <span class="math notranslate nohighlight">\(\mathbf{e}_1\)</span></p></li>
+</ul>
+<p><strong>6. Calculate the PCs</strong></p>
+<ul class="simple">
+<li><p>project the weighted/standardized anomaly matrix onto the eigenvectors: <span class="math notranslate nohighlight">\(\mathbf{z}_1 = \mathbf{X}_w\mathbf{e}_1\)</span>, <span class="math notranslate nohighlight">\(\mathbf{z}_2 = \mathbf{X}_w\mathbf{e}_2\)</span>, …</p></li>
+</ul>
+<p><strong>7. Standardize the PCs</strong></p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(\tilde{\mathbf{z}}_1 = (\mathbf{z}_1 - \mu_{z_1})/\sigma_{z_1}\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\tilde{\mathbf{z}}_1\)</span> is now in units of <span class="math notranslate nohighlight">\(\sigma\)</span> — this is the PC to use from here on</p></li>
+</ul>
+<p><strong>8. Calculate EOFs in physical units</strong></p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(\mathbf{d}_1 = \frac{1}{M}\tilde{\mathbf{z}}_1^T\mathbf{X}\)</span>, projecting onto the <strong>original</strong> anomaly data</p></li>
+<li><p><span class="math notranslate nohighlight">\(\mathbf{d}_1\)</span> is in the units of your data: the anomaly associated with a one-<span class="math notranslate nohighlight">\(\sigma\)</span> variation of the PC</p></li>
+<li><p>if <span class="math notranslate nohighlight">\(\mathbf{X} \equiv \mathbf{X}_w\)</span>, then <span class="math notranslate nohighlight">\(\mathbf{d}_1\)</span> has the same pattern as <span class="math notranslate nohighlight">\(\mathbf{e}_1\)</span> with different values; but if you area-weighted or standardized, <strong>the spatial patterns will genuinely differ</strong></p></li>
+</ul>
+</section>
+<section id="recipe-2-eofs-from-the-spatial-dispersion-matrix">
+<h3>Recipe 2: EOFs from the spatial dispersion matrix<a class="headerlink" href="#recipe-2-eofs-from-the-spatial-dispersion-matrix" title="Link to this heading">#</a></h3>
+<p>Same dimensions as Recipe 1. Use this when <span class="math notranslate nohighlight">\(N \gg M\)</span>.</p>
+<p><strong>1. Prepare the data</strong> — as in Recipe 1.</p>
+<p><strong>2. Calculate the spatial dispersion matrix</strong></p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(\mathbf{C} = \frac{1}{N}\mathbf{X}_w\mathbf{X}_w^T\)</span></p></li>
+<li><p>for area weighting, let <span class="math notranslate nohighlight">\(\mathbf{X}_{w,\cos}\)</span> be the elements of <span class="math notranslate nohighlight">\(\mathbf{X}_w\)</span> multiplied by <span class="math notranslate nohighlight">\(\cos\theta\)</span>, then <span class="math notranslate nohighlight">\(\mathbf{C} = \frac{1}{N}\mathbf{X}_{w,\cos}\mathbf{X}_w^T\)</span></p></li>
+</ul>
+<p><strong>3. Perform eigenanalysis</strong></p>
+<ul class="simple">
+<li><p>the routine now returns your <strong>PCs</strong> in <span class="math notranslate nohighlight">\(\mathbf{E}\)</span> and eigenvalues in <span class="math notranslate nohighlight">\(\boldsymbol{\Lambda}\)</span> — the roles have swapped</p></li>
+</ul>
+<p><strong>4. Calculate and plot variance explained</strong> — as in Recipe 1.</p>
+<p><strong>5. Retain the PCs you are interested in</strong></p>
+<ul class="simple">
+<li><p>keep the first column of <span class="math notranslate nohighlight">\(\mathbf{E}\)</span>, denoted <span class="math notranslate nohighlight">\(\mathbf{z}_1\)</span> — this is actually the first PC, because you analyzed the dispersion matrix</p></li>
+</ul>
+<p><strong>6. Standardize the PCs</strong></p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(\tilde{\mathbf{z}}_1 = (\mathbf{z}_1 - \mu_{z_1})/\sigma_{z_1}\)</span></p></li>
+</ul>
+<p><strong>7. Calculate EOFs in physical units</strong></p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(\mathbf{d}_1 = \frac{1}{M}\tilde{\mathbf{z}}_1^T\mathbf{X}\)</span>, <span class="math notranslate nohighlight">\(\mathbf{d}_2 = \frac{1}{M}\tilde{\mathbf{z}}_2^T\mathbf{X}\)</span>, …</p></li>
+<li><p>again in the units of the original data</p></li>
+</ul>
+<p>Note that this recipe has one step fewer than Recipe 1: you never have to project to <em>get</em> the PCs, because the eigenanalysis handed them to you directly.</p>
+</section>
+<section id="recipe-3-eofs-via-svd">
+<h3>Recipe 3: EOFs via SVD<a class="headerlink" href="#recipe-3-eofs-via-svd" title="Link to this heading">#</a></h3>
+<p>Assume <span class="math notranslate nohighlight">\(\mathbf{X} = [N\times M] = [\text{space}\times\text{sampling}]\)</span>; <span class="math notranslate nohighlight">\(\mathbf{e}_1, \mathbf{d}_1 = [N\times1]\)</span>; <span class="math notranslate nohighlight">\(\mathbf{z}_1 = [M\times1]\)</span>. <strong>Note the transposed convention.</strong></p>
+<p><strong>1. Prepare the data</strong></p>
+<ul class="simple">
+<li><p>calculate anomalies along the sampling dimension</p></li>
+<li><p>decide whether to standardize — call it <span class="math notranslate nohighlight">\(\mathbf{X}_w\)</span></p></li>
+<li><p>if area weighting is needed, weight <span class="math notranslate nohighlight">\(\mathbf{X}\)</span> by <span class="math notranslate nohighlight">\(\cos(\text{latitude})\)</span> and call it <span class="math notranslate nohighlight">\(\mathbf{X}_w\)</span></p></li>
+<li><p>save the original anomaly matrix <span class="math notranslate nohighlight">\(\mathbf{X}\)</span></p></li>
+</ul>
+<p><strong>2. Perform SVD</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[U,</span> <span class="pre">Sigma,</span> <span class="pre">V]</span> <span class="pre">=</span> <span class="pre">svd(Xw);</span></code> in Matlab</p></li>
+<li><p>the eigenvectors are the columns of <span class="math notranslate nohighlight">\(\mathbf{U}\)</span>, the PCs the columns of <span class="math notranslate nohighlight">\(\mathbf{V}\)</span>, the singular values the diagonal of <span class="math notranslate nohighlight">\(\boldsymbol{\Sigma}\)</span></p></li>
+</ul>
+<p><strong>3. Calculate and plot variance explained</strong></p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(s_i^2/\sum_j s_j^2\)</span> — note the <strong>square</strong>, since singular values are square roots of eigenvalues</p></li>
+<li><p>apply the North et al. bounds as before</p></li>
+</ul>
+<p><strong>4. Retain the EOFs you are interested in</strong></p>
+<ul class="simple">
+<li><p>the first column of <span class="math notranslate nohighlight">\(\mathbf{U}\)</span>, denoted <span class="math notranslate nohighlight">\(\mathbf{e}_1\)</span></p></li>
+</ul>
+<p><strong>5. Calculate PCs</strong></p>
+<ul class="simple">
+<li><p>already done for you: PC 1 is the first column of <span class="math notranslate nohighlight">\(\mathbf{V}\)</span>, denoted <span class="math notranslate nohighlight">\(\mathbf{z}_1\)</span></p></li>
+</ul>
+<p><strong>6. Standardize the PCs</strong></p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(\tilde{\mathbf{z}}_1 = (\mathbf{z}_1 - \mu_{z_1})/\sigma_{z_1}\)</span></p></li>
+</ul>
+<p><strong>7. Calculate EOFs in physical units</strong></p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(\mathbf{d}_1 = \frac{1}{M}\mathbf{X}\tilde{\mathbf{z}}_1\)</span>, <span class="math notranslate nohighlight">\(\mathbf{d}_2 = \frac{1}{M}\mathbf{X}\tilde{\mathbf{z}}_2\)</span>, …</p></li>
+<li><p>note the ordering differs from Recipes 1–2 because of the transposed convention</p></li>
+<li><p>as before, if you weighted or standardized, the pattern of <span class="math notranslate nohighlight">\(\mathbf{d}_1\)</span> will genuinely differ from <span class="math notranslate nohighlight">\(\mathbf{e}_1\)</span></p></li>
+</ul>
+</section>
+</section>
+<hr class="docutils" />
+<section id="part-6-cluster-analysis">
+<h2>Part 6 — Cluster Analysis<a class="headerlink" href="#part-6-cluster-analysis" title="Link to this heading">#</a></h2>
+<p>Cluster analysis is a data-mining technique whose goal is to group observations into a number of distinct clusters. Each observation ends up in <strong>exactly one</strong> cluster, with the assignment determined by a cost function. Finding the optimal set of clusters is usually iterative, starting from an initial guess.</p>
+<p>The contrast with EOF analysis is the important part. Recall that a principal component tells you how much a given observation resembles a particular EOF pattern. An observation may look predominantly like one EOF — a large PC for that mode — but it will still have non-zero PCs for all the others. Every observation is a <em>mixture</em> of all the patterns.</p>
+<p>In cluster analysis this is not so: each observation belongs to one cluster and no other. EOFs decompose; clusters partition. Which you want depends on whether you believe your system moves continuously through a state space or occupies discrete preferred regimes.</p>
+<section id="k-means-clustering">
+<h3>k-means clustering<a class="headerlink" href="#k-means-clustering" title="Link to this heading">#</a></h3>
+<p>k-means is the most popular clustering technique in Earth science, largely for its simplicity. The aim is to group <span class="math notranslate nohighlight">\(N\)</span> observations into <span class="math notranslate nohighlight">\(k\)</span> clusters, each observation belonging to the cluster with the nearest center. This partitions the data into <strong>Voronoi cells</strong>.</p>
+<p>The optimal distribution of cluster centers minimizes the within-cluster sum of squares — the sum of distances from each point to its cluster center:</p>
+<div class="math notranslate nohighlight">
+\[\boxed{\underset{S}{\arg\min}\ \sum_{i=1}^{k}\sum_{\mathbf{x}\in S_i}\|\mathbf{x} - \boldsymbol{\mu}_i\|^2}\]</div>
+<p>where <span class="math notranslate nohighlight">\(S = \{S_1, S_2, \ldots, S_k\}\)</span> is the set of <span class="math notranslate nohighlight">\(k\)</span> clusters, <span class="math notranslate nohighlight">\(\mathbf{x}\)</span> the observations, <span class="math notranslate nohighlight">\(\boldsymbol{\mu}_i\)</span> the center of cluster <span class="math notranslate nohighlight">\(S_i\)</span> (the mean of all points in it), and <span class="math notranslate nohighlight">\(\arg\min\)</span> indicates we seek the minimum over possible partitions <span class="math notranslate nohighlight">\(S\)</span>.</p>
+<p>Note that this is a sum of <strong>squared</strong> distances — the same least-squares logic as linear regression in Week 5-8 and the same squared projection that defined EOF 1 in Part 3. Squaring keeps the cost positive definite and makes the minimization tractable, at the price of weighting outliers heavily.</p>
+<p>While the idea is straightforward, computing the true optimum is very difficult and time-consuming for large data sets. Most implementations therefore use <strong>heuristic algorithms</strong> that converge quickly to a <em>local</em> optimum that may or may not be the global one. In practice you run k-means many times from different initial guesses and keep the iteration with the smallest within-cluster sum of squares.</p>
+<p>The standard algorithm is <strong>Lloyd’s algorithm</strong>: begin with an initial guess of the centers <span class="math notranslate nohighlight">\(\boldsymbol{\mu}\)</span>, then iteratively (i) assign each point to its nearest center and (ii) recompute each center as the mean of its assigned points, until nothing changes.</p>
+<div class="tip admonition">
+<p class="admonition-title">Figure / in-class demonstration</p>
+<p><em>Figure: Lloyd’s algorithm</em> — a sequence of six scatter panels (“Data and Initial Guess”, “Initial Clusters”, “Iteration 1” through “Iteration 4”) applying Lloyd’s algorithm to a small 2-D data set with 3 clusters (red, green, blue). Cluster centers are stars; outline stars denote the previous center position. The algorithm has converged by the third iteration, after which assignments and centers no longer change.</p>
+</div>
+<p>Two decisions must be made by <strong>you</strong>, not by the algorithm:</p>
+<p><strong>1. How many clusters?</strong>
+This is a user choice, not an output. You will get different results for different <span class="math notranslate nohighlight">\(k\)</span> — and you will always get <em>an</em> answer, exactly as EOFs always give you an answer. Methods such as the <strong>gap statistic</strong> (Tibshirani et al. 2001) can help.</p>
+<p><strong>2. How do you seed the initial guess?</strong>
+Many options exist. Running k-means many times and choosing the best solution is the standard way to avoid over-dependence on any single initialization.</p>
+<div class="tip admonition">
+<p class="admonition-title">Figure / in-class demonstration</p>
+<p><em>Figure: sensitivity to <span class="math notranslate nohighlight">\(k\)</span></em> — three scatter panels using k-means on the same data set. Left: the raw unclustered data. Middle: coloured by 7 clusters. Right: coloured by 4 clusters. Stars denote centroids. The algorithm was run 20 times and the iteration with the optimal cost function retained. The same data supports either partition; the choice of <span class="math notranslate nohighlight">\(k\)</span> is yours to justify.</p>
+</div>
+</section>
+<section id="self-organizing-maps-soms">
+<h3>Self-organizing maps (SOMs)<a class="headerlink" href="#self-organizing-maps-soms" title="Link to this heading">#</a></h3>
+<p>A self-organizing map — also called a Kohonen map — is another form of cluster analysis, using unsupervised machine learning to train an artificial neural network. Under certain conditions it is identical to k-means. The distinguishing feature is that <strong>when one cluster center is updated, its neighbouring centers are updated too</strong>.</p>
+<p>The result is a set of cluster centers (called <strong>nodes</strong>) organized so that similar nodes sit near one another and dissimilar nodes sit far apart when arranged on an <span class="math notranslate nohighlight">\(m\times p\)</span> grid. You gain an interpretable <em>layout</em> — neighbouring nodes are physically similar states — which k-means does not give you.</p>
+<p>Like most neural networks, the algorithm has two phases:</p>
+<ol class="arabic simple">
+<li><p><strong>Training</strong> — where the heavy lifting happens. Nodes are updated by comparison against input observations, ingested one at a time; often the same training data is iterated through several times. The result is a set of trained nodes.</p></li>
+<li><p><strong>Mapping</strong> — classifying a new observation as belonging to one of the nodes. Sometimes the training data differ from the data you want to map; sometimes they are the same.</p></li>
+</ol>
+<p>As with k-means, you must decide how many nodes to create — but here the choice is an <span class="math notranslate nohighlight">\(m\times p\)</span> <strong>grid</strong>, so you must choose both <span class="math notranslate nohighlight">\(m\)</span> and <span class="math notranslate nohighlight">\(p\)</span>. The resulting nodes depend strongly on the dimensions chosen.</p>
+<p>Training begins by initializing the <span class="math notranslate nohighlight">\(m\cdot p\)</span> nodes, either randomly or using the principal components of the observations (a nice link back to Part 3). The algorithm then ingests the training data either one observation at a time (<strong>online training</strong>) or as a single group (<strong>batch training</strong>). Each observation is compared to all <span class="math notranslate nohighlight">\(m\cdot p\)</span> nodes and the <strong>best match unit (BMU)</strong> is identified as the node with the smallest Euclidean distance to that observation. Writing the BMU as <span class="math notranslate nohighlight">\(\mathbf{n}_i\)</span>, the BMU and its neighbours are updated as</p>
+<div class="math notranslate nohighlight">
+\[\boxed{\mathbf{n}_j(t+1) = \mathbf{n}_j(t) + \alpha(t)\,h_{ci}(t)\,[\mathbf{x}(t) - \mathbf{n}_i(t)]}\]</div>
+<p>where <span class="math notranslate nohighlight">\(1 \le j \le m\cdot p\)</span> and</p>
+<ul class="simple">
+<li><p><strong>training time (<span class="math notranslate nohighlight">\(t\)</span>)</strong>: how many iterations have been performed</p></li>
+<li><p><strong>learning rate (<span class="math notranslate nohighlight">\(\alpha\)</span>)</strong>: how strongly to update the nodes given the observation; typically decreases with training time</p></li>
+<li><p><strong>neighbourhood function (<span class="math notranslate nohighlight">\(h\)</span>)</strong>: describes how many surrounding nodes to update besides the BMU; typically decreases with training time</p></li>
+</ul>
+<p>The learning rate and neighbourhood function must be chosen by the user. Commonly <span class="math notranslate nohighlight">\(\alpha\)</span> starts large and decreases linearly with training time. Common neighbourhood functions include a 2-D Gaussian or the Epanechnikov function. It is good practice to set the neighbourhood parameters initially so that the <strong>entire</strong> SOM space is included, ensuring all nodes get updated; this can be tightened at later training times. SOM training is typically implemented in multiple stages with different parameter combinations (e.g. a “rough” stage followed by a “finetune” stage).</p>
+<p><strong>Choosing among SOMs.</strong> Because SOM analysis has so many free parameters, many different SOMs can be computed from one data set. Two metrics guide the choice:</p>
+<ol class="arabic simple">
+<li><p><strong>quantization error</strong>: the average distance between each observation and its BMU</p></li>
+<li><p><strong>topographic error</strong>: the fraction of observations whose first and second BMUs are <em>not</em> adjacent units</p></li>
+</ol>
+<p>You want to minimize both. Typically the topographic error is held near zero while the quantization error is minimized. Good practice is to perform SOM analysis several times with different parameters and choose based on these two errors.</p>
+<div class="note admonition">
+<p class="admonition-title">Example / deeper dive</p>
+<p><strong>A worked SOM: Christman Field, Fort Collins</strong></p>
+<p>Hourly observations from Christman Field, Colorado, 1 January – 31 December 2016. The input is a 2-D matrix <span class="math notranslate nohighlight">\(\mathbf{X}\)</span> of dimension <span class="math notranslate nohighlight">\((8784, 6)\)</span>: 8784 hourly observation periods and 6 variables — temperature (°F), relative humidity (%), wind speed (mph), pressure (mb), solar radiation (W m<span class="math notranslate nohighlight">\(^{-2}\)</span>) and precipitation (mm).</p>
+<p>Training was performed in two phases, rough and finetune, each with different training lengths and initial/final radii of influence for the neighbourhood function. Nodes were initialized with random data on a <span class="math notranslate nohighlight">\(20\times20\)</span> grid (400 nodes).</p>
+<p>Plotting the trained node weights variable by variable shows the physical structure the SOM has found: for example, times of very strong wind are often associated with low relative humidity and precipitation.</p>
+<p>Plotting the <strong>frequency of occurrence</strong> of each node — how many of the 8784 observations had that node as their BMU — shows which weather states are common. Nodes on the left-hand side of the grid occur most frequently, and correspond to low wind, high relative humidity and generally low temperatures.</p>
+<p>Note the interpretive payoff: because neighbouring nodes are similar by construction, the frequency map is readable as a <em>landscape</em> of preferred weather regimes, not just an unordered list of cluster counts.</p>
+</div>
+<div class="tip admonition">
+<p class="admonition-title">Figure / in-class demonstration</p>
+<p><em>Figure: SOM node weights</em> — six panels, one per variable (temperature °F, RH %, wind mph, pressure mb, solar W m<span class="math notranslate nohighlight">\(^{-2}\)</span>, precipitation mm), each a <span class="math notranslate nohighlight">\(20\times20\)</span> grid with its own colour scale, showing the pattern of node weights across the trained SOM.</p>
+<p><em>Figure: SOM frequency of occurrence</em> — a <span class="math notranslate nohighlight">\(20\times20\)</span> grid of cells, each shaded by intensity and annotated with a count, showing how many of the 8784 hourly observations were assigned to that node as their best-match unit.</p>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="summary">
+<h2>Summary<a class="headerlink" href="#summary" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p></p></th>
+<th class="head"><p>EOF / PCA</p></th>
+<th class="head"><p>Cluster analysis</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>What it produces</strong></p></td>
+<td><p>orthogonal patterns, ordered by variance explained</p></td>
+<td><p>a partition of observations into groups</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Membership</strong></p></td>
+<td><p>every observation is a mixture of all patterns</p></td>
+<td><p>every observation belongs to exactly one cluster</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>What you choose</strong></p></td>
+<td><p>how many EOFs to retain; weighting; standardization</p></td>
+<td><p><span class="math notranslate nohighlight">\(k\)</span> (or <span class="math notranslate nohighlight">\(m\times p\)</span>); initialization; cost function</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Optimality</strong></p></td>
+<td><p>first <span class="math notranslate nohighlight">\(k\)</span> EOFs explain more variance than any other <span class="math notranslate nohighlight">\(k\)</span> linear combinations</p></td>
+<td><p>only a <em>local</em> optimum is guaranteed in practice</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Main hazard</strong></p></td>
+<td><p>EOFs of noise look physical; orthogonality constrains higher modes</p></td>
+<td><p>you always get <span class="math notranslate nohighlight">\(k\)</span> clusters, whether or not they exist</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Three threads to carry forward:</p>
+<ol class="arabic simple">
+<li><p><strong>Everything here is projection.</strong> The inner product that gave us the correlation coefficient in Week 5-8 is the same operation that defines EOF 1, and the same operation that returns an EOF to physical units. Linear algebra is the bookkeeping that lets us do it for thousands of grid points at once.</p></li>
+<li><p><strong>Both methods will always return an answer.</strong> EOFs of red noise give plausible-looking sines and cosines; k-means will happily partition structureless data into <span class="math notranslate nohighlight">\(k\)</span> tidy groups. The burden of demonstrating that structure is real — via North et al. bounds, subsampling, domain-sensitivity tests, or physical theory — is entirely on you.</p></li>
+<li><p><strong>Degeneracy is the practical limit.</strong> The orthogonality of EOFs holds only when eigenvalues are distinct. When they are not — closely spaced eigenvalues, or the paired sine/cosine of a travelling wave — the individual patterns are not separately meaningful, however clean they look on a map.</p></li>
+</ol>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./Matrix_Operation"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="../Regression/regressiom.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Week 5-8: Regression &amp; AR1</p>
+      </div>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#part-1-linear-algebra-review">Part 1 — Linear Algebra Review</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#matrix-notation">Matrix notation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#transpose">Transpose</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#inner-product-where-regression-re-enters">Inner product — where regression re-enters</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#multiplying-matrices">Multiplying matrices</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#covariance-and-correlation-matrices">Covariance and correlation matrices</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#inverse">Inverse</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#types-of-matrices">Types of matrices</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#vector-spaces">Vector spaces</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#testing-for-a-basis-determinants">Testing for a basis: determinants</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#rank">Rank</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#part-2-eigenvalues-and-eigenvectors">Part 2 — Eigenvalues and Eigenvectors</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#solving-for-eigenvectors">Solving for eigenvectors</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#properties-of-eigenvectors">Properties of eigenvectors</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#terminology-precisely">Terminology, precisely</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#part-3-eofs-via-eigenanalysis">Part 3 — EOFs via Eigenanalysis</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#setting-up-the-maximization">Setting up the maximization</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#what-this-buys-you">What this buys you</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#getting-your-original-data-back">Getting your original data back</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#practical-considerations-which-covariance-matrix">Practical considerations: which covariance matrix?</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#summary-eofs-by-eigenanalysis-of-the-covariance-matrix-mathbf-x-m-times-n">Summary: EOFs by eigenanalysis of the covariance matrix, <span class="math notranslate nohighlight">\(\mathbf{X} = [M\times N]\)</span></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#part-4-eofs-via-singular-value-decomposition-svd">Part 4 — EOFs via Singular Value Decomposition (SVD)</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#summary-eofs-with-svd-mathbf-x-m-times-n">Summary: EOFs with SVD, <span class="math notranslate nohighlight">\(\mathbf{X} = [M\times N]\)</span></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#part-5-eofs-with-actual-data">Part 5 — EOFs with Actual Data</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#preparing-the-data">Preparing the data</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#presentation-of-eofs">Presentation of EOFs</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#how-many-eofs-should-be-retained">How many EOFs should be retained?</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#recipe-1-eofs-from-the-temporal-covariance-matrix">Recipe 1: EOFs from the temporal covariance matrix</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#recipe-2-eofs-from-the-spatial-dispersion-matrix">Recipe 2: EOFs from the spatial dispersion matrix</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#recipe-3-eofs-via-svd">Recipe 3: EOFs via SVD</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#part-6-cluster-analysis">Part 6 — Cluster Analysis</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#k-means-clustering">k-means clustering</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#self-organizing-maps-soms">Self-organizing maps (SOMs)</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#summary">Summary</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By The Jupyter Book Community
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2023.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

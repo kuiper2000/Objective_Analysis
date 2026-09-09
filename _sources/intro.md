@@ -40,3 +40,16 @@ Throughout the notes, two types of highlighted boxes are used:
 * **Theory of correlation: Pearson's r, Fisher-Z, Spearman's rank**
 * **Autocorrelation & effective sample size: AR1/red noise, Leith & Bretherton**
 * **Multiple regression: generalized normal equations, overfitting**
+
+### Part III: Seeking Structure in Data
+
+**{ref}`Seeking_Structure`** — Week 9-12: EOFs & Clustering
+
+* **Linear algebra review: inner products, covariance matrices, inverse, rank & null space**
+* **Eigenvalues and eigenvectors: diagonalizing the covariance matrix**
+* **EOFs via eigenanalysis: maximizing explained variance, orthogonality, principal components**
+* **EOFs via Singular Value Decomposition, and its equivalence to eigenanalysis**
+* **EOFs with real data: weighting, standardization, presentation in physical units**
+* **How many EOFs to retain: North et al. (1982) and degeneracy**
+* **Cluster analysis: k-means and Lloyd's algorithm**
+* **Self-organizing maps (SOMs): training, mapping, quantization & topographic error**
