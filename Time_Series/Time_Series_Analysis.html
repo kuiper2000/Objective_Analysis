@@ -1,0 +1,1432 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Week 12-15: Time Series Analysis &#8212; Objective Analysis</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=a3416100" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css?v=be8a1c11" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js?v=4a39c7ea"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="../_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'Time_Series/Time_Series_Analysis';</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="prev" title="Week 8-11: Seeking Structure in Data" href="../Matrix_Operation/Seeking_Structure_in_Data.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../intro.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/logo.png" class="logo__image only-light" alt="Objective Analysis - Home"/>
+    <img src="../_static/logo.png" class="logo__image only-dark pst-js-only" alt="Objective Analysis - Home"/>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../intro.html">
+                    Syllabus
+                </a>
+            </li>
+        </ul>
+        <ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../General_statistical_test/Origin_of_Statisics.html">Week 1-3: Rule101</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Regression/regressiom.html">Week 4-6: Regression &amp; AR1</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Matrix_Operation/Seeking_Structure_in_Data.html">Week 8-11: Seeking Structure in Data</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Week 12-15: Time Series Analysis</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/executablebooks/jupyter-book" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/executablebooks/jupyter-book/issues/new?title=Issue%20on%20page%20%2FTime_Series/Time_Series_Analysis.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/Time_Series/Time_Series_Analysis.md" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.md</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
+
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Week 12-15: Time Series Analysis</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#part-1-harmonic-analysis">Part 1 — Harmonic Analysis</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#brief-review-of-sines-and-cosines">Brief review of sines and cosines</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#fourier-sums">Fourier sums</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#more-on-the-nyquist-frequency-and-aliasing">More on the Nyquist frequency and aliasing</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#discrete-fourier-transform">Discrete Fourier Transform</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#amplitude-phase-form">Amplitude-phase form</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#part-2-the-power-spectrum">Part 2 — The Power Spectrum</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-resolutionreliability-trade-off">The resolution–reliability trade-off</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#methods-for-computing-the-power-spectrum">Methods for computing the power spectrum</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#plotting-the-power-spectrum">Plotting the power spectrum</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#part-3-the-complex-fourier-transform">Part 3 — The Complex Fourier Transform</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#part-4-statistical-significance-of-spectral-peaks">Part 4 — Statistical Significance of Spectral Peaks</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wosa-and-the-fft-method">WOSA and the FFT method</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-f-test">The F-test</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#finding-the-power-spectrum-of-red-noise">Finding the power spectrum of red noise</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#part-5-windows-due-to-finite-data">Part 5 — Windows Due to Finite Data</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#convolution">Convolution</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-convolution-theorem">The Convolution Theorem</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#response-functions-for-various-windows">Response functions for various windows</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#applying-overlaps-of-the-windows">Applying overlaps of the windows</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#part-6-filtering">Part 6 — Filtering</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#general-idea-of-frequency-filtering">General idea of frequency filtering</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#filtering-in-the-frequency-domain">Filtering in the frequency domain</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#filtering-in-the-time-domain">Filtering in the time domain</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#creating-your-own-non-recursive-filters">Creating your own non-recursive filters</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#recursive-filters">Recursive filters</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#part-7-cross-spectrum-analysis">Part 7 — Cross-Spectrum Analysis</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cross-spectrum-co-spectrum-and-quadrature-spectrum">Cross-spectrum, co-spectrum and quadrature spectrum</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#coherence-squared">Coherence squared</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#getting-the-phase-information">Getting the phase information</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#part-8-mixed-space-time-analysis">Part 8 — Mixed Space-Time Analysis</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#space-time-spectral-analysis">Space-time spectral analysis</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#space-time-cross-spectral-analysis">Space-time cross-spectral analysis</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#summary">Summary</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="week-12-15-time-series-analysis">
+<span id="time-series"></span><h1>Week 12-15: Time Series Analysis<a class="headerlink" href="#week-12-15-time-series-analysis" title="Link to this heading">#</a></h1>
+<p>In Weeks 8-11 we decomposed data into patterns that the data itself chose — the EOFs were <em>empirical</em>, derived from the covariance matrix, and their shapes were whatever maximized variance. This block does the same kind of decomposition, but onto a basis we <em>impose</em>: sines and cosines.</p>
+<p>That sounds like a step backwards, and in one sense it is — a prescribed basis cannot adapt to your data. But it buys something EOFs cannot give you. Sines and cosines have a <strong>frequency</strong>, so the coefficients tell you not just “how much structure” but “on what timescale”. Questions like <em>does this signal have a 40-day periodicity?</em>, <em>how much variance lives at interannual timescales?</em>, and <em>does the wind at 120°E lead the wind at 150°E by a quarter cycle?</em> are all frequency questions.</p>
+<p>The thread from Weeks 4-6 continues to hold: <strong>harmonic analysis is multiple regression</strong> where the predictors happen to be sines and cosines. Because those predictors are mutually orthogonal, the messy normal equations from multiple regression collapse into one-line formulas. Almost everything in this block follows from that.</p>
+<hr class="docutils" />
+<section id="part-1-harmonic-analysis">
+<h2>Part 1 — Harmonic Analysis<a class="headerlink" href="#part-1-harmonic-analysis" title="Link to this heading">#</a></h2>
+<section id="brief-review-of-sines-and-cosines">
+<h3>Brief review of sines and cosines<a class="headerlink" href="#brief-review-of-sines-and-cosines" title="Link to this heading">#</a></h3>
+<div class="math notranslate nohighlight">
+\[y(t) = A\sin(2\pi f t + \phi) = A\sin(\omega t + \phi)\]</div>
+<p>where</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(A\)</span> is the <strong>amplitude</strong>, the deviation of the curve from zero</p></li>
+<li><p><span class="math notranslate nohighlight">\(f\)</span> is the <strong>frequency</strong>, in oscillations per time step</p></li>
+<li><p><span class="math notranslate nohighlight">\(\omega = 2\pi f\)</span> is the <strong>angular frequency</strong>, in radians per time step</p></li>
+<li><p><span class="math notranslate nohighlight">\(\phi\)</span> is the <strong>phase</strong> in radians. When <span class="math notranslate nohighlight">\(\phi \ne 0\)</span> the wave is shifted in time by <span class="math notranslate nohighlight">\(\phi/\omega\)</span> time steps</p></li>
+</ul>
+<p>Four related quantities that are easy to confuse:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Quantity</p></th>
+<th class="head"><p>Symbol</p></th>
+<th class="head"><p>Definition</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>wavenumber</p></td>
+<td><p><span class="math notranslate nohighlight">\(k\)</span></p></td>
+<td><p>an integer; number of oscillations that fit inside the domain</p></td>
+</tr>
+<tr class="row-odd"><td><p>frequency</p></td>
+<td><p><span class="math notranslate nohighlight">\(f\)</span></p></td>
+<td><p>oscillations per time step, <span class="math notranslate nohighlight">\(f = k/T\)</span></p></td>
+</tr>
+<tr class="row-even"><td><p>angular frequency</p></td>
+<td><p><span class="math notranslate nohighlight">\(\omega\)</span></p></td>
+<td><p>radians per time step, <span class="math notranslate nohighlight">\(\omega = 2\pi f = 2\pi k/T\)</span></p></td>
+</tr>
+<tr class="row-odd"><td><p>period</p></td>
+<td><p><span class="math notranslate nohighlight">\(T\)</span></p></td>
+<td><p>time steps per oscillation, <span class="math notranslate nohighlight">\(1/f\)</span></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="tip admonition">
+<p class="admonition-title">Figure / in-class demonstration</p>
+<p><em>Figure:</em> <span class="math notranslate nohighlight">\(\cos(x)\)</span> and <span class="math notranslate nohighlight">\(\sin(x)\)</span> plotted over <span class="math notranslate nohighlight">\(-2\pi \le x \le 2\pi\)</span>, to fix the relationship between amplitude, phase and period.</p>
+</div>
+</section>
+<section id="fourier-sums">
+<h3>Fourier sums<a class="headerlink" href="#fourier-sums" title="Link to this heading">#</a></h3>
+<p><strong>The basic idea.</strong> Interpret a time (or space) series as a summation of contributions from harmonic functions, each with a unique temporal or spatial scale. These harmonic functions form a <strong>basis</strong> — exactly the sense of “basis” from the linear algebra review in Weeks 8-11.</p>
+<p>This is analogous to multiple regression, where you describe one variable as a combination of others. Here the predictors are</p>
+<div class="math notranslate nohighlight">
+\[\cos\left(\frac{2\pi k t}{T}\right), \qquad \sin\left(\frac{2\pi k t}{T}\right)\]</div>
+<p>where <span class="math notranslate nohighlight">\(k\)</span> is an integer from 1 to <span class="math notranslate nohighlight">\(N/2\)</span> (<span class="math notranslate nohighlight">\(N\)</span> being the number of values you have), often called the <strong>wavenumber</strong>. Note <span class="math notranslate nohighlight">\(k/T = f\)</span>, the number of oscillations per time step.</p>
+<p>So <span class="math notranslate nohighlight">\(y(t)\)</span> decomposes as</p>
+<div class="math notranslate nohighlight">
+\[\boxed{y(t) = A_0 + \sum_{k=1}^{N/2}A_k\cos\left(\frac{2\pi kt}{T}\right) + \sum_{k=1}^{N/2}B_k\sin\left(\frac{2\pi kt}{T}\right)}\]</div>
+<p>with the following properties:</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(y\)</span> is resolved on the interval <span class="math notranslate nohighlight">\(0 \le t \le T\)</span></p></li>
+<li><p>the length of the time series is <span class="math notranslate nohighlight">\(N+1\)</span>. (<span class="math notranslate nohighlight">\(N\)</span> must be even so the highest wavenumber is an integer, but the record length must be odd so that all harmonic functions fit an integer number of times into the full record.)</p></li>
+<li><p><span class="math notranslate nohighlight">\(A_k\)</span> and <span class="math notranslate nohighlight">\(B_k\)</span> are the <strong>regression coefficients</strong> for each predictor</p></li>
+<li><p>each predictor has frequency <span class="math notranslate nohighlight">\(2\pi k/T\)</span> and so fits into <span class="math notranslate nohighlight">\(t_1 = 0\)</span> to <span class="math notranslate nohighlight">\(t_{N+1} = T\)</span> an integral <span class="math notranslate nohighlight">\(k\)</span> number of times</p></li>
+<li><p>if <span class="math notranslate nohighlight">\(k = 1\)</span>, the function completes <span class="math notranslate nohighlight">\(2\pi\)</span> radians in the full length of the data — the <strong>lowest resolved frequency</strong></p></li>
+<li><p>if <span class="math notranslate nohighlight">\(k = N/2\)</span>, the function completes <span class="math notranslate nohighlight">\(2\pi\)</span> radians in 2 time steps — the highest resolvable frequency, the <strong>Nyquist frequency</strong></p></li>
+<li><p>if <span class="math notranslate nohighlight">\(k = N/2\)</span> then <span class="math notranslate nohighlight">\(B_k = 0\)</span>. (Try drawing it: you can fit a cosine at two points per cycle, but not a sine.)</p></li>
+<li><p>for a given <span class="math notranslate nohighlight">\(k\)</span> you fit one cosine and one sine of variable amplitude. This is equivalent to fitting one cosine with variable amplitude <em>and</em> variable phase. Either way, <strong>two predictors per <span class="math notranslate nohighlight">\(k\)</span></strong>.</p></li>
+</ul>
+<div class="note admonition">
+<p class="admonition-title">Example / deeper dive</p>
+<p><strong>Why <span class="math notranslate nohighlight">\(2\pi\)</span> radians in 2 time steps, and not 1?</strong></p>
+<p>To define an oscillation you need to see it go up <em>and</em> come back down. With one sample per cycle every sample lands at the same phase, and the wave is indistinguishable from a constant. Two samples per cycle is the bare minimum that can register an alternation — and even then only if your samples don’t land exactly on the zero crossings.</p>
+<p>Counting the degrees of freedom gives the same answer. <span class="math notranslate nohighlight">\(N\)</span> data points can support exactly <span class="math notranslate nohighlight">\(N\)</span> independent predictors. Each <span class="math notranslate nohighlight">\(k\)</span> costs two (a sine and a cosine), so <span class="math notranslate nohighlight">\(k\)</span> can run to <span class="math notranslate nohighlight">\(N/2\)</span> — no further. The Nyquist limit is not a property of waves; it is a bookkeeping constraint.</p>
+</div>
+</section>
+<section id="more-on-the-nyquist-frequency-and-aliasing">
+<h3>More on the Nyquist frequency and aliasing<a class="headerlink" href="#more-on-the-nyquist-frequency-and-aliasing" title="Link to this heading">#</a></h3>
+<p>The Nyquist frequency is the highest frequency resolvable in your data:</p>
+<ul class="simple">
+<li><p>one oscillation per 2 time steps, i.e. 1 oscillation per <span class="math notranslate nohighlight">\(2\Delta t\)</span></p></li>
+<li><p>wavenumber <span class="math notranslate nohighlight">\(k = (\text{length of time series} - 1)/2\)</span></p></li>
+</ul>
+<p>What if higher frequencies are present? They get <strong>aliased</strong> onto lower frequencies — a real signal at high frequency masquerades as a spurious signal at low frequency. This is a serious problem when there is a large amount of variance above the Nyquist frequency.</p>
+<div class="warning admonition">
+<p class="admonition-title">A point that is easy to get backwards</p>
+<p>The Nyquist frequency depends <strong>entirely on your data time step</strong> <span class="math notranslate nohighlight">\(\Delta t\)</span> — <em>not</em> on how much data you have. Collecting a longer record does not raise the Nyquist frequency; it only lowers the lowest resolved frequency. The smaller the time step, the higher the Nyquist frequency.</p>
+<p>So the two ends of your spectrum are set by two different things: <span class="math notranslate nohighlight">\(\Delta t\)</span> sets the high-frequency limit, record length <span class="math notranslate nohighlight">\(T\)</span> sets the low-frequency limit.</p>
+</div>
+<div class="tip admonition">
+<p class="admonition-title">Figure / in-class demonstration</p>
+<p><em>Worked example:</em> <code class="docutils literal notranslate"><span class="pre">harmonic_analysis_nyquist.m</span></code></p>
+</div>
+</section>
+<section id="discrete-fourier-transform">
+<h3>Discrete Fourier Transform<a class="headerlink" href="#discrete-fourier-transform" title="Link to this heading">#</a></h3>
+<p>For discrete, evenly spaced data on <span class="math notranslate nohighlight">\(0 \le t \le T\)</span>, where <span class="math notranslate nohighlight">\(0\)</span> and <span class="math notranslate nohighlight">\(T\)</span> coincide with data points 1 and <span class="math notranslate nohighlight">\(N+1\)</span> and <span class="math notranslate nohighlight">\(N\)</span> is even:</p>
+<ol class="arabic simple">
+<li><p>the functions are <span class="math notranslate nohighlight">\(\cos(2\pi kt/T)\)</span> and <span class="math notranslate nohighlight">\(\sin(2\pi kt/T)\)</span></p></li>
+<li><p>the average of each sine/cosine on <span class="math notranslate nohighlight">\(t_1 = 0\)</span> to <span class="math notranslate nohighlight">\(t_{N+1} = T\)</span> is zero, so <span class="math notranslate nohighlight">\(A_0 = \overline{y}\)</span></p></li>
+<li><p>the harmonic functions are <strong>mutually orthogonal</strong> on the interval, e.g.</p></li>
+</ol>
+<div class="math notranslate nohighlight">
+\[r(\cos x, \sin x) = 0, \qquad r(\cos x, \cos 2x) = 0\]</div>
+<ol class="arabic simple" start="4">
+<li><p>the regression coefficients of <span class="math notranslate nohighlight">\(y(t)\)</span> onto harmonic function <span class="math notranslate nohighlight">\(x_k(t)\)</span> follow from the normal equations of multiple regression:</p></li>
+</ol>
+<div class="math notranslate nohighlight">
+\[A_k = \frac{\overline{x_k'y'}}{\overline{x_k'^2}}\]</div>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{bmatrix}
+\overline{x_1^2} &amp; \overline{x_1x_2} &amp; \overline{x_1x_3} &amp; \cdots \\
+\overline{x_2x_1} &amp; \overline{x_2^2} &amp; \overline{x_2x_3} &amp; \cdots \\
+\overline{x_3x_1} &amp; \overline{x_3x_2} &amp; \overline{x_3^2} &amp; \cdots \\
+\vdots &amp; \vdots &amp; \vdots &amp;
+\end{bmatrix}
+\begin{bmatrix}A_1\\A_2\\A_3\\\vdots\end{bmatrix}
+=
+\begin{bmatrix}\overline{x_1y}\\\overline{x_2y}\\\overline{x_3y}\\\vdots\end{bmatrix}\end{split}\]</div>
+<p><strong>This is the payoff of orthogonality.</strong> In general multiple regression that matrix is dense and must be inverted. Because the predictors here are orthogonal, all cross-covariances vanish, the matrix is diagonal, and each <span class="math notranslate nohighlight">\(A_k\)</span> is obtained independently — no inversion, no interaction between predictors.</p>
+<ol class="arabic simple" start="5">
+<li><p>each harmonic function has variance <span class="math notranslate nohighlight">\(\overline{x_k'^2} = \tfrac12\)</span>, except at <span class="math notranslate nohighlight">\(k = N/2\)</span> where the cosine term has variance 1 and the sine term 0</p></li>
+<li><p>the solutions therefore reduce to</p></li>
+</ol>
+<div class="math notranslate nohighlight">
+\[A_k = 2\cdot\overline{\cos\left(\frac{2\pi kt}{T}\right)y'(t)}, \qquad B_k = 2\cdot\overline{\sin\left(\frac{2\pi kt}{T}\right)y'(t)}\]</div>
+<div class="math notranslate nohighlight">
+\[A_{N/2} = \overline{\cos\left(\frac{2\pi kt}{T}\right)y'(t)}, \qquad B_{N/2} = 0\]</div>
+<p>where the factor 2 comes from <span class="math notranslate nohighlight">\(\overline{x_k'^2} = \tfrac12\)</span>.</p>
+<ol class="arabic simple" start="7">
+<li><p>thus</p></li>
+</ol>
+<div class="math notranslate nohighlight">
+\[y(t) = \overline{y} + \sum_{k=1}^{N/2-1}\left[A_k\cos\left(\frac{2\pi kt}{T}\right) + B_k\sin\left(\frac{2\pi kt}{T}\right)\right] + A_{N/2}\cos\left(\frac{\pi Nt}{T}\right)\]</div>
+</section>
+<section id="amplitude-phase-form">
+<h3>Amplitude-phase form<a class="headerlink" href="#amplitude-phase-form" title="Link to this heading">#</a></h3>
+<p>The same result in terms of cosine alone:</p>
+<div class="math notranslate nohighlight">
+\[y(t) = \overline{y} + \sum_{k=1}^{N/2}C_k\cos\left(\frac{2\pi kt}{T} - \phi_k\right), \qquad \boxed{C_k^2 = A_k^2 + B_k^2}\]</div>
+<p>which follows from the Pythagorean theorem with <span class="math notranslate nohighlight">\(A_k\)</span> on the <span class="math notranslate nohighlight">\(x\)</span>-axis, <span class="math notranslate nohighlight">\(B_k\)</span> on the <span class="math notranslate nohighlight">\(y\)</span>-axis, and <span class="math notranslate nohighlight">\(\phi\)</span> the angle between.</p>
+<p>The fraction of variance explained by a particular harmonic is</p>
+<div class="math notranslate nohighlight">
+\[R^2(y, x_k) = \frac{\left(\overline{x_k'y'}\right)^2}{\overline{x_k'^2}\cdot\overline{y'^2}}\]</div>
+<p>which for the cosine and sine components gives</p>
+<div class="math notranslate nohighlight">
+\[R^2 = \frac{A_k^2}{2\overline{y'^2}}, \qquad R^2 = \frac{B_k^2}{2\overline{y'^2}}, \qquad R^2 = \frac{A_{N/2}^2}{\overline{y'^2}}\ \ (k = N/2)\]</div>
+<p>and the <strong>actual</strong> (not fractional) variance explained by harmonic <span class="math notranslate nohighlight">\(k\)</span> is</p>
+<div class="math notranslate nohighlight">
+\[\boxed{\text{variance explained} = \frac{A_k^2 + B_k^2}{2} = \frac{C_k^2}{2}}\]</div>
+<div class="tip admonition">
+<p class="admonition-title">Figure / in-class demonstration</p>
+<p><em>Worked example:</em> <code class="docutils literal notranslate"><span class="pre">example_harmonic_coeff_calculator.m</span></code></p>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="part-2-the-power-spectrum">
+<h2>Part 2 — The Power Spectrum<a class="headerlink" href="#part-2-the-power-spectrum" title="Link to this heading">#</a></h2>
+<p>The plot of <span class="math notranslate nohighlight">\(C_k^2/2\)</span> versus <span class="math notranslate nohighlight">\(k\)</span> is the <strong>spectrum</strong> of <span class="math notranslate nohighlight">\(y(t)\)</span>:</p>
+<ul class="simple">
+<li><p>if <span class="math notranslate nohighlight">\(t\)</span> is time, it is the <strong>frequency spectrum</strong></p></li>
+<li><p>if <span class="math notranslate nohighlight">\(t\)</span> is space, it is the <strong>wavenumber spectrum</strong></p></li>
+</ul>
+<p>This is a <strong>line spectrum</strong> — defined only at integer <span class="math notranslate nohighlight">\(k\)</span>. That is fine for an infinite sample, but has three serious drawbacks for a finite record:</p>
+<ol class="arabic simple">
+<li><p>integer values of <span class="math notranslate nohighlight">\(k\)</span> have no special relationship to the population being sampled; they depend entirely on the record length <span class="math notranslate nohighlight">\(T\)</span>, which is presumably arbitrary</p></li>
+<li><p>each spectral line contains about <strong>2 degrees of freedom</strong> — <span class="math notranslate nohighlight">\(N/2\)</span> estimates from <span class="math notranslate nohighlight">\(N\)</span> data points</p></li>
+<li><p>except for the diurnal and seasonal cycles, most geophysical phenomena are only <em>quasi</em>-periodic, so they do not conform to a single integer wavenumber and are better represented as <strong>spectral bands of finite width</strong></p></li>
+</ol>
+<p>These considerations motivate a <strong>continuous power spectrum</strong>, where the variance of <span class="math notranslate nohighlight">\(y(t)\)</span> is given per unit frequency:</p>
+<div class="math notranslate nohighlight">
+\[\overline{y'^2} = \int_0^{k^*}\Phi(k)\,dk\]</div>
+<p>where <span class="math notranslate nohighlight">\(\Phi(k)\)</span> is the continuous power spectrum and <span class="math notranslate nohighlight">\(k^*\)</span> is the Nyquist frequency (one cycle per <span class="math notranslate nohighlight">\(2\Delta t\)</span>). <span class="math notranslate nohighlight">\(\Phi(k)\)</span> is just a continuous version of <span class="math notranslate nohighlight">\(C_k^2/2\)</span>, estimated either by smoothing the line spectrum or by averaging many line spectra together.</p>
+<section id="the-resolutionreliability-trade-off">
+<h3>The resolution–reliability trade-off<a class="headerlink" href="#the-resolutionreliability-trade-off" title="Link to this heading">#</a></h3>
+<p>Two ways to gain degrees of freedom:</p>
+<ol class="arabic simple">
+<li><p><strong>Average adjacent spectral estimates.</strong> Lose resolution, gain dof. Averaging 10 adjacent estimates decreases frequency resolution by a factor of 10 and increases dof by a factor of 10.</p></li>
+<li><p><strong>Average realizations of the spectra.</strong> Lose information at low frequencies, gain dof. Subdividing into 10 series of equal length raises the lowest resolved frequency by a factor of 10 and increases dof by a factor of 10.</p></li>
+</ol>
+<div class="warning admonition">
+<p class="admonition-title">The trade-off you cannot escape</p>
+<p>There is a permanent tension between <strong>resolution</strong> and <strong>reproducibility</strong>:</p>
+<blockquote>
+<div><p>High resolution / high information / <strong>low quality statistics</strong>
+<span class="math notranslate nohighlight">\(\Downarrow\)</span>
+Lower resolution / lower information / <strong>higher quality statistics</strong></p>
+</div></blockquote>
+<p>It is somewhat akin to Heisenberg’s Uncertainty Principle. Every choice below — chunk length, window, overlap, band averaging — is a position on this trade-off, not a solution to it.</p>
+</div>
+<p>Degrees of freedom per spectral estimate:</p>
+<div class="math notranslate nohighlight">
+\[\text{D.O.F.} = N/M^*\]</div>
+<p>where <span class="math notranslate nohighlight">\(M^*\)</span> is the number of independent spectral estimates and <span class="math notranslate nohighlight">\(N\)</span> the number of actual data points. For line estimates <span class="math notranslate nohighlight">\(M^* = N/2\)</span>, giving <span class="math notranslate nohighlight">\(\text{D.O.F.} = N/(N/2) = 2\)</span> — as claimed above.</p>
+<p>Note: <strong>as long as we use a red-noise fit as the null hypothesis, we do not need to reduce <span class="math notranslate nohighlight">\(N\)</span> to account for autocorrelation.</strong> The autocorrelation is already built into the null.</p>
+</section>
+<section id="methods-for-computing-the-power-spectrum">
+<h3>Methods for computing the power spectrum<a class="headerlink" href="#methods-for-computing-the-power-spectrum" title="Link to this heading">#</a></h3>
+<p><strong>Method 1: the direct method.</strong> Calculate <span class="math notranslate nohighlight">\(C_k\)</span> through harmonic analysis, i.e. via the analytic DFT solutions for <span class="math notranslate nohighlight">\(A_k\)</span> and <span class="math notranslate nohighlight">\(B_k\)</span>.</p>
+<ul class="simple">
+<li><p>easy to code, but inefficient — there are numerous redundancies in the <span class="math notranslate nohighlight">\(A_k\)</span>, <span class="math notranslate nohighlight">\(B_k\)</span> calculations</p></li>
+<li><p>the <strong>Fast Fourier Transform (FFT)</strong> is widely available and exploits those redundancies</p></li>
+<li><p>the transform assumes <strong>cyclic continuity</strong> (waves fit fully into the domain); it is typical to taper the edges of the series — see Part 5</p></li>
+</ul>
+<p><strong>Method 2: the lag correlation method.</strong> Less often used, but worth knowing. It rests on a theorem of Norbert Wiener:</p>
+<blockquote>
+<div><p>The autocorrelation function and the power spectrum are Fourier transforms of each other.</p>
+</div></blockquote>
+<p>So the power spectrum can be found by performing harmonic analysis on the autocorrelation function within <span class="math notranslate nohighlight">\(-T_L \le \tau \le T_L\)</span>, where <span class="math notranslate nohighlight">\(T_L\)</span> is the maximum lag. This connects directly to the autocorrelation machinery of Weeks 4-6.</p>
+<div class="tip admonition">
+<p class="admonition-title">Figure / in-class demonstration</p>
+<p><em>Figure:</em> slides showing autocorrelation / power spectrum pairs.</p>
+<p><em>Worked example:</em> <code class="docutils literal notranslate"><span class="pre">autocorrelation_of_linear_trend.m</span></code></p>
+</div>
+</section>
+<section id="plotting-the-power-spectrum">
+<h3>Plotting the power spectrum<a class="headerlink" href="#plotting-the-power-spectrum" title="Link to this heading">#</a></h3>
+<p>Two schemes, both preserving the property that <strong>area under the curve is proportional to variance</strong>.</p>
+<p><strong>Linear scale.</strong> Plot frequency against power spectral density <span class="math notranslate nohighlight">\(\Phi(\omega)\)</span>, so that</p>
+<div class="math notranslate nohighlight">
+\[\int_{\omega_1}^{\omega_2}\Phi(\omega)\,d\omega\]</div>
+<p>is the total variance between <span class="math notranslate nohighlight">\(\omega_1\)</span> and <span class="math notranslate nohighlight">\(\omega_2\)</span>.</p>
+<p><strong>Logarithmic scale.</strong> When the frequency range spans several orders of magnitude, plot <span class="math notranslate nohighlight">\(\ln\omega\)</span> on the <span class="math notranslate nohighlight">\(x\)</span>-axis. Then the <span class="math notranslate nohighlight">\(y\)</span>-axis must be <span class="math notranslate nohighlight">\(\omega\cdot\Phi(\omega)\)</span> so that visual area remains proportional to variance:</p>
+<div class="math notranslate nohighlight">
+\[\int_{\ln\omega_1}^{\ln\omega_2}\omega\,\Phi(\omega)\,d(\ln\omega) = \int_{\omega_1}^{\omega_2}\Phi(\omega)\,d\omega\]</div>
+<p>since <span class="math notranslate nohighlight">\(dx = x\,d(\ln x)\)</span>. On the log scale the low-frequency end is stretched relative to the high-frequency end. It is often useful to normalize total area to 1, so area between two frequencies is directly the fraction of variance explained.</p>
+<div class="warning admonition">
+<p class="admonition-title">How spectra mislead</p>
+<p>Be careful with axis choices — each combination creates a specific visual illusion:</p>
+<ul class="simple">
+<li><p><strong>log power, linear frequency</strong> → weak variances look more important than they are</p></li>
+<li><p><strong>log frequency, linear power</strong> → high frequencies are much more important than they look</p></li>
+<li><p><strong>log–log</strong> → both illusions at once</p></li>
+</ul>
+<p>You will see log–log plots constantly. They are not wrong, but you must read them knowing that the area-equals-variance intuition no longer applies.</p>
+</div>
+<div class="tip admonition">
+<p class="admonition-title">Figure / in-class demonstration</p>
+<p><em>Figures 6.11 and 6.12 (Hartmann Ch. 6b):</em> (left) schematic of continuous power versus frequency, where variance between two frequencies is the area under the curve; (right) schematic of frequency-times-power versus log-frequency, with the same area-variance property.</p>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="part-3-the-complex-fourier-transform">
+<h2>Part 3 — The Complex Fourier Transform<a class="headerlink" href="#part-3-the-complex-fourier-transform" title="Link to this heading">#</a></h2>
+<p>So far the Fourier transform has been written in real arithmetic. It is far more efficient in complex form:</p>
+<div class="math notranslate nohighlight">
+\[f(t) = \frac{1}{2\pi}\int_{-\infty}^{\infty}F(\omega)e^{i\omega t}\,d\omega, \qquad F(\omega) = \int_{-\infty}^{\infty}f(t)e^{-i\omega t}\,dt\]</div>
+<p>where <span class="math notranslate nohighlight">\(\omega\)</span> is the radial frequency (radians per unit time) and <span class="math notranslate nohighlight">\(F(\omega)\)</span> is generally complex. Different textbooks place the <span class="math notranslate nohighlight">\(1/(2\pi)\)</span> in different places — check the convention before comparing formulas.</p>
+<p>The bridge back to the real form is Euler’s identity:</p>
+<div class="math notranslate nohighlight">
+\[e^{i\theta} = \cos\theta + i\sin\theta, \qquad \cos\theta = \frac{e^{i\theta}+e^{-i\theta}}{2}, \qquad \sin\theta = \frac{e^{i\theta}-e^{-i\theta}}{2i}\]</div>
+<p>The practical advantage: a complex coefficient carries <strong>amplitude and phase in a single number</strong>, so the <span class="math notranslate nohighlight">\(A_k\)</span>/<span class="math notranslate nohighlight">\(B_k\)</span> pair becomes one object. This is what makes the cross-spectrum algebra of Part 7 tractable.</p>
+</section>
+<hr class="docutils" />
+<section id="part-4-statistical-significance-of-spectral-peaks">
+<h2>Part 4 — Statistical Significance of Spectral Peaks<a class="headerlink" href="#part-4-statistical-significance-of-spectral-peaks" title="Link to this heading">#</a></h2>
+<p>Spectral peaks are tested against the null hypothesis that the data is just <strong>red noise</strong> — that it has low-frequency variability but is not periodic. The amplitude of a peak is tested against the spectrum of the red-noise fit to the data.</p>
+<div class="tip admonition">
+<p class="admonition-title">Figure / in-class demonstration</p>
+<p><em>Figure 6.18 (Hartmann Ch. 6b):</em> schematic of a spectrum, its null-hypothesis spectrum, and the ratio of variances at a frequency of interest. <span class="math notranslate nohighlight">\(\Phi_0\)</span> is the “background” spectrum forming the null hypothesis.</p>
+</div>
+<section id="wosa-and-the-fft-method">
+<h3>WOSA and the FFT method<a class="headerlink" href="#wosa-and-the-fft-method" title="Link to this heading">#</a></h3>
+<p>The most common approach uses the FFT, which exploits the fact that the series length can be chosen as an integer power of two, <span class="math notranslate nohighlight">\(M_{ch} = 2^n\)</span> (mixed-radix FFTs allow <span class="math notranslate nohighlight">\(M_{ch} = 2^n3^m5^j\)</span>). The total series of length <span class="math notranslate nohighlight">\(N\Delta t\)</span> is broken into smaller chunks of length <span class="math notranslate nohighlight">\(M_{ch}\)</span>, and the spectra of those chunks are averaged into a grand spectrum with some statistical reliability. This is <strong>Welch’s Overlapping Segment Analysis (WOSA)</strong>.</p>
+<p>Because a tapered window is normally applied, data near the ends of each chunk is weighted less heavily than data in the center. So that all data is weighted equally, the chunks should <strong>overlap</strong>. In Matlab this is the <code class="docutils literal notranslate"><span class="pre">noverlap</span></code> parameter. If you overlap by exactly half the chunk length and use a Hanning window, every data point gets exactly the same weight in the averaged spectrum — except the first and last <span class="math notranslate nohighlight">\(M_{ch}/2\)</span> points of the record.</p>
+</section>
+<section id="the-f-test">
+<h3>The F-test<a class="headerlink" href="#the-f-test" title="Link to this heading">#</a></h3>
+<p>The significance of the ratio of variances <span class="math notranslate nohighlight">\(\Phi_1\)</span> to <span class="math notranslate nohighlight">\(\Phi_0\)</span> is assessed with the F-statistic:</p>
+<div class="math notranslate nohighlight">
+\[\boxed{F = \frac{S_1^2}{S_0^2}}\]</div>
+<p>where <span class="math notranslate nohighlight">\(S_1^2\)</span> and <span class="math notranslate nohighlight">\(S_0^2\)</span> are the variances of the original spectrum and the red-noise fit. <strong>Remember — the power spectrum <em>is</em> this variance.</strong></p>
+<p>The F-statistic requires degrees of freedom <span class="math notranslate nohighlight">\(\nu_1\)</span> and <span class="math notranslate nohighlight">\(\nu_0\)</span>:</p>
+<ul class="simple">
+<li><p>for red noise (<span class="math notranslate nohighlight">\(\nu_0\)</span>), we typically assume a large number</p></li>
+<li><p>for the real series (<span class="math notranslate nohighlight">\(\nu_1\)</span>), use <span class="math notranslate nohighlight">\(N/(M_{chunk}/2) = N/(\text{number of spectral estimates})\)</span></p></li>
+</ul>
+<div class="warning admonition">
+<p class="admonition-title">A priori versus a posteriori — the multiple comparisons trap</p>
+<p>You may only use <em>a priori</em> statistics if you <strong>expected a peak at that frequency in advance</strong>. Otherwise you must use <em>a posteriori</em> statistics, accounting for the probability that one frequency out of <span class="math notranslate nohighlight">\(M_{chunk}/2\)</span> gave a significant peak by chance. Your true significance level is</p>
+<div class="math notranslate nohighlight">
+\[(0.99)^{M_{chunk}/2}\]</div>
+<p>if you test each peak at 99% confidence. With 64 spectral estimates that is <span class="math notranslate nohighlight">\(0.99^{64} \approx 0.53\)</span> — barely better than a coin flip. Hunting for the largest peak in a spectrum and then testing it as though you had predicted it is one of the most common errors in spectral analysis.</p>
+</div>
+<div class="note admonition">
+<p class="admonition-title">Example / deeper dive</p>
+<p><strong>Example 4.2 — F-statistic and spectral peaks</strong></p>
+<p>You have a daily time series 512 days long, split into 128-day chunks (4 realizations), and a peak in the spectrum 3 times higher than the red-noise value. Is it significant at 99%?</p>
+<ol class="arabic simple">
+<li><p>assume the peak is where we expected it <em>a priori</em></p></li>
+<li><p>we need <span class="math notranslate nohighlight">\(F_{crit} &lt; 3\)</span> to reject the null that the peak is a random fluctuation of red noise</p></li>
+<li><p>determine the dof for the data and the red-noise series, <span class="math notranslate nohighlight">\(\nu_{data}\)</span>, <span class="math notranslate nohighlight">\(\nu_{red}\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\nu_{data} = N/(M_{chunk}/2) = 512/(128/2) = 8\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\nu_{red} = \)</span> large (typically <span class="math notranslate nohighlight">\(&gt; 100\)</span>)</p></li>
+<li><p>for the F-statistic, the data is the numerator and red noise the denominator</p></li>
+<li><p>from the table, the 99% level is <span class="math notranslate nohighlight">\(F_{crit} = 2.69\)</span></p></li>
+<li><p>since <span class="math notranslate nohighlight">\(F_{crit} = 2.69 &lt; 3\)</span>, the peak passes and we reject the null hypothesis</p></li>
+</ol>
+</div>
+<div class="tip admonition">
+<p class="admonition-title">Figure / in-class demonstration</p>
+<p><em>Worked example:</em> <code class="docutils literal notranslate"><span class="pre">run_testing_spectral_significance.m</span></code></p>
+</div>
+</section>
+<section id="finding-the-power-spectrum-of-red-noise">
+<h3>Finding the power spectrum of red noise<a class="headerlink" href="#finding-the-power-spectrum-of-red-noise" title="Link to this heading">#</a></h3>
+<p>The autocorrelation function for red noise is</p>
+<div class="math notranslate nohighlight">
+\[\gamma(\tau) = \exp\left(-\frac{\tau}{T_e}\right)\]</div>
+<p>with <span class="math notranslate nohighlight">\(T_e\)</span> the e-folding timescale. By Wiener’s theorem the power spectrum is its Fourier transform,</p>
+<div class="math notranslate nohighlight">
+\[\Phi(\omega) = \int_{-\infty}^{\infty}e^{-\tau/T_e}e^{-i\omega\tau}\,d\tau\]</div>
+<p>which integrates to</p>
+<div class="math notranslate nohighlight">
+\[\boxed{\Phi(\omega) = \frac{2T_e}{1 + T_e^2\omega^2}}\]</div>
+<p>This is largest at <span class="math notranslate nohighlight">\(\omega = 0\)</span> and falls off more rapidly for large <span class="math notranslate nohighlight">\(T_e\)</span>.</p>
+<p>Practical notes:</p>
+<ul class="simple">
+<li><p>it is typical to set the area under the spectrum to either 1 or the total variance of the data being fitted</p></li>
+<li><p>the amplitude looks different depending on whether you plot against <span class="math notranslate nohighlight">\(k\)</span>, period, <span class="math notranslate nohighlight">\(\omega\)</span>, etc.</p></li>
+<li><p>in the real world we only have an <em>estimate</em> of red noise from a limited sample, while the above is for an infinite sample. In practice use the <strong>discrete red-noise spectrum</strong> of Gilman et al. (1963), whose unnormalized form is</p></li>
+</ul>
+<div class="math notranslate nohighlight">
+\[\Phi(\omega)_{\text{discrete}} = \frac{1-\rho^2}{1 - 2\rho\cos\left(\frac{h\pi}{N/2}\right) + \rho^2}\]</div>
+<p>with <span class="math notranslate nohighlight">\(h = [0:1:N/2]\)</span> and <span class="math notranslate nohighlight">\(\rho\)</span> the lag-1 autocorrelation of the red-noise process</p>
+<ul class="simple">
+<li><p>the discrete version does not differ much from the theoretical one, and the theoretical version is more <strong>conservative</strong></p></li>
+<li><p><strong>the FFT assumes stationarity — remove any trend before analysis.</strong> A linear trend is not a periodic signal, but it will deposit large amounts of spurious power at the lowest frequencies.</p></li>
+</ul>
+<div class="tip admonition">
+<p class="admonition-title">Figure / in-class demonstration</p>
+<p><em>Figure:</em> slide comparing the theoretical red-noise spectrum with Gilman et al. (1963).</p>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="part-5-windows-due-to-finite-data">
+<h2>Part 5 — Windows Due to Finite Data<a class="headerlink" href="#part-5-windows-due-to-finite-data" title="Link to this heading">#</a></h2>
+<p>Two key problems arise with spectral analysis of a finite discrete record:</p>
+<ol class="arabic simple">
+<li><p><strong>Aliasing</strong> — we resolve only frequencies below the Nyquist frequency <span class="math notranslate nohighlight">\(1/(2\Delta t)\)</span>; higher frequencies get aliased down (Part 1)</p></li>
+<li><p><strong>Leakage</strong> — we assume all waveforms start and stop at <span class="math notranslate nohighlight">\(t = 0\)</span> and <span class="math notranslate nohighlight">\(t = T\)</span>, but in reality many wavenumbers do not complete an integer number of cycles in the domain, so power leaks to neighbouring wavenumbers</p></li>
+</ol>
+<p>Leakage is handled by applying a <strong>window</strong> to the data. To understand windows we first need convolution.</p>
+<section id="convolution">
+<h3>Convolution<a class="headerlink" href="#convolution" title="Link to this heading">#</a></h3>
+<p>The convolution of two functions is</p>
+<div class="math notranslate nohighlight">
+\[(w * g)(t) \overset{\text{def}}{=} \int_{-\infty}^{\infty}w(\tau)g(t-\tau)\,d\tau\]</div>
+<div class="note admonition">
+<p class="admonition-title">Example / deeper dive</p>
+<p><strong>Convolution is just a sliding weighted average</strong></p>
+<p>Let <span class="math notranslate nohighlight">\(w(\tau) = [0,\ 1/3,\ 1/3,\ 1/3,\ 0]\)</span> for <span class="math notranslate nohighlight">\(\tau = -2,-1,0,1,2\)</span>, and let</p>
+<div class="math notranslate nohighlight">
+\[g(t) = [9,\ 7,\ 8,\ 6,\ 5,\ 4,\ 3,\ 8,\ 9,\ 10,\ 11] \quad \text{for } t = 1,2,3,4\ldots\]</div>
+<p>Then</p>
+<div class="math notranslate nohighlight">
+\[(w*g)(t=4) = 7\cdot0 + 8\cdot\tfrac13 + 6\cdot\tfrac13 + 5\cdot\tfrac13 + 4\cdot0 = \tfrac{19}{3}\]</div>
+<p>That is all a convolution is — slide the weights along, multiply, sum. Every filter in Part 6 is this operation with different weights.</p>
+</div>
+</section>
+<section id="the-convolution-theorem">
+<h3>The Convolution Theorem<a class="headerlink" href="#the-convolution-theorem" title="Link to this heading">#</a></h3>
+<div class="math notranslate nohighlight">
+\[\boxed{\mathcal{F}\big(f(t)g(t)\big) = F(\omega) * G(\omega)}\]</div>
+<div class="math notranslate nohighlight">
+\[\boxed{\mathcal{F}\big(f(t) * g(t)\big) = F(\omega)\cdot G(\omega)}\]</div>
+<p>where <span class="math notranslate nohighlight">\(\mathcal{F}\)</span> is the Fourier transform operator and capital letters denote transforms of the corresponding lower-case functions.</p>
+<p>In English: <strong>the Fourier transform of a product is the convolution of the individual transforms, and vice versa.</strong> Multiplication in one domain is convolution in the other.</p>
+<p>Now consider what this means for a finite record. We are in effect applying a window <span class="math notranslate nohighlight">\(g(t)\)</span> to our data so that we only see <span class="math notranslate nohighlight">\(0 \le t \le T\)</span> rather than <span class="math notranslate nohighlight">\(-\infty \le t \le \infty\)</span>:</p>
+<ul class="simple">
+<li><p><strong>infinite window:</strong> <span class="math notranslate nohighlight">\(g(t) = 1\)</span> for all <span class="math notranslate nohighlight">\(t\)</span></p></li>
+<li><p><strong>finite window:</strong> <span class="math notranslate nohighlight">\(g(t) = 1\)</span> for <span class="math notranslate nohighlight">\(0 \le t \le T\)</span>, and <span class="math notranslate nohighlight">\(0\)</span> elsewhere</p></li>
+</ul>
+<p>So when we think we are computing the Fourier transform of <span class="math notranslate nohighlight">\(f(t)\)</span>, we are actually computing the transform of <span class="math notranslate nohighlight">\(f(t)\cdot g(t)\)</span>, which by the convolution theorem is</p>
+<div class="math notranslate nohighlight">
+\[F(\omega) * G(\omega) = \int_{-\infty}^{\infty}F(\omega_0)G(\omega - \omega_0)\,d\omega_0\]</div>
+<p>One way to think about this: <strong>the true infinite-record spectrum <span class="math notranslate nohighlight">\(F(\omega)\)</span> gets smeared by a moving weighted average whose shape is <span class="math notranslate nohighlight">\(G(\omega)\)</span></strong>, the transform of the window. You never see the true spectrum; you see it convolved with your window.</p>
+<div class="tip admonition">
+<p class="admonition-title">Figure / in-class demonstration</p>
+<p><em>Figure 6.13 (Hartmann Ch. 6b):</em> schematic comparing the window function of an infinite time series (left, <span class="math notranslate nohighlight">\(w(t) = 1\)</span> for all <span class="math notranslate nohighlight">\(t\)</span>) with that of a finite time series (right, <span class="math notranslate nohighlight">\(w(t) = 1\)</span> for <span class="math notranslate nohighlight">\(0 \le t \le T\)</span> and 0 elsewhere).</p>
+</div>
+</section>
+<section id="response-functions-for-various-windows">
+<h3>Response functions for various windows<a class="headerlink" href="#response-functions-for-various-windows" title="Link to this heading">#</a></h3>
+<p><span class="math notranslate nohighlight">\(G(\omega - \omega_0)\)</span> is called the <strong>response function</strong> of the window <span class="math notranslate nohighlight">\(g(t)\)</span>.</p>
+<p><strong>The ideal case.</strong> We would like</p>
+<div class="math notranslate nohighlight">
+\[G(\omega - \omega_0) = 1 \ \text{ when } \omega = \omega_0, \qquad G(\omega-\omega_0) = 0 \ \text{ when } \omega \ne \omega_0\]</div>
+<p>i.e. a delta function — each frequency estimate contaminated by no other frequency.</p>
+<p><strong>The boxcar window.</strong> This is the window you apply automatically, without choosing to, whenever you analyze a finite record: <span class="math notranslate nohighlight">\(g(t) = 1\)</span> for <span class="math notranslate nohighlight">\(0 \le t \le T\)</span> and 0 otherwise. Its transform is</p>
+<div class="math notranslate nohighlight">
+\[G(\omega) = \frac{\sin(\omega T/2)}{\omega T/2} = 2\,\text{sinc}\!\left(\frac{\omega T}{2\pi}\right), \qquad \text{sinc}(x) = \frac{\sin(\pi x)}{\pi x}\]</div>
+<p>Consequences:</p>
+<ul class="simple">
+<li><p><strong>smoothing</strong>: the window smooths and distorts the true spectrum</p></li>
+<li><p><strong>side lobes</strong>: these add frequencies to your spectrum that were not in the data. They exist because high-frequency harmonics are needed to fit the sharp corners of the boxcar</p></li>
+<li><p><strong>small <span class="math notranslate nohighlight">\(T\)</span></strong>: the response function is much wider, so there is more smoothing across frequencies</p></li>
+<li><p><strong>large <span class="math notranslate nohighlight">\(T\)</span></strong>: the response function approaches a delta function, closer to ideal</p></li>
+</ul>
+<p>That last pair makes intuitive sense: for large <span class="math notranslate nohighlight">\(T\)</span> the edges of your boxcar are a tiny part of the data; for small <span class="math notranslate nohighlight">\(T\)</span> the edges are close to most of your data.</p>
+<p><strong>The Hanning window</strong> (also Hann, cosine bell, or Tukey window) tapers the ends rather than cutting sharply. It is applied automatically in Matlab routines like <code class="docutils literal notranslate"><span class="pre">spectrum.m</span></code> and <code class="docutils literal notranslate"><span class="pre">spectrum.welch</span></code>:</p>
+<div class="math notranslate nohighlight">
+\[w(t) = \frac12\left(1 - \cos\left(\frac{2\pi t}{T}\right)\right) = \frac{2}{T}\cos^2\left(\frac{\pi t}{T}\right), \qquad 0 \le t \le T\]</div>
+<p>with response function</p>
+<div class="math notranslate nohighlight">
+\[G(\omega) = \text{sinc}\!\left(\frac{\omega T}{2\pi}\right) + \frac12\left[\text{sinc}\!\left(\frac{\omega T}{2\pi}+1\right) + \text{sinc}\!\left(\frac{\omega T}{2\pi}-1\right)\right]\]</div>
+<p>The first term is identical to the boxcar; the last two <strong>cancel the side lobes</strong>.</p>
+<p>Once again you cannot get something for nothing: the central lobe widens in order to remove the side lobes. Usually removing side lobes outweighs the extra smoothing.</p>
+<p>That extra smoothing is not captured in the dof calculation, so a correction factor is added:</p>
+<div class="math notranslate nohighlight">
+\[n = \frac{N}{M_{chunk}/2}\cdot f_w\]</div>
+<p>where <span class="math notranslate nohighlight">\(f_w\)</span> compensates for the window’s smoothing, generally between 1 and 1.5. <strong>For a Hanning window <span class="math notranslate nohighlight">\(f_w = 1.2\)</span>.</strong></p>
+<p><strong>The Hamming window</strong> is similar to Hanning with a slight modification, giving slightly better side-lobe reduction and slightly more smoothing of the central lobe.</p>
+<div class="tip admonition">
+<p class="admonition-title">Figure / in-class demonstration</p>
+<p><em>Worked examples:</em> <code class="docutils literal notranslate"><span class="pre">boxcar_hanning_response_functions.m</span></code>, <code class="docutils literal notranslate"><span class="pre">convolution_example.m</span></code>; slide of the boxcar response function.</p>
+</div>
+</section>
+<section id="applying-overlaps-of-the-windows">
+<h3>Applying overlaps of the windows<a class="headerlink" href="#applying-overlaps-of-the-windows" title="Link to this heading">#</a></h3>
+<p>If you have 400 data points split into 4 chunks of 100 to increase dof, the tapered window means you barely use the data at the chunk edges — but that data is no more or less important than data at the centers.</p>
+<p>To weight each point more equally, apply the window to one chunk, then take the next chunk with a <strong>50% overlap</strong>. With 400 points and 100-point chunks you now have 7 chunks rather than 4. This is <strong>WOSA</strong> (Welch’s Overlapping Segment Analysis).</p>
+<div class="warning admonition">
+<p class="admonition-title">Overlapping does not multiply your dof</p>
+<p>Do <strong>not</strong> conclude that 7 chunks means 7× the degrees of freedom. You are using most of the data twice, and you cannot double count. Typically dof is kept at <span class="math notranslate nohighlight">\(4\times2\)</span> to be safe, though Welch’s 1967 paper shows you actually gain <span class="math notranslate nohighlight">\(4\times2.8\)</span> for 50% overlap.</p>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="part-6-filtering">
+<h2>Part 6 — Filtering<a class="headerlink" href="#part-6-filtering" title="Link to this heading">#</a></h2>
+<p>Windowing in the time domain has an exact counterpart in the frequency domain, usually called <strong>frequency filtering</strong> — though we can also filter in the time domain (e.g. a moving average).</p>
+<ul class="simple">
+<li><p><strong>low pass filter</strong>: isolates low frequencies</p></li>
+<li><p><strong>high pass filter</strong>: isolates high frequencies</p></li>
+<li><p><strong>bandpass filter</strong>: removes both high and low frequencies, isolating a band in the middle</p></li>
+</ul>
+<div class="warning admonition">
+<p class="admonition-title">The single most important warning in this block</p>
+<p><strong>A bandpass filter will make even noise look periodic and interesting.</strong></p>
+<p>If you band-pass white noise at 30–60 days and plot the result, you will see a beautiful oscillation with a ~40-day period. It is not there in the data; you put it there by discarding everything else. Always ask whether the periodicity survives a significance test against red noise (Part 4) <em>before</em> filtering, not after.</p>
+</div>
+<section id="general-idea-of-frequency-filtering">
+<h3>General idea of frequency filtering<a class="headerlink" href="#general-idea-of-frequency-filtering" title="Link to this heading">#</a></h3>
+<p>Recall harmonic analysis in amplitude/phase form. The filtered series is</p>
+<div class="math notranslate nohighlight">
+\[y(t) = \overline{y} + \sum_{k=1}^{N/2}R(k)\,C_k\cos\left(\frac{2\pi kt}{T} - \phi_k\right)\]</div>
+<p>where <span class="math notranslate nohighlight">\(R(k)\)</span> is the <strong>response function</strong> of the filter,</p>
+<div class="math notranslate nohighlight">
+\[R(k) = \frac{\text{amplitude of output at wavenumber }k}{\text{amplitude of input at wavenumber }k} = \frac{C(k)_{\text{filtered}}}{C(k)_{\text{unfiltered}}}\]</div>
+<p>Generally <span class="math notranslate nohighlight">\(R\)</span> is given as a function of frequency <span class="math notranslate nohighlight">\(R(\omega)\)</span>. In general <span class="math notranslate nohighlight">\(R(\omega)\)</span> may be <strong>complex</strong>, since a filter can change both amplitude and phase. Mostly we care about amplitude, so we consider the real case:</p>
+<div class="math notranslate nohighlight">
+\[R(\omega) = \frac{C(\omega)_{\text{filtered}}}{C(\omega)_{\text{original}}}, \qquad |R(\omega)|^2 = \frac{\Phi(\omega)_{\text{filtered}}}{\Phi(\omega)_{\text{original}}}\]</div>
+</section>
+<section id="filtering-in-the-frequency-domain">
+<h3>Filtering in the frequency domain<a class="headerlink" href="#filtering-in-the-frequency-domain" title="Link to this heading">#</a></h3>
+<p>Transform to the frequency domain (e.g. FFT), multiply <span class="math notranslate nohighlight">\(C(\omega)_{\text{original}}\)</span> by your desired <span class="math notranslate nohighlight">\(R(\omega)\)</span>, then reconstruct. This is very effective and guarantees you keep exactly the frequencies you want.</p>
+<p>Possible problems:</p>
+<ul class="simple">
+<li><p><strong>cannot be done in real time</strong></p></li>
+<li><p>a response function with a <strong>sharp cutoff introduces spurious behaviour in the time domain</strong> (and vice versa), particularly at the ends. So a boxcar filter on the FFT coefficients is not a good idea unless variance at higher frequencies is known to be very small</p></li>
+</ul>
+<p>Note that selecting a single spectral estimate, say <span class="math notranslate nohighlight">\(k=3\)</span>, is applying a boxcar in the frequency domain of width one wavenumber.</p>
+<div class="tip admonition">
+<p class="admonition-title">Figure / in-class demonstration</p>
+<p><em>Worked example:</em> <code class="docutils literal notranslate"><span class="pre">seasonal_cycle_filtering_FFT.m</span></code></p>
+</div>
+</section>
+<section id="filtering-in-the-time-domain">
+<h3>Filtering in the time domain<a class="headerlink" href="#filtering-in-the-time-domain" title="Link to this heading">#</a></h3>
+<p>Apply a weighting function (e.g. a weighted running average):</p>
+<div class="math notranslate nohighlight">
+\[y(t) = \sum_{\tau=-J}^{J}g(\tau)\cdot x(t+\tau)\]</div>
+<p>where <span class="math notranslate nohighlight">\(g(\tau)\)</span> is the weighting function, <span class="math notranslate nohighlight">\(x(t)\)</span> the original series, <span class="math notranslate nohighlight">\(y(t)\)</span> the filtered series, and the length of <span class="math notranslate nohighlight">\(g\)</span> is <span class="math notranslate nohighlight">\(2J+1\)</span>, i.e. <span class="math notranslate nohighlight">\(J = (L-1)/2\)</span>. Note that <strong><span class="math notranslate nohighlight">\(J\)</span> data points are lost at each end</strong>.</p>
+<p>A moving average of width <span class="math notranslate nohighlight">\(L=3\)</span> (the 1-1-1 filter):</p>
+<div class="math notranslate nohighlight">
+\[y(t) = \tfrac13x(t-\tau) + \tfrac13x(t) + \tfrac13x(t+\tau)\]</div>
+<p>and of width <span class="math notranslate nohighlight">\(L=5\)</span> (1-1-1-1-1):</p>
+<div class="math notranslate nohighlight">
+\[y(t) = \tfrac15x(t-2\tau) + \tfrac15x(t-\tau) + \tfrac15x(t) + \tfrac15x(t+\tau) + \tfrac15x(t+2\tau)\]</div>
+<p>A moving average can only smooth, so it is <strong>always a low-pass filter</strong>. To get the high-pass component, subtract:</p>
+<div class="math notranslate nohighlight">
+\[R(\omega)_H = 1 - R(\omega)_L, \qquad y(t)_{H} = x(t) - y(t)_{L}\]</div>
+<p>and a bandpass is the difference of two low-pass series with different cutoffs:</p>
+<div class="math notranslate nohighlight">
+\[y(t)_{3-6\,\text{days}} = y(t)_{L&gt;3} - y(t)_{L&gt;6}\]</div>
+<p><strong>What does <span class="math notranslate nohighlight">\(g(\tau)\)</span> do to the frequencies?</strong> The filter is just a convolution,</p>
+<div class="math notranslate nohighlight">
+\[y(t) = \int_{-\infty}^{\infty}x(t+\tau)g(\tau)\,d\tau = x * g\]</div>
+<p>so by the convolution theorem</p>
+<div class="math notranslate nohighlight">
+\[\mathcal{F}(y) = \mathcal{F}(x)\cdot\mathcal{F}(g) = X\cdot G\]</div>
+<p>and therefore</p>
+<div class="math notranslate nohighlight">
+\[\boxed{R(\omega) = \frac{Y_{\text{filtered}}(\omega)}{X(\omega)} = G(\omega)}\]</div>
+<p><strong>The response function of a time-domain filter is the Fourier transform of its weights.</strong> The weights and the response function are a Fourier transform pair. This single fact lets you design filters in whichever domain is more convenient.</p>
+<p><strong>Example: the running mean.</strong> <span class="math notranslate nohighlight">\(g(\tau) = 1/L\)</span> for <span class="math notranslate nohighlight">\(-\frac{L-1}{2} \le \tau \le \frac{L-1}{2}\)</span>, zero elsewhere. Its response function is</p>
+<div class="math notranslate nohighlight">
+\[R(\omega) = G(\omega) = \frac{\sin(\omega L/2)}{\omega L/2} = \text{sinc}\!\left(\frac{\omega L}{2\pi}\right)\]</div>
+<p>— the same sinc we met as the boxcar <em>window</em> in Part 5, now appearing as a moving <em>average</em>. Note that <span class="math notranslate nohighlight">\(R(\omega) = 0\)</span> when <span class="math notranslate nohighlight">\(\omega L = 2\pi, 4\pi, 6\pi\ldots\)</span>, i.e. at 1 cycle per <span class="math notranslate nohighlight">\(L\)</span>, 2 cycles per <span class="math notranslate nohighlight">\(L\)</span>, and so on.</p>
+<p>So a 12-month running mean applied to monthly data exactly removes the 12-month cycle, the 6-month cycle, the 4-month cycle, the 2-month cycle… <strong>But the problem is the side lobes of the sinc function</strong>, which phase-shift frequencies between those perfectly removed harmonics, leaking power elsewhere.</p>
+<p><strong>Example: the “perfect” response function.</strong> A rectangle around the frequencies you wish to keep. In the time domain that window is again a sinc — extending over a wide range of the series, with negative lobes that <em>subtract</em> time steps. This causes severe problems at the ends of the record. As with windowing, the best solution is something in between: a tapered filter.</p>
+<p><strong>Example: the Gaussian bell.</strong> <span class="math notranslate nohighlight">\(f(x) = e^{-x^2}\)</span> forms a Fourier transform pair with itself, so a Gaussian moving average in time gives a Gaussian response in frequency — no side lobes at all. Frequently used for spatial averaging, though the cutoff is not sharp.</p>
+</section>
+<section id="creating-your-own-non-recursive-filters">
+<h3>Creating your own non-recursive filters<a class="headerlink" href="#creating-your-own-non-recursive-filters" title="Link to this heading">#</a></h3>
+<p>In general: (1) specify a desired <span class="math notranslate nohighlight">\(R(\omega)\)</span>, then (2) Fourier transform it to get the time-domain weights <span class="math notranslate nohighlight">\(g(\tau)\)</span>.</p>
+<p><strong>Applying filters in a row.</strong> If you apply <span class="math notranslate nohighlight">\(w_1(\tau)\)</span> and then <span class="math notranslate nohighlight">\(w_2(\tau)\)</span> to the result,</p>
+<div class="math notranslate nohighlight">
+\[\mathcal{F}(y_2) = \mathcal{F}(y)\cdot\mathcal{F}(w_1)\cdot\mathcal{F}(w_2)\]</div>
+<p>so <strong>the total response function is simply the product of the individual response functions.</strong></p>
+<p><strong>The 1-2-1 filter.</strong> A symmetric but non-rectangular moving average:</p>
+<div class="math notranslate nohighlight">
+\[y(t) = \tfrac14x(t-\tau) + \tfrac12x(t) + \tfrac14x(t+\tau)\]</div>
+<p>How do we get its response function? Either run it through an FFT, or use the formula below.</p>
+<div class="note admonition">
+<p class="admonition-title">Example / deeper dive</p>
+<p><strong>Deriving the response function of a symmetric filter</strong></p>
+<p>For a symmetric filter <span class="math notranslate nohighlight">\(y(t) = \sum_{\tau=-J}^{J}C_\tau x(t-\tau)\)</span> with <span class="math notranslate nohighlight">\(C_{-\tau} = C_\tau\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[Y(\omega) = \int_{-\infty}^{\infty}\left(\sum_{\tau=-J}^{J}C_\tau x(t-\tau)\right)e^{-i\omega t}dt\]</div>
+<p>Take the sum outside the integral, since it is over <span class="math notranslate nohighlight">\(\tau\)</span> and not <span class="math notranslate nohighlight">\(t\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[Y(\omega) = \sum_{\tau=-J}^{J}\left(C_\tau\int_{-\infty}^{\infty}x(t-\tau)e^{-i\omega t}dt\right)\]</div>
+<p>The integrand almost looks like the transform of <span class="math notranslate nohighlight">\(x\)</span>, except for that pesky <span class="math notranslate nohighlight">\(\tau\)</span>. This is where the <strong>Time Shifting Theorem</strong> rescues us:</p>
+<div class="math notranslate nohighlight">
+\[\mathcal{F}\big(x(t-a)\big) = \mathcal{F}\big(x(t)\big)\cdot e^{-i\omega a}\]</div>
+<p>Thus</p>
+<div class="math notranslate nohighlight">
+\[Y(\omega) = \left(\sum_{\tau=-J}^{J}C_\tau e^{-i\omega\tau}\right)X(\omega)\]</div>
+<p>and the response function is</p>
+<div class="math notranslate nohighlight">
+\[R(\omega) = \sum_{\tau=-J}^{J}C_\tau e^{-i\omega\tau}\]</div>
+<p>Using the symmetry of the <span class="math notranslate nohighlight">\(C_\tau\)</span> and <span class="math notranslate nohighlight">\(\cos x = \tfrac12(e^{ix}+e^{-ix})\)</span>, this simplifies to the form you will actually use:</p>
+<div class="math notranslate nohighlight">
+\[\boxed{R(\omega) = C_0 + 2\sum_{\tau=1}^{J}C_\tau\cos(\omega\tau)}\]</div>
+</div>
+<div class="note admonition">
+<p class="admonition-title">Example / deeper dive</p>
+<p><strong>Example 4.3 — response functions of simple filter weights</strong></p>
+<p><strong>Running mean 3 (1-1-1):</strong> <span class="math notranslate nohighlight">\(C_{-1} = C_0 = C_{+1} = 1/3\)</span></p>
+<div class="math notranslate nohighlight">
+\[R(\omega) = \tfrac13 + 2\cdot\tfrac13\cos(\omega) = \tfrac13 + \tfrac23\cos(\omega)\]</div>
+<p><strong>Running mean 5 (1-1-1-1-1):</strong> all <span class="math notranslate nohighlight">\(C_\tau = 1/5\)</span></p>
+<div class="math notranslate nohighlight">
+\[R(\omega) = \tfrac15 + \tfrac25\cos(\omega) + \tfrac25\cos(2\omega)\]</div>
+<p><strong>1-2-1 filter:</strong> <span class="math notranslate nohighlight">\(C_{-1} = 1/4\)</span>, <span class="math notranslate nohighlight">\(C_0 = 1/2\)</span>, <span class="math notranslate nohighlight">\(C_{+1} = 1/4\)</span></p>
+<div class="math notranslate nohighlight">
+\[R(\omega) = \tfrac12 + 2\cdot\tfrac14\cos(\omega) = \tfrac12 + \tfrac12\cos(\omega)\]</div>
+<p>Comparing these on a plot of response versus cycles per time step shows why the 1-2-1 filter is often preferred to a 3-point running mean of the same width: it has no negative lobes, so it never inverts the sign of a frequency component.</p>
+</div>
+<p><strong>Lanczos smoothing.</strong> A low-pass filter designed for as sharp a cutoff as possible, with tweaks to remove the harmonic lobes of the sinc function (<strong>Gibbs phenomenon</strong>). Writing <span class="math notranslate nohighlight">\(J\)</span> weights that give the most abrupt cutoff,</p>
+<div class="math notranslate nohighlight">
+\[R(\omega) = C_0 + 2\sum_{\tau=1}^{J}C_\tau\cos(\omega\tau), \qquad C_k = \frac{1}{\pi}\int_0^{\pi}\cos(k\omega')R(\omega')\,d\omega'\]</div>
+<p>For an abrupt cutoff at <span class="math notranslate nohighlight">\(\omega = \alpha\pi\)</span>,</p>
+<div class="math notranslate nohighlight">
+\[C_k = \frac{1}{k\pi}\sin(\alpha k\pi)\]</div>
+<p>The sharper the cutoff, the more weights required — and in all cases you get wiggles from the sharp edges (Gibbs). The <strong>Lanczos weights</strong> are sinc functions applied to the ideal weights:</p>
+<div class="math notranslate nohighlight">
+\[\tilde{C}_k = \text{sinc}\!\left(\frac{\pi k}{J}\right)C_k\]</div>
+<p>allowing a small number of weights (fast computation) while suppressing Gibbs oscillations.</p>
+<div class="tip admonition">
+<p class="admonition-title">Figure / in-class demonstration</p>
+<p><em>Figures:</em> <code class="docutils literal notranslate"><span class="pre">15_boxcar_runmean_responsefcn.pdf</span></code>, Lanczos figures from Hartmann’s notes.</p>
+<p><em>Worked example:</em> <code class="docutils literal notranslate"><span class="pre">response_functions_moving_agv.m</span></code></p>
+</div>
+</section>
+<section id="recursive-filters">
+<h3>Recursive filters<a class="headerlink" href="#recursive-filters" title="Link to this heading">#</a></h3>
+<p>Recursive filters have properties that often make them ideal:</p>
+<ul class="simple">
+<li><p>less computation time, since you use already-filtered data rather than raw data at each step</p></li>
+<li><p>fewer weights required</p></li>
+<li><p><strong>can be done in real time</strong>, using only previous data</p></li>
+</ul>
+<p>However, construction is not always easy and does not always give stable results.</p>
+<p>Non-recursive:</p>
+<div class="math notranslate nohighlight">
+\[y(t) = \sum_{\tau=-J}^{J}g(\tau)\cdot x(t+\tau)\]</div>
+<p>Recursive:</p>
+<div class="math notranslate nohighlight">
+\[y(t) = \sum_{\tau=-J}^{0}b(\tau)\cdot x(t+\tau) + \sum_{\tau=-J}^{-1}a(\tau)\cdot y(t+\tau)\]</div>
+<div class="warning admonition">
+<p class="admonition-title">Spin-up contamination</p>
+<p>A critical aspect of a recursive filter is <strong>how long the influence of a given data point takes to die away</strong> — calculable via the <em>impulse response</em>. Because the filter feeds on its own output, the beginning of your series (while the filter spins up) is corrupted. Always discard the first <span class="math notranslate nohighlight">\(M\)</span> data points, where <span class="math notranslate nohighlight">\(M\)</span> is the number of steps for the impulse response to become negligible.</p>
+</div>
+<p><strong>Butterworth filters</strong> are a well-known family of recursive filters, designed to be smooth, to have high tangency at the origin and infinity, and to have as flat a passband as possible:</p>
+<div class="math notranslate nohighlight">
+\[|R(\omega)|^2 = R(\omega)R^*(\omega) = \frac{1}{1 + \left(\dfrac{\omega}{\omega_c}\right)^{2N}}\]</div>
+<p>where <span class="math notranslate nohighlight">\(N+1\)</span> is the number of weights (<span class="math notranslate nohighlight">\(a\)</span>’s and <span class="math notranslate nohighlight">\(b\)</span>’s) and <span class="math notranslate nohighlight">\(\omega_c\)</span> the cutoff frequency. As <span class="math notranslate nohighlight">\(N \to \infty\)</span> the response approaches a boxcar. In Matlab, <code class="docutils literal notranslate"><span class="pre">butter.m</span></code> outputs the weights <span class="math notranslate nohighlight">\(a\)</span> and <span class="math notranslate nohighlight">\(b\)</span> for use with <code class="docutils literal notranslate"><span class="pre">filter.m</span></code>.</p>
+<div class="tip admonition">
+<p class="admonition-title">Figure / in-class demonstration</p>
+<p><em>Worked example:</em> <code class="docutils literal notranslate"><span class="pre">butterworth_example.m</span></code></p>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="part-7-cross-spectrum-analysis">
+<h2>Part 7 — Cross-Spectrum Analysis<a class="headerlink" href="#part-7-cross-spectrum-analysis" title="Link to this heading">#</a></h2>
+<p>Cross-spectrum analysis is used when you have two time series and want their relationship <strong>as a function of frequency</strong>. Sometimes both series have spectral peaks near the same frequency and you want the phase relationship between them. But even when <em>neither</em> series has any spectral peak, coherent modes can be lurking in the background — cross-spectrum analysis can draw them out.</p>
+<p>The goal: given <span class="math notranslate nohighlight">\(x(t)\)</span> and <span class="math notranslate nohighlight">\(y(t)\)</span>, find the frequency and phase of their relationship. For example, for a propagating wave such as the MJO, winds at one location and another further east may oscillate at the same frequency but be 90° out of phase.</p>
+<div class="tip admonition">
+<p class="admonition-title">Figure / in-class demonstration</p>
+<p><em>Figure:</em> slides <code class="docutils literal notranslate"><span class="pre">17_intro_cross_spectral_analysis.pdf</span></code>.</p>
+</div>
+<section id="cross-spectrum-co-spectrum-and-quadrature-spectrum">
+<h3>Cross-spectrum, co-spectrum and quadrature spectrum<a class="headerlink" href="#cross-spectrum-co-spectrum-and-quadrature-spectrum" title="Link to this heading">#</a></h3>
+<p>To shorten notation define <span class="math notranslate nohighlight">\(\alpha_k = 2\pi kt/T\)</span>. From the DFT, a pair of series decompose as</p>
+<div class="math notranslate nohighlight">
+\[x(t) = \overline{x} + \left[\sum_{k=1}^{N/2-1}A_{xk}\cos(\alpha_k) + \sum_{k=1}^{N/2-1}B_{xk}\sin(\alpha_k)\right] + A_{xN/2}\cos(\alpha_{N/2})\]</div>
+<p>and similarly for <span class="math notranslate nohighlight">\(y\)</span>. Using the orthogonality of sines and cosines, the covariance of <span class="math notranslate nohighlight">\(x\)</span> and <span class="math notranslate nohighlight">\(y\)</span> is</p>
+<div class="math notranslate nohighlight">
+\[\overline{x'y'} = \frac12\sum_{k=1}^{N/2-1}(A_{xk}A_{yk} + B_{xk}B_{yk}) + A_{xN/2}A_{yN/2} = \sum_{k=1}^{N/2}CO(k)\]</div>
+<p>where <span class="math notranslate nohighlight">\(CO(k)\)</span> is the <strong>co-spectrum</strong> of <span class="math notranslate nohighlight">\(x\)</span> and <span class="math notranslate nohighlight">\(y\)</span>. In the special case <span class="math notranslate nohighlight">\(x=y\)</span> this reduces to the ordinary power spectrum, <span class="math notranslate nohighlight">\(\overline{x'^2} = \sum_k C_k^2/2\)</span>.</p>
+<p>Now define the complex quantities</p>
+<div class="math notranslate nohighlight">
+\[F_x(k) = (A_{xk} - iB_{xk})e^{i\alpha_k} = C_{xk}e^{-i\theta_{xk}}e^{i\alpha_k}\]</div>
+<p>and similarly <span class="math notranslate nohighlight">\(F_y(k)\)</span>. Using <span class="math notranslate nohighlight">\(e^{i\theta} = \cos\theta + i\sin\theta\)</span>, the real and imaginary parts are</p>
+<div class="math notranslate nohighlight">
+\[F_x(k) = \underbrace{A_{xk}\cos(\alpha_k) + B_{xk}\sin(\alpha_k)}_{\text{Re}} + i\underbrace{\big(A_{xk}\sin(\alpha_k) - B_{xk}\cos(\alpha_k)\big)}_{\text{Im}}\]</div>
+<p>so that <span class="math notranslate nohighlight">\(x = \overline{x} + \sum_k\text{Re}(F_x(k))\)</span>.</p>
+<p>Define three products, with <span class="math notranslate nohighlight">\(*\)</span> denoting complex conjugate:</p>
+<div class="math notranslate nohighlight">
+\[F_{xx} = F_xF_x^*, \qquad F_{yy} = F_yF_y^*, \qquad F_{xy} = F_xF_y^*\]</div>
+<p>Since <span class="math notranslate nohighlight">\(ZZ^* = (\text{Re}\,Z)^2 + (\text{Im}\,Z)^2\)</span>, working through the algebra gives</p>
+<div class="math notranslate nohighlight">
+\[F_{xx}(k) = A_{xk}^2 + B_{xk}^2 = C_{xk}^2, \qquad F_{yy}(k) = C_{yk}^2\]</div>
+<p>which is just twice the power spectrum. And for the cross term,</p>
+<div class="math notranslate nohighlight">
+\[\boxed{F_{xy}(k) = \underbrace{(A_{xk}A_{yk} + B_{xk}B_{yk})}_{CO(k)} + i\underbrace{(A_{xk}B_{yk} - A_{yk}B_{xk})}_{Q(k)}}\]</div>
+<p>In words:</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(F_{xy}(k)\)</span> is the <strong>cross-spectrum</strong> of <span class="math notranslate nohighlight">\(x\)</span> and <span class="math notranslate nohighlight">\(y\)</span></p></li>
+<li><p>the real part is the <strong>co-spectrum</strong> <span class="math notranslate nohighlight">\(CO(k)\)</span> — the <strong>in-phase</strong> signal</p></li>
+<li><p>the imaginary part is the <strong>quadrature spectrum</strong> <span class="math notranslate nohighlight">\(Q(k)\)</span> — the <strong>out-of-phase</strong> signal</p></li>
+<li><p>the amplitude of the cross-spectrum is <span class="math notranslate nohighlight">\(|F_{xy}| = C_{xk}C_{yk}\)</span>, and the phase is <span class="math notranslate nohighlight">\(\theta_{xyk} = \theta_{yk} - \theta_{xk}\)</span></p></li>
+</ul>
+</section>
+<section id="coherence-squared">
+<h3>Coherence squared<a class="headerlink" href="#coherence-squared" title="Link to this heading">#</a></h3>
+<div class="math notranslate nohighlight">
+\[\boxed{\text{Coh}^2(k) = \frac{|F_{xy}|^2}{F_{xx}F_{yy}}}\]</div>
+<div class="warning admonition">
+<p class="admonition-title">Coherence at a single k is always exactly 1</p>
+<p>Evaluate <span class="math notranslate nohighlight">\(\text{Coh}^2\)</span> at one wavenumber and the algebra collapses:</p>
+<div class="math notranslate nohighlight">
+\[\text{Coh}^2(k=k_1) = \frac{CO(k)^2 + Q(k)^2}{C_x^2C_y^2} = \frac{(A_xA_y + B_xB_y)^2 + (A_xB_y - A_yB_x)^2}{(A_x^2+B_x^2)(A_y^2+B_y^2)} = 1\]</div>
+<p>Every cross-term cancels. <strong>An unaveraged coherence carries no information whatsoever</strong> — any two time series are perfectly coherent at every individual frequency. Coherence only becomes meaningful once averaged over adjacent wavenumbers or over multiple chunks.</p>
+</div>
+<p>Averaged over two spectral coefficients <span class="math notranslate nohighlight">\(k_1\)</span> and <span class="math notranslate nohighlight">\(k_2\)</span> it becomes</p>
+<div class="math notranslate nohighlight">
+\[\text{Coh}^2 = \frac{C_{x1}^2C_{y1}^2 + 2C_{x1}C_{y1}C_{x2}C_{y2}\cos(\theta_1-\theta_2) + C_{x2}^2C_{y2}^2}{C_{x1}^2C_{y1}^2 + C_{x1}^2C_{y2}^2 + C_{x2}^2C_{y1}^2 + C_{x2}^2C_{y2}^2}\]</div>
+<p>Things to notice:</p>
+<ul class="simple">
+<li><p>in practice, for two unrelated series, <span class="math notranslate nohighlight">\(\text{Coh}^2\)</span> <strong>drops off rapidly</strong> as it is averaged over a range of <span class="math notranslate nohighlight">\(k\)</span> or over more than one subset</p></li>
+<li><p>coherence is largest when the phase difference is smallest, <span class="math notranslate nohighlight">\(\theta_1 = \theta_2\)</span>. If the phase relationships at <span class="math notranslate nohighlight">\(k=1\)</span> and <span class="math notranslate nohighlight">\(k=2\)</span> differ greatly, the average coherence is small — which makes physical sense, since we expect similar phase relationships for closely spaced wavenumbers</p></li>
+<li><p>even with identical phase difference, coherence is not automatically 1. It is maximized when <span class="math notranslate nohighlight">\(C_{x1}/C_{y1} = C_{x2}/C_{y2}\)</span>, i.e. when the <strong>amplitude ratios</strong> match</p></li>
+</ul>
+<blockquote>
+<div><p>The coherence will be 1 when realizations are averaged only under the conditions that the two realizations show the <strong>same phase difference</strong> between the two variables and the <strong>same amplitude ratio</strong> between them. The coherence thus shows how well these two conditions are satisfied.</p>
+</div></blockquote>
+<p><strong>In practice</strong>, having divided your data into <span class="math notranslate nohighlight">\(M\)</span> chunks:</p>
+<ol class="arabic simple">
+<li><p>calculate the FFT of <span class="math notranslate nohighlight">\(x\)</span> and <span class="math notranslate nohighlight">\(y\)</span> to get the <span class="math notranslate nohighlight">\(A\)</span>’s and <span class="math notranslate nohighlight">\(B\)</span>’s</p></li>
+<li><p>calculate <span class="math notranslate nohighlight">\(CO(k)\)</span>, <span class="math notranslate nohighlight">\(Q(k)\)</span>, <span class="math notranslate nohighlight">\(C_x(k)^2\)</span> and <span class="math notranslate nohighlight">\(C_y(k)^2\)</span> for each subset</p></li>
+<li><p>compute</p></li>
+</ol>
+<div class="math notranslate nohighlight">
+\[\text{Coh}^2(k) = \frac{\left(\frac{1}{M}\sum_{i=1}^{M}CO(k)\right)^2 + \left(\frac{1}{M}\sum_{i=1}^{M}Q(k)\right)^2}{\left(\frac{1}{M}\sum_{i=1}^{M}C_x^2(k)\right)\left(\frac{1}{M}\sum_{i=1}^{M}C_y^2(k)\right)}\]</div>
+<p>Averaged this way, <span class="math notranslate nohighlight">\(\text{Coh}^2(k)\)</span> gives the <strong>fraction of the variance of <span class="math notranslate nohighlight">\(y(t)\)</span> explainable using <span class="math notranslate nohighlight">\(x(t)\)</span> as a predictor over that frequency band</strong> — note how closely it parallels <span class="math notranslate nohighlight">\(R^2\)</span> from Weeks 4-6:</p>
+<div class="math notranslate nohighlight">
+\[R^2 = \frac{\left(\overline{x'y'}\right)^2}{\overline{x'^2}\cdot\overline{y'^2}}\]</div>
+<p>Coherence squared is <span class="math notranslate nohighlight">\(R^2\)</span>, computed frequency by frequency.</p>
+<div class="warning admonition">
+<p class="admonition-title">Degrees of freedom for coherence</p>
+<p>The significance of <span class="math notranslate nohighlight">\(\text{Coh}^2\)</span> depends on the dof of the individual spectral estimates. Most tables are given in terms of <span class="math notranslate nohighlight">\(M\)</span> — the number of <span class="math notranslate nohighlight">\(k\)</span> averaged over, or the number of chunks. So although the dof is roughly <span class="math notranslate nohighlight">\(2M\)</span> as usual, <strong>you should use only <span class="math notranslate nohighlight">\(M\)</span> in these lookup tables.</strong></p>
+</div>
+</section>
+<section id="getting-the-phase-information">
+<h3>Getting the phase information<a class="headerlink" href="#getting-the-phase-information" title="Link to this heading">#</a></h3>
+<p>The phase of the cross-spectrum reveals the phase lag between <span class="math notranslate nohighlight">\(x\)</span> and <span class="math notranslate nohighlight">\(y\)</span> at a given <span class="math notranslate nohighlight">\(k\)</span> — but <strong>is only meaningful if the <span class="math notranslate nohighlight">\(\text{Coh}^2\)</span> is meaningful</strong>. By the Pythagorean theorem,</p>
+<div class="math notranslate nohighlight">
+\[\boxed{\tan(\theta_{xk} - \theta_{yk}) = \frac{Q(k)}{CO(k)} = \frac{\text{Im}(F_{xy})}{\text{Re}(F_{xy})}}\]</div>
+<div class="tip admonition">
+<p class="admonition-title">Figure / in-class demonstration</p>
+<p><em>Worked example:</em> <code class="docutils literal notranslate"><span class="pre">cross_spectrum_example.m</span></code></p>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="part-8-mixed-space-time-analysis">
+<h2>Part 8 — Mixed Space-Time Analysis<a class="headerlink" href="#part-8-mixed-space-time-analysis" title="Link to this heading">#</a></h2>
+<p>Spectral analysis forms a family of four methods:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Method</p></th>
+<th class="head"><p>Variables</p></th>
+<th class="head"><p>FFT dimensions</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>spectral analysis</p></td>
+<td><p>one</p></td>
+<td><p>one</p></td>
+</tr>
+<tr class="row-odd"><td><p>cross-spectral analysis</p></td>
+<td><p>two</p></td>
+<td><p>one</p></td>
+</tr>
+<tr class="row-even"><td><p>mixed space/time spectral analysis</p></td>
+<td><p>one</p></td>
+<td><p>two</p></td>
+</tr>
+<tr class="row-odd"><td><p>mixed space/time cross-spectral analysis</p></td>
+<td><p>two</p></td>
+<td><p>two</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>The algebra is developed in a series of papers by Hayashi, Y. — <em>J. Meteor. Soc. Japan</em> (1971), <em>J. Atmos. Sci.</em> (1977), <em>J. Meteor. Soc. Japan</em> (1982).</p>
+<section id="space-time-spectral-analysis">
+<h3>Space-time spectral analysis<a class="headerlink" href="#space-time-spectral-analysis" title="Link to this heading">#</a></h3>
+<p>In ordinary spectral analysis we decompose <span class="math notranslate nohighlight">\(y(t)\)</span> into temporal harmonics, which in amplitude/phase form is</p>
+<div class="math notranslate nohighlight">
+\[y(t) = \overline{y} + \sum_{k=1}^{N/2}C_k\cos(2\pi kt/T - \phi_k)\]</div>
+<p>or, converting to frequency,</p>
+<div class="math notranslate nohighlight">
+\[y(t) = \overline{y} + \sum_{\omega=2\pi/T}^{\pi}W_\omega\cos(\omega t + \phi_\omega)\]</div>
+<p>In mixed space/time analysis we start from <span class="math notranslate nohighlight">\(y(x,t)\)</span> and decompose into <strong>both</strong> temporal and spatial harmonics. The most common application uses frequency for time and waves along latitude circles for space. (A nice bonus: if you use latitude circles you do <strong>not</strong> need to window in that dimension, because the data is genuinely periodic.)</p>
+<div class="math notranslate nohighlight">
+\[y(t,\lambda) = \overline{y} + \sum_{k=1}^{n/2}\ \sum_{\omega=\pm2\pi/T}^{\pi}W_{k,\pm\omega}\cos(\pm\omega t + \lambda k + \phi_{k,\pm\omega})\]</div>
+<p>where <span class="math notranslate nohighlight">\(T\)</span> is the record length, <span class="math notranslate nohighlight">\(\lambda\)</span> is longitude in radians, <span class="math notranslate nohighlight">\(k\)</span> is the zonal wavenumber, and <span class="math notranslate nohighlight">\(n\)</span> is the number of grid points along a latitude circle.</p>
+<p><strong><span class="math notranslate nohighlight">\(\omega\)</span> can be positive or negative at each <span class="math notranslate nohighlight">\(k\)</span></strong>, because the phase speed of a wave can be positive (westward) or negative (eastward), with</p>
+<div class="math notranslate nohighlight">
+\[c_{ph} = \omega/k\]</div>
+<p>This is the essential gain over a one-dimensional spectrum: a plain frequency spectrum tells you a 40-day oscillation exists, but cannot tell you whether it propagates east or west. Splitting <span class="math notranslate nohighlight">\(\omega\)</span> into <span class="math notranslate nohighlight">\(\pm\)</span> at each <span class="math notranslate nohighlight">\(k\)</span> separates the two.</p>
+<p>The goal is to find the weights <span class="math notranslate nohighlight">\(W(\omega, k)\)</span>. In steps:</p>
+<ol class="arabic simple">
+<li><p><strong>Decompose <span class="math notranslate nohighlight">\(y\)</span> into zonal wavenumbers</strong> <span class="math notranslate nohighlight">\(k = 1\)</span> to <span class="math notranslate nohighlight">\(n/2\)</span>, giving sine and cosine functions at each time step. With <span class="math notranslate nohighlight">\(Y(\lambda,t) = (144, 3650)\)</span> you obtain two matrices, <span class="math notranslate nohighlight">\(X_C(k,t) = (72,3650)\)</span> and <span class="math notranslate nohighlight">\(X_S(k,t) = (72,3650)\)</span>.</p></li>
+<li><p><strong>Fourier transform <span class="math notranslate nohighlight">\(X_C\)</span> and <span class="math notranslate nohighlight">\(X_S\)</span> in time:</strong></p></li>
+</ol>
+<div class="math notranslate nohighlight">
+\[X_C(k,t) = \sum_\omega A_{k,\omega}\cos(\omega t) + B_{k,\omega}\sin(\omega t)\]</div>
+<div class="math notranslate nohighlight">
+\[X_S(k,t) = \sum_\omega a_{k,\omega}\cos(\omega t) + b_{k,\omega}\sin(\omega t)\]</div>
+<ol class="arabic simple" start="3">
+<li><p><strong>Combine the coefficients.</strong> They relate to <span class="math notranslate nohighlight">\(W_{k,\pm\omega}\)</span> and <span class="math notranslate nohighlight">\(\phi_{k,\pm\omega}\)</span> through</p></li>
+</ol>
+<div class="math notranslate nohighlight">
+\[4W_{k,\pm\omega}^2 = (A \mp b)^2 + (\mp B - a)^2, \qquad \phi_{k,\pm\omega} = \arctan\left(\frac{\mp B - a}{A \mp b}\right)\]</div>
+<p>and the power spectrum is</p>
+<div class="math notranslate nohighlight">
+\[P_{k,\pm\omega} = \tfrac12W_{k,\pm\omega}^2\]</div>
+<ol class="arabic simple" start="4">
+<li><p><strong>Plot</strong> the resulting power spectrum, conventionally with frequency on the <span class="math notranslate nohighlight">\(x\)</span>-axis and spatial wavenumber on the <span class="math notranslate nohighlight">\(y\)</span>-axis.</p></li>
+</ol>
+</section>
+<section id="space-time-cross-spectral-analysis">
+<h3>Space-time cross-spectral analysis<a class="headerlink" href="#space-time-cross-spectral-analysis" title="Link to this heading">#</a></h3>
+<p>The methodology is the same, but now investigating the relationship between two variables, say <span class="math notranslate nohighlight">\(u'\)</span> and <span class="math notranslate nohighlight">\(v'\)</span>.</p>
+<ol class="arabic simple">
+<li><p>Calculate <span class="math notranslate nohighlight">\(W_{k,\pm\omega}\)</span> and <span class="math notranslate nohighlight">\(\phi_{k,\pm\omega}\)</span> for <span class="math notranslate nohighlight">\(X\)</span> and <span class="math notranslate nohighlight">\(Y\)</span> separately, giving <span class="math notranslate nohighlight">\(W^X\)</span>, <span class="math notranslate nohighlight">\(W^Y\)</span>, <span class="math notranslate nohighlight">\(\phi^X\)</span>, <span class="math notranslate nohighlight">\(\phi^Y\)</span>.</p></li>
+<li><p>For each <span class="math notranslate nohighlight">\((k,\omega)\)</span> pair, the co-spectrum and quadrature spectrum are</p></li>
+</ol>
+<div class="math notranslate nohighlight">
+\[Co_{k,\pm\omega} = \tfrac12W^X_{k,\pm\omega}W^Y_{k,\pm\omega}\cos\left(\phi^X_{k,\pm\omega} - \phi^Y_{k,\pm\omega}\right)\]</div>
+<div class="math notranslate nohighlight">
+\[Q_{k,\pm\omega} = \tfrac12W^X_{k,\pm\omega}W^Y_{k,\pm\omega}\sin\left(\phi^X_{k,\pm\omega} - \phi^Y_{k,\pm\omega}\right)\]</div>
+<ol class="arabic simple" start="3">
+<li><p>Average the co- and quadrature spectra over a series of spatial, or more commonly temporal, harmonics — over subsets of the data or adjacent frequencies.</p></li>
+<li><p>The coherence squared is then</p></li>
+</ol>
+<div class="math notranslate nohighlight">
+\[\text{Coh}^2(k,\pm\omega) = \frac{\overline{Co}^2_{k,\pm\omega} + \overline{Q}^2_{k,\pm\omega}}{\overline{P^X_{k,\pm\omega}}\ \overline{P^Y_{k,\pm\omega}}}\]</div>
+<div class="note admonition">
+<p class="admonition-title">Example / deeper dive</p>
+<p><strong>Worked application: <span class="math notranslate nohighlight">\(\overline{u'v'}\)</span> by phase speed, after Randel &amp; Held (1991)</strong></p>
+<p>Say you want winter-time plots of <span class="math notranslate nohighlight">\(\overline{u'v'}\)</span> as a function of phase speed and latitude.</p>
+<ol class="arabic simple">
+<li><p>For each winter (DJFM) you have 120 days. These are your chunks.</p></li>
+<li><p>Focus on a single latitude. Using NCEP data, <span class="math notranslate nohighlight">\(u = u(144,120)\)</span> and <span class="math notranslate nohighlight">\(v = v(144,120)\)</span>.</p></li>
+<li><p>FFT the data <strong>in space</strong> to get four matrices (two for <span class="math notranslate nohighlight">\(u\)</span>, two for <span class="math notranslate nohighlight">\(v\)</span>), each <span class="math notranslate nohighlight">\((72,120)\)</span> since 72 wavenumbers are resolved.</p></li>
+<li><p>FFT the sine and cosine matrices <strong>in time</strong>. Now you have four matrices for <span class="math notranslate nohighlight">\(u\)</span> and four for <span class="math notranslate nohighlight">\(v\)</span> — a temporal sine and cosine matrix for each spatial sine matrix, and so on.</p></li>
+<li><p>From the temporal cosine and sine matrices, solve for <span class="math notranslate nohighlight">\(W\)</span> and <span class="math notranslate nohighlight">\(\phi\)</span> for <span class="math notranslate nohighlight">\(u\)</span> and <span class="math notranslate nohighlight">\(v\)</span> separately.</p></li>
+<li><p>Solve for <span class="math notranslate nohighlight">\(CO\)</span> and <span class="math notranslate nohighlight">\(Q\)</span> as above.</p></li>
+<li><p>You now have <span class="math notranslate nohighlight">\(CO\)</span> and <span class="math notranslate nohighlight">\(Q\)</span> at a single latitude. Repeat for all latitudes to get <span class="math notranslate nohighlight">\(CO(\text{lat},k,\omega)\)</span> and <span class="math notranslate nohighlight">\(Q(\text{lat},k,\omega)\)</span>.</p></li>
+<li><p>Repeat for all winters (all chunks) and average the <span class="math notranslate nohighlight">\(CO\)</span>’s and <span class="math notranslate nohighlight">\(Q\)</span>’s to get mean <span class="math notranslate nohighlight">\(CO\)</span> and mean <span class="math notranslate nohighlight">\(Q\)</span>.</p></li>
+<li><p>Calculate <span class="math notranslate nohighlight">\(\text{Coh}^2\)</span> from the averaged <span class="math notranslate nohighlight">\(CO\)</span> and <span class="math notranslate nohighlight">\(Q\)</span>.</p></li>
+<li><p>Plot either <span class="math notranslate nohighlight">\(\text{Coh}^2\)</span>, or the in-phase co-spectral power density</p></li>
+</ol>
+<div class="math notranslate nohighlight">
+\[\text{CPSD}_{k,\pm\omega} = 2\,\text{Re}\left(\overline{F_{X,k,\pm\omega}F^*_{Y,k,\pm\omega}}\right) = 2\cdot\overline{CO}_{\text{lat},\pm\omega}\]</div>
+<p>where the overline denotes averages over chunks or bandwidths. Note the CPSD <strong>can be negative</strong>, implying for example a negative zonal momentum flux.
+11. You now have <span class="math notranslate nohighlight">\(\text{Coh}^2\)</span> or CPSD as a function of latitude, <span class="math notranslate nohighlight">\(k\)</span> and <span class="math notranslate nohighlight">\(\omega\)</span>. Convert to (latitude, phase speed) using <span class="math notranslate nohighlight">\(c_{ph} = \omega/k\)</span>.</p>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="summary">
+<h2>Summary<a class="headerlink" href="#summary" title="Link to this heading">#</a></h2>
+<p>The whole block rests on a small number of transferable facts:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Concept</p></th>
+<th class="head"><p>Statement</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Harmonic analysis</strong></p></td>
+<td><p>multiple regression onto an orthogonal sine/cosine basis, so each coefficient is independent</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Nyquist</strong></p></td>
+<td><p>set by <span class="math notranslate nohighlight">\(\Delta t\)</span> alone; record length sets only the <em>low</em>-frequency limit</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Variance</strong></p></td>
+<td><p>harmonic <span class="math notranslate nohighlight">\(k\)</span> explains <span class="math notranslate nohighlight">\(C_k^2/2\)</span>; total area under the spectrum is the total variance</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Convolution theorem</strong></p></td>
+<td><p>multiplication in one domain is convolution in the other</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Window / filter duality</strong></p></td>
+<td><p>a filter’s response function is the Fourier transform of its weights</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Coherence²</strong></p></td>
+<td><p><span class="math notranslate nohighlight">\(R^2\)</span> computed frequency by frequency — meaningless until averaged</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Three cautions to carry into your own analysis:</p>
+<ol class="arabic simple">
+<li><p><strong>You are always looking through a window.</strong> A finite record silently applies a boxcar, whose sinc response smears the true spectrum and adds side lobes. Choosing a Hanning window is not adding a distortion — it is replacing an unavoidable bad one with a better one.</p></li>
+<li><p><strong>Bandpass filtering manufactures periodicity.</strong> Filtered white noise oscillates beautifully at whatever band you chose. Test significance against red noise <em>before</em> filtering, and remember the a-posteriori penalty <span class="math notranslate nohighlight">\((0.99)^{M/2}\)</span> if you went looking for the largest peak.</p></li>
+<li><p><strong>Every knob is the same trade-off.</strong> Chunk length, band averaging, window choice, overlap — all of them buy degrees of freedom with resolution, or resolution with degrees of freedom. There is no setting that gives you both.</p></li>
+</ol>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./Time_Series"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="../Matrix_Operation/Seeking_Structure_in_Data.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Week 8-11: Seeking Structure in Data</p>
+      </div>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#part-1-harmonic-analysis">Part 1 — Harmonic Analysis</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#brief-review-of-sines-and-cosines">Brief review of sines and cosines</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#fourier-sums">Fourier sums</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#more-on-the-nyquist-frequency-and-aliasing">More on the Nyquist frequency and aliasing</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#discrete-fourier-transform">Discrete Fourier Transform</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#amplitude-phase-form">Amplitude-phase form</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#part-2-the-power-spectrum">Part 2 — The Power Spectrum</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-resolutionreliability-trade-off">The resolution–reliability trade-off</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#methods-for-computing-the-power-spectrum">Methods for computing the power spectrum</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#plotting-the-power-spectrum">Plotting the power spectrum</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#part-3-the-complex-fourier-transform">Part 3 — The Complex Fourier Transform</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#part-4-statistical-significance-of-spectral-peaks">Part 4 — Statistical Significance of Spectral Peaks</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wosa-and-the-fft-method">WOSA and the FFT method</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-f-test">The F-test</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#finding-the-power-spectrum-of-red-noise">Finding the power spectrum of red noise</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#part-5-windows-due-to-finite-data">Part 5 — Windows Due to Finite Data</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#convolution">Convolution</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-convolution-theorem">The Convolution Theorem</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#response-functions-for-various-windows">Response functions for various windows</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#applying-overlaps-of-the-windows">Applying overlaps of the windows</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#part-6-filtering">Part 6 — Filtering</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#general-idea-of-frequency-filtering">General idea of frequency filtering</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#filtering-in-the-frequency-domain">Filtering in the frequency domain</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#filtering-in-the-time-domain">Filtering in the time domain</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#creating-your-own-non-recursive-filters">Creating your own non-recursive filters</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#recursive-filters">Recursive filters</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#part-7-cross-spectrum-analysis">Part 7 — Cross-Spectrum Analysis</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cross-spectrum-co-spectrum-and-quadrature-spectrum">Cross-spectrum, co-spectrum and quadrature spectrum</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#coherence-squared">Coherence squared</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#getting-the-phase-information">Getting the phase information</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#part-8-mixed-space-time-analysis">Part 8 — Mixed Space-Time Analysis</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#space-time-spectral-analysis">Space-time spectral analysis</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#space-time-cross-spectral-analysis">Space-time cross-spectral analysis</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#summary">Summary</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By The Jupyter Book Community
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2023.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

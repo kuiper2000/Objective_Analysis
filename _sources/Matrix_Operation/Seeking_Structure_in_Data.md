@@ -1,7 +1,7 @@
 (Seeking_Structure)=
-# Week 9-12: Seeking Structure in Data
+# Week 8-11: Seeking Structure in Data
 
-In Weeks 5-8 we asked a two-variable question: given $x(t)$ and $y(t)$, how strongly are they related? That question has an obvious limitation. A climate field is not two time series — it is thousands of grid points, each with its own time series, all correlated with one another in ways we would like to summarize.
+In Weeks 4-6 we asked a two-variable question: given $x(t)$ and $y(t)$, how strongly are they related? That question has an obvious limitation. A climate field is not two time series — it is thousands of grid points, each with its own time series, all correlated with one another in ways we would like to summarize.
 
 This block is about finding **structure** in that kind of data: coherent spatial patterns that vary together in time, and groupings of observations that resemble one another. The two main tools are **Empirical Orthogonal Function (EOF) analysis** and **cluster analysis**.
 
@@ -46,7 +46,7 @@ All vectors are matrices whose second dimension is 1. If $\mathbf{X}$ and $\math
 
 $$\mathbf{X}^T\mathbf{Y} = \sum_{i=1}^{M} x_i y_i = \text{scalar}, \qquad [1 \times M]\cdot[M \times 1] = [1\times1]$$
 
-This is worth pausing on, because it is the bridge from Weeks 5-8:
+This is worth pausing on, because it is the bridge from Weeks 4-6:
 
 - if $\mathbf{X}$ and $\mathbf{Y}$ have **mean zero**, then $\frac{1}{M}\mathbf{X}^T\mathbf{Y}$ is the **covariance** of the two vectors
 - if $\mathbf{X}$ and $\mathbf{Y}$ are additionally **standardized** (unit standard deviation), then $\frac{1}{M}\mathbf{X}^T\mathbf{Y}$ is the **correlation coefficient** — and also the regression coefficient, since for standardized data $a_1 = r$
@@ -585,7 +585,7 @@ Now $\mathbf{d}_1$ is in physical units, and means: **the anomaly associated wit
 
 Note this works for both the covariance method and SVD. For SVD there is one fewer step, since the raw PC 1 is handed to you.
 
-Note also that this last step is a **regression** — projecting a standardized time series onto data, exactly as in Week 5-8. The EOF gave us the pattern; regression gives it units.
+Note also that this last step is a **regression** — projecting a standardized time series onto data, exactly as in Weeks 4-6. The EOF gave us the pattern; regression gives it units.
 
 ### How many EOFs should be retained?
 
@@ -599,7 +599,7 @@ North et al. (1982) argue that the significance of an EOF is a function of how w
 
 $$\boxed{\Delta\lambda = \lambda\sqrt{\frac{2}{N^*}}}$$
 
-Here $N^*$ is our friend the **effective degrees of freedom** from Week 5-8 — autocorrelated data has fewer independent samples than it has data points. This is not easy to compute, and note you need a single value representative of the entire data set.
+Here $N^*$ is our friend the **effective degrees of freedom** from Weeks 4-6 — autocorrelated data has fewer independent samples than it has data points. This is not easy to compute, and note you need a single value representative of the entire data set.
 
 If the confidence bounds of two eigenvalues overlap, those two EOFs are **effectively degenerate**: they cannot be distinguished, and their individual patterns should not be interpreted. This is the practical face of the caveat from the orthogonality proof in Part 3 — the eigenvectors are only orthogonal (and only uniquely determined) if the eigenvalues are distinct.
 
@@ -736,7 +736,7 @@ $$\boxed{\underset{S}{\arg\min}\ \sum_{i=1}^{k}\sum_{\mathbf{x}\in S_i}\|\mathbf
 
 where $S = \{S_1, S_2, \ldots, S_k\}$ is the set of $k$ clusters, $\mathbf{x}$ the observations, $\boldsymbol{\mu}_i$ the center of cluster $S_i$ (the mean of all points in it), and $\arg\min$ indicates we seek the minimum over possible partitions $S$.
 
-Note that this is a sum of **squared** distances — the same least-squares logic as linear regression in Week 5-8 and the same squared projection that defined EOF 1 in Part 3. Squaring keeps the cost positive definite and makes the minimization tractable, at the price of weighting outliers heavily.
+Note that this is a sum of **squared** distances — the same least-squares logic as linear regression in Weeks 4-6 and the same squared projection that defined EOF 1 in Part 3. Squaring keeps the cost positive definite and makes the minimization tractable, at the price of weighting outliers heavily.
 
 While the idea is straightforward, computing the true optimum is very difficult and time-consuming for large data sets. Most implementations therefore use **heuristic algorithms** that converge quickly to a *local* optimum that may or may not be the global one. In practice you run k-means many times from different initial guesses and keep the iteration with the smallest within-cluster sum of squares.
 
@@ -828,7 +828,7 @@ Note the interpretive payoff: because neighbouring nodes are similar by construc
 
 Three threads to carry forward:
 
-1. **Everything here is projection.** The inner product that gave us the correlation coefficient in Week 5-8 is the same operation that defines EOF 1, and the same operation that returns an EOF to physical units. Linear algebra is the bookkeeping that lets us do it for thousands of grid points at once.
+1. **Everything here is projection.** The inner product that gave us the correlation coefficient in Weeks 4-6 is the same operation that defines EOF 1, and the same operation that returns an EOF to physical units. Linear algebra is the bookkeeping that lets us do it for thousands of grid points at once.
 
 2. **Both methods will always return an answer.** EOFs of red noise give plausible-looking sines and cosines; k-means will happily partition structureless data into $k$ tidy groups. The burden of demonstrating that structure is real — via North et al. bounds, subsampling, domain-sensitivity tests, or physical theory — is entirely on you.
 

@@ -65,7 +65,7 @@
     <script>DOCUMENTATION_OPTIONS.pagename = 'intro';</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Week 1-4: Rule101" href="General_statistical_test/Origin_of_Statisics.html" />
+    <link rel="next" title="Week 1-3: Rule101" href="General_statistical_test/Origin_of_Statisics.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="" />
@@ -172,9 +172,10 @@
             </li>
         </ul>
         <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="General_statistical_test/Origin_of_Statisics.html">Week 1-4: Rule101</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Regression/regressiom.html">Week 5-8: Regression &amp; AR1</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Matrix_Operation/Seeking_Structure_in_Data.html">Week 9-12: Seeking Structure in Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="General_statistical_test/Origin_of_Statisics.html">Week 1-3: Rule101</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Regression/regressiom.html">Week 4-6: Regression &amp; AR1</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Matrix_Operation/Seeking_Structure_in_Data.html">Week 8-11: Seeking Structure in Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Time_Series/Time_Series_Analysis.html">Week 12-15: Time Series Analysis</a></li>
 </ul>
 
     </div>
@@ -370,8 +371,9 @@
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#how-to-read-these-notes">How to read these notes</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#course-outline">Course Outline</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#part-i-foundations-of-statistics">Part I: Foundations of Statistics</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#part-ii-regression-time-series">Part II: Regression &amp; Time Series</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#part-ii-regression-autocorrelation">Part II: Regression &amp; Autocorrelation</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#part-iii-seeking-structure-in-data">Part III: Seeking Structure in Data</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#part-iv-time-series-analysis">Part IV: Time Series Analysis</a></li>
 </ul>
 </li>
 </ul>
@@ -402,9 +404,38 @@
 </section>
 <section id="course-outline">
 <h2>Course Outline<a class="headerlink" href="#course-outline" title="Link to this heading">#</a></h2>
+<p>The course runs over 16 weeks, with the mid-term in Week 7 and the final in Week 16. There is no class in the final-exam week.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Weeks</p></th>
+<th class="head"><p>Topic</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>1-3</p></td>
+<td><p><a class="reference internal" href="General_statistical_test/Origin_of_Statisics.html#origin-of-statisics"><span class="std std-ref">Rule 101 — foundations of statistics</span></a></p></td>
+</tr>
+<tr class="row-odd"><td><p>4-6</p></td>
+<td><p><a class="reference internal" href="Regression/regressiom.html#regression"><span class="std std-ref">Regression &amp; AR1</span></a></p></td>
+</tr>
+<tr class="row-even"><td><p><strong>7</strong></p></td>
+<td><p><strong>Mid-term exam</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p>8-11</p></td>
+<td><p><a class="reference internal" href="Matrix_Operation/Seeking_Structure_in_Data.html#seeking-structure"><span class="std std-ref">Seeking structure in data — EOFs &amp; clustering</span></a></p></td>
+</tr>
+<tr class="row-even"><td><p>12-15</p></td>
+<td><p><a class="reference internal" href="Time_Series/Time_Series_Analysis.html#time-series"><span class="std std-ref">Time series analysis — spectra &amp; filtering</span></a></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>16</strong></p></td>
+<td><p><strong>Final exam</strong></p></td>
+</tr>
+</tbody>
+</table>
+</div>
 <section id="part-i-foundations-of-statistics">
 <h3>Part I: Foundations of Statistics<a class="headerlink" href="#part-i-foundations-of-statistics" title="Link to this heading">#</a></h3>
-<p><strong><a class="reference internal" href="General_statistical_test/Origin_of_Statisics.html#origin-of-statisics"><span class="std std-ref">Week 1-4: Rule101</span></a></strong> — Week 1-4: Rule 101</p>
+<p><strong><a class="reference internal" href="General_statistical_test/Origin_of_Statisics.html#origin-of-statisics"><span class="std std-ref">Week 1-3: Rule101</span></a></strong> — Week 1-3: Rule 101</p>
 <ul class="simple">
 <li><p><strong>The origin of statistics: why the bell curve?</strong></p></li>
 <li><p><strong>Mean, variance and higher moments</strong></p></li>
@@ -418,19 +449,22 @@
 <li><p><strong>Non-parametric tests</strong></p></li>
 </ul>
 </section>
-<section id="part-ii-regression-time-series">
-<h3>Part II: Regression &amp; Time Series<a class="headerlink" href="#part-ii-regression-time-series" title="Link to this heading">#</a></h3>
-<p><strong><a class="reference internal" href="Regression/regressiom.html#regression"><span class="std std-ref">Week 5-8: Regression &amp; AR1</span></a></strong> — Week 5-8: Regression &amp; AR1</p>
+<section id="part-ii-regression-autocorrelation">
+<h3>Part II: Regression &amp; Autocorrelation<a class="headerlink" href="#part-ii-regression-autocorrelation" title="Link to this heading">#</a></h3>
+<p><strong><a class="reference internal" href="Regression/regressiom.html#regression"><span class="std std-ref">Week 4-6: Regression &amp; AR1</span></a></strong> — Week 4-6: Regression &amp; AR1</p>
 <ul class="simple">
 <li><p><strong>Linear regression: least squares, slope &amp; intercept</strong></p></li>
 <li><p><strong>Theory of correlation: Pearson’s r, Fisher-Z, Spearman’s rank</strong></p></li>
 <li><p><strong>Autocorrelation &amp; effective sample size: AR1/red noise, Leith &amp; Bretherton</strong></p></li>
 <li><p><strong>Multiple regression: generalized normal equations, overfitting</strong></p></li>
 </ul>
+<hr class="docutils" />
+<p><strong>Week 7 — Mid-term exam</strong>, covering Parts I and II.</p>
 </section>
+<hr class="docutils" />
 <section id="part-iii-seeking-structure-in-data">
 <h3>Part III: Seeking Structure in Data<a class="headerlink" href="#part-iii-seeking-structure-in-data" title="Link to this heading">#</a></h3>
-<p><strong><a class="reference internal" href="Matrix_Operation/Seeking_Structure_in_Data.html#seeking-structure"><span class="std std-ref">Week 9-12: Seeking Structure in Data</span></a></strong> — Week 9-12: EOFs &amp; Clustering</p>
+<p><strong><a class="reference internal" href="Matrix_Operation/Seeking_Structure_in_Data.html#seeking-structure"><span class="std std-ref">Week 8-11: Seeking Structure in Data</span></a></strong> — Week 8-11: EOFs &amp; Clustering</p>
 <ul class="simple">
 <li><p><strong>Linear algebra review: inner products, covariance matrices, inverse, rank &amp; null space</strong></p></li>
 <li><p><strong>Eigenvalues and eigenvectors: diagonalizing the covariance matrix</strong></p></li>
@@ -441,6 +475,23 @@
 <li><p><strong>Cluster analysis: k-means and Lloyd’s algorithm</strong></p></li>
 <li><p><strong>Self-organizing maps (SOMs): training, mapping, quantization &amp; topographic error</strong></p></li>
 </ul>
+</section>
+<section id="part-iv-time-series-analysis">
+<h3>Part IV: Time Series Analysis<a class="headerlink" href="#part-iv-time-series-analysis" title="Link to this heading">#</a></h3>
+<p><strong><a class="reference internal" href="Time_Series/Time_Series_Analysis.html#time-series"><span class="std std-ref">Week 12-15: Time Series Analysis</span></a></strong> — Week 12-15: Spectral Analysis &amp; Filtering</p>
+<ul class="simple">
+<li><p><strong>Harmonic analysis: Fourier sums, the Nyquist frequency and aliasing</strong></p></li>
+<li><p><strong>The discrete Fourier transform as orthogonal multiple regression</strong></p></li>
+<li><p><strong>The power spectrum: line vs. continuous, and the resolution–reliability trade-off</strong></p></li>
+<li><p><strong>The complex Fourier transform</strong></p></li>
+<li><p><strong>Significance of spectral peaks: red-noise null, the F-test, a priori vs. a posteriori</strong></p></li>
+<li><p><strong>Windows and finite data: convolution, the convolution theorem, boxcar &amp; Hanning, WOSA</strong></p></li>
+<li><p><strong>Filtering: response functions, non-recursive &amp; Lanczos, recursive &amp; Butterworth</strong></p></li>
+<li><p><strong>Cross-spectrum analysis: co-spectrum, quadrature spectrum, coherence² and phase</strong></p></li>
+<li><p><strong>Mixed space-time analysis: propagating waves and phase speed</strong></p></li>
+</ul>
+<hr class="docutils" />
+<p><strong>Week 16 — Final exam.</strong> No class this week.</p>
 </section>
 </section>
 <div class="toctree-wrapper compound">
@@ -482,7 +533,7 @@
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Week 1-4: Rule101</p>
+        <p class="prev-next-title">Week 1-3: Rule101</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -506,8 +557,9 @@
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#how-to-read-these-notes">How to read these notes</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#course-outline">Course Outline</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#part-i-foundations-of-statistics">Part I: Foundations of Statistics</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#part-ii-regression-time-series">Part II: Regression &amp; Time Series</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#part-ii-regression-autocorrelation">Part II: Regression &amp; Autocorrelation</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#part-iii-seeking-structure-in-data">Part III: Seeking Structure in Data</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#part-iv-time-series-analysis">Part IV: Time Series Analysis</a></li>
 </ul>
 </li>
 </ul>

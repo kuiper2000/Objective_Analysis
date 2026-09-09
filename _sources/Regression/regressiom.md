@@ -1,5 +1,5 @@
 (Regression)=
-# Week 5-8: Regression & AR1
+# Week 4-6: Regression & AR1
 
 ## Linear Regression
 

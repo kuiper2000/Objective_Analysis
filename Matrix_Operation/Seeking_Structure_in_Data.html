@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Week 9-12: Seeking Structure in Data &#8212; Objective Analysis</title>
+    <title>Week 8-11: Seeking Structure in Data &#8212; Objective Analysis</title>
   
   
   
@@ -65,7 +65,8 @@
     <script>DOCUMENTATION_OPTIONS.pagename = 'Matrix_Operation/Seeking_Structure_in_Data';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="prev" title="Week 5-8: Regression &amp; AR1" href="../Regression/regressiom.html" />
+    <link rel="next" title="Week 12-15: Time Series Analysis" href="../Time_Series/Time_Series_Analysis.html" />
+    <link rel="prev" title="Week 4-6: Regression &amp; AR1" href="../Regression/regressiom.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="" />
@@ -170,9 +171,10 @@
             </li>
         </ul>
         <ul class="current nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../General_statistical_test/Origin_of_Statisics.html">Week 1-4: Rule101</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../Regression/regressiom.html">Week 5-8: Regression &amp; AR1</a></li>
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">Week 9-12: Seeking Structure in Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../General_statistical_test/Origin_of_Statisics.html">Week 1-3: Rule101</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Regression/regressiom.html">Week 4-6: Regression &amp; AR1</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Week 8-11: Seeking Structure in Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Time_Series/Time_Series_Analysis.html">Week 12-15: Time Series Analysis</a></li>
 </ul>
 
     </div>
@@ -355,7 +357,7 @@
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>Week 9-12: Seeking Structure in Data</h1>
+    <h1>Week 8-11: Seeking Structure in Data</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -422,9 +424,9 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section class="tex2jax_ignore mathjax_ignore" id="week-9-12-seeking-structure-in-data">
-<span id="seeking-structure"></span><h1>Week 9-12: Seeking Structure in Data<a class="headerlink" href="#week-9-12-seeking-structure-in-data" title="Link to this heading">#</a></h1>
-<p>In Weeks 5-8 we asked a two-variable question: given <span class="math notranslate nohighlight">\(x(t)\)</span> and <span class="math notranslate nohighlight">\(y(t)\)</span>, how strongly are they related? That question has an obvious limitation. A climate field is not two time series — it is thousands of grid points, each with its own time series, all correlated with one another in ways we would like to summarize.</p>
+  <section class="tex2jax_ignore mathjax_ignore" id="week-8-11-seeking-structure-in-data">
+<span id="seeking-structure"></span><h1>Week 8-11: Seeking Structure in Data<a class="headerlink" href="#week-8-11-seeking-structure-in-data" title="Link to this heading">#</a></h1>
+<p>In Weeks 4-6 we asked a two-variable question: given <span class="math notranslate nohighlight">\(x(t)\)</span> and <span class="math notranslate nohighlight">\(y(t)\)</span>, how strongly are they related? That question has an obvious limitation. A climate field is not two time series — it is thousands of grid points, each with its own time series, all correlated with one another in ways we would like to summarize.</p>
 <p>This block is about finding <strong>structure</strong> in that kind of data: coherent spatial patterns that vary together in time, and groupings of observations that resemble one another. The two main tools are <strong>Empirical Orthogonal Function (EOF) analysis</strong> and <strong>cluster analysis</strong>.</p>
 <p>The good news is that nothing here is conceptually new. EOF analysis is regression — the same projection of one vector onto another that gave us the correlation coefficient — applied simultaneously to every grid point, and organized so that the resulting patterns are uncorrelated with each other. What we need first is the language to write “every grid point at once” compactly, which is linear algebra.</p>
 <hr class="docutils" />
@@ -461,7 +463,7 @@ a_{m1} &amp; a_{m2} &amp; a_{m3} &amp; \cdots &amp; a_{mn}
 <p>All vectors are matrices whose second dimension is 1. If <span class="math notranslate nohighlight">\(\mathbf{X}\)</span> and <span class="math notranslate nohighlight">\(\mathbf{Y}\)</span> are two vectors of length <span class="math notranslate nohighlight">\(M \times 1\)</span>, their inner product is</p>
 <div class="math notranslate nohighlight">
 \[\mathbf{X}^T\mathbf{Y} = \sum_{i=1}^{M} x_i y_i = \text{scalar}, \qquad [1 \times M]\cdot[M \times 1] = [1\times1]\]</div>
-<p>This is worth pausing on, because it is the bridge from Weeks 5-8:</p>
+<p>This is worth pausing on, because it is the bridge from Weeks 4-6:</p>
 <ul class="simple">
 <li><p>if <span class="math notranslate nohighlight">\(\mathbf{X}\)</span> and <span class="math notranslate nohighlight">\(\mathbf{Y}\)</span> have <strong>mean zero</strong>, then <span class="math notranslate nohighlight">\(\frac{1}{M}\mathbf{X}^T\mathbf{Y}\)</span> is the <strong>covariance</strong> of the two vectors</p></li>
 <li><p>if <span class="math notranslate nohighlight">\(\mathbf{X}\)</span> and <span class="math notranslate nohighlight">\(\mathbf{Y}\)</span> are additionally <strong>standardized</strong> (unit standard deviation), then <span class="math notranslate nohighlight">\(\frac{1}{M}\mathbf{X}^T\mathbf{Y}\)</span> is the <strong>correlation coefficient</strong> — and also the regression coefficient, since for standardized data <span class="math notranslate nohighlight">\(a_1 = r\)</span></p></li>
@@ -926,7 +928,7 @@ x_{m1} &amp; x_{m2} &amp; \cdots &amp; x_{mn}
 \[\boxed{\mathbf{d}_1 = \frac{1}{M}\tilde{\mathbf{z}}_1^T\mathbf{X} = \frac{1}{\text{length}(\mathbf{z}_1)}\tilde{\mathbf{z}}_1^T\mathbf{X}}\]</div>
 <p>Now <span class="math notranslate nohighlight">\(\mathbf{d}_1\)</span> is in physical units, and means: <strong>the anomaly associated with a one-standard-deviation variation of <span class="math notranslate nohighlight">\(\mathbf{z}_1\)</span>.</strong> That is a statement you can put in a figure caption and defend.</p>
 <p>Note this works for both the covariance method and SVD. For SVD there is one fewer step, since the raw PC 1 is handed to you.</p>
-<p>Note also that this last step is a <strong>regression</strong> — projecting a standardized time series onto data, exactly as in Week 5-8. The EOF gave us the pattern; regression gives it units.</p>
+<p>Note also that this last step is a <strong>regression</strong> — projecting a standardized time series onto data, exactly as in Weeks 4-6. The EOF gave us the pattern; regression gives it units.</p>
 </section>
 <section id="how-many-eofs-should-be-retained">
 <h3>How many EOFs should be retained?<a class="headerlink" href="#how-many-eofs-should-be-retained" title="Link to this heading">#</a></h3>
@@ -936,7 +938,7 @@ x_{m1} &amp; x_{m2} &amp; \cdots &amp; x_{mn}
 <p>North et al. (1982) argue that the significance of an EOF is a function of how well separated the eigenvalues are. The 95% confidence bounds on an eigenvalue are</p>
 <div class="math notranslate nohighlight">
 \[\boxed{\Delta\lambda = \lambda\sqrt{\frac{2}{N^*}}}\]</div>
-<p>Here <span class="math notranslate nohighlight">\(N^*\)</span> is our friend the <strong>effective degrees of freedom</strong> from Week 5-8 — autocorrelated data has fewer independent samples than it has data points. This is not easy to compute, and note you need a single value representative of the entire data set.</p>
+<p>Here <span class="math notranslate nohighlight">\(N^*\)</span> is our friend the <strong>effective degrees of freedom</strong> from Weeks 4-6 — autocorrelated data has fewer independent samples than it has data points. This is not easy to compute, and note you need a single value representative of the entire data set.</p>
 <p>If the confidence bounds of two eigenvalues overlap, those two EOFs are <strong>effectively degenerate</strong>: they cannot be distinguished, and their individual patterns should not be interpreted. This is the practical face of the caveat from the orthogonality proof in Part 3 — the eigenvectors are only orthogonal (and only uniquely determined) if the eigenvalues are distinct.</p>
 <p>When in doubt, test robustness other ways:</p>
 <ul class="simple">
@@ -1080,7 +1082,7 @@ x_{m1} &amp; x_{m2} &amp; \cdots &amp; x_{mn}
 <div class="math notranslate nohighlight">
 \[\boxed{\underset{S}{\arg\min}\ \sum_{i=1}^{k}\sum_{\mathbf{x}\in S_i}\|\mathbf{x} - \boldsymbol{\mu}_i\|^2}\]</div>
 <p>where <span class="math notranslate nohighlight">\(S = \{S_1, S_2, \ldots, S_k\}\)</span> is the set of <span class="math notranslate nohighlight">\(k\)</span> clusters, <span class="math notranslate nohighlight">\(\mathbf{x}\)</span> the observations, <span class="math notranslate nohighlight">\(\boldsymbol{\mu}_i\)</span> the center of cluster <span class="math notranslate nohighlight">\(S_i\)</span> (the mean of all points in it), and <span class="math notranslate nohighlight">\(\arg\min\)</span> indicates we seek the minimum over possible partitions <span class="math notranslate nohighlight">\(S\)</span>.</p>
-<p>Note that this is a sum of <strong>squared</strong> distances — the same least-squares logic as linear regression in Week 5-8 and the same squared projection that defined EOF 1 in Part 3. Squaring keeps the cost positive definite and makes the minimization tractable, at the price of weighting outliers heavily.</p>
+<p>Note that this is a sum of <strong>squared</strong> distances — the same least-squares logic as linear regression in Weeks 4-6 and the same squared projection that defined EOF 1 in Part 3. Squaring keeps the cost positive definite and makes the minimization tractable, at the price of weighting outliers heavily.</p>
 <p>While the idea is straightforward, computing the true optimum is very difficult and time-consuming for large data sets. Most implementations therefore use <strong>heuristic algorithms</strong> that converge quickly to a <em>local</em> optimum that may or may not be the global one. In practice you run k-means many times from different initial guesses and keep the iteration with the smallest within-cluster sum of squares.</p>
 <p>The standard algorithm is <strong>Lloyd’s algorithm</strong>: begin with an initial guess of the centers <span class="math notranslate nohighlight">\(\boldsymbol{\mu}\)</span>, then iteratively (i) assign each point to its nearest center and (ii) recompute each center as the mean of its assigned points, until nothing changes.</p>
 <div class="tip admonition">
@@ -1175,7 +1177,7 @@ Many options exist. Running k-means many times and choosing the best solution is
 </div>
 <p>Three threads to carry forward:</p>
 <ol class="arabic simple">
-<li><p><strong>Everything here is projection.</strong> The inner product that gave us the correlation coefficient in Week 5-8 is the same operation that defines EOF 1, and the same operation that returns an EOF to physical units. Linear algebra is the bookkeeping that lets us do it for thousands of grid points at once.</p></li>
+<li><p><strong>Everything here is projection.</strong> The inner product that gave us the correlation coefficient in Weeks 4-6 is the same operation that defines EOF 1, and the same operation that returns an EOF to physical units. Linear algebra is the bookkeeping that lets us do it for thousands of grid points at once.</p></li>
 <li><p><strong>Both methods will always return an answer.</strong> EOFs of red noise give plausible-looking sines and cosines; k-means will happily partition structureless data into <span class="math notranslate nohighlight">\(k\)</span> tidy groups. The burden of demonstrating that structure is real — via North et al. bounds, subsampling, domain-sensitivity tests, or physical theory — is entirely on you.</p></li>
 <li><p><strong>Degeneracy is the practical limit.</strong> The orthogonality of EOFs holds only when eigenvalues are distinct. When they are not — closely spaced eigenvalues, or the paired sine/cosine of a travelling wave — the individual patterns are not separately meaningful, however clean they look on a map.</p></li>
 </ol>
@@ -1218,8 +1220,17 @@ Many options exist. Running k-means many times and choosing the best solution is
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Week 5-8: Regression &amp; AR1</p>
+        <p class="prev-next-title">Week 4-6: Regression &amp; AR1</p>
       </div>
+    </a>
+    <a class="right-next"
+       href="../Time_Series/Time_Series_Analysis.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Week 12-15: Time Series Analysis</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
     </a>
 </div>
                 </footer>
