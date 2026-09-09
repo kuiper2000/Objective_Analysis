@@ -1,6 +1,11 @@
 (Time_Series)=
 # Week 12-15: Time Series Analysis
 
+:::{admonition} The pattern — Part IV
+:class: seealso
+Same move as Part II, with the model family fixed to sines and cosines: minimize squared error, i.e. maximize the squared projection onto each harmonic. The constraint doing the work is that the harmonics are **orthonormal**, which is exactly what collapses the multiple-regression normal equations of {ref}`Chapter 0 <The_Pattern>` into a one-line formula per coefficient.
+:::
+
 In Weeks 8-11 we decomposed data into patterns that the data itself chose — the EOFs were *empirical*, derived from the covariance matrix, and their shapes were whatever maximized variance. This block does the same kind of decomposition, but onto a basis we *impose*: sines and cosines.
 
 That sounds like a step backwards, and in one sense it is — a prescribed basis cannot adapt to your data. But it buys something EOFs cannot give you. Sines and cosines have a **frequency**, so the coefficients tell you not just "how much structure" but "on what timescale". Questions like *does this signal have a 40-day periodicity?*, *how much variance lives at interannual timescales?*, and *does the wind at 120°E lead the wind at 150°E by a quarter cycle?* are all frequency questions.

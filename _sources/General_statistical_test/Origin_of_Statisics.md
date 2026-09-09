@@ -1,6 +1,18 @@
 (Origin_of_Statisics)=
 # Week 1-3: Rule101
 
+:::{admonition} The pattern — Part I
+:class: seealso
+{ref}`Chapter 0 <The_Pattern>` claims every method this semester is *optimize a functional subject to constraints*. Here it appears twice:
+
+| Functional | Constraint | Multiplier / solution |
+| --- | --- | --- |
+| likelihood $\prod f(x_i-\mu)$ | the sample mean must be optimal | the **Gaussian** (below) |
+| entropy $-\int f\ln f$ | known mean and variance | the **Gaussian** again (Chapter 0) |
+
+Two unrelated principles, one curve. The derivation below is the first of them; you do not need Chapter 0 to follow it.
+:::
+
 ## The origin of statistics: why the bell curve?
 
 Before diving into means and variances, it's worth asking a more basic question: why does so much of statistics revolve around one particular curve, the Gaussian? The answer has a clean historical and mathematical origin, and walking through it will motivate almost everything else in this section.

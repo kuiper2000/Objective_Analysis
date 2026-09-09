@@ -1,6 +1,15 @@
 (Seeking_Structure)=
 # Week 8-11: Seeking Structure in Data
 
+:::{admonition} The pattern — Part III
+:class: seealso
+This is the Part where the Lagrange multiplier of {ref}`Chapter 0 <The_Pattern>` stops being bookkeeping and becomes the answer:
+
+$$\mathcal{L}(\mathbf{e}) = \underbrace{\mathbf{e}^T\mathbf{C}\mathbf{e}}_{\text{functional}} - \lambda\big(\underbrace{\mathbf{e}^T\mathbf{e} - 1}_{\text{constraint}}\big) \;\Longrightarrow\; \mathbf{C}\mathbf{e} = \lambda\mathbf{e}$$
+
+**The multiplier $\lambda$ is the eigenvalue, which is the variance explained.** k-means is the same move with a different functional (within-cluster sum of squares) and a different constraint (exactly $k$ clusters).
+:::
+
 In Weeks 4-6 we asked a two-variable question: given $x(t)$ and $y(t)$, how strongly are they related? That question has an obvious limitation. A climate field is not two time series — it is thousands of grid points, each with its own time series, all correlated with one another in ways we would like to summarize.
 
 This block is about finding **structure** in that kind of data: coherent spatial patterns that vary together in time, and groupings of observations that resemble one another. The two main tools are **Empirical Orthogonal Function (EOF) analysis** and **cluster analysis**.

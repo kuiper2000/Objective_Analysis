@@ -1,6 +1,11 @@
 (Regression)=
 # Week 4-6: Regression & AR1
 
+:::{admonition} The pattern — Part II
+:class: seealso
+The functional here is the **loss function**, and the constraint is the model family you allow. Because a loss is a negative log-likelihood ({ref}`Chapter 0 <The_Pattern>`), picking least squares is not a neutral convenience — it asserts that your errors are Gaussian. See *"Why we square the errors"* below.
+:::
+
 ## Linear Regression
 
 In linear regression, the goal is to determine
@@ -33,6 +38,34 @@ The error is squared so that
 - the minimization of $Q$ (the derivative of $Q$) is a linear problem
 
 Note: the square causes larger errors to be more heavily weighted.
+
+:::{admonition} Example / deeper dive
+:class: note
+**Why we square the errors — the honest answer**
+
+The two reasons above are true, and both are *conveniences* rather than reasons. The real reason is that **choosing a loss function is choosing an error distribution**, and squaring asserts that the errors are Gaussian.
+
+Suppose the errors $e_i = y_i - \hat{y}_i$ are independent draws from a density $f$. The likelihood of your data is $L = \prod_i f(e_i)$, so maximizing it is the same as minimizing
+
+$$-\ln L = -\sum_i\ln f(e_i)$$
+
+**The loss function *is* the negative log-likelihood.** Substituting the two densities from {ref}`Chapter 0 <The_Pattern>`:
+
+$$f(e)\propto e^{-e^2/2\sigma^2} \;\Longrightarrow\; -\ln L \propto \sum_i e_i^2 \qquad\text{(Gaussian)}$$
+
+$$f(e)\propto e^{-\lvert e\rvert/b} \;\Longrightarrow\; -\ln L \propto \sum_i\lvert e_i\rvert \qquad\text{(Laplace)}$$
+
+| Loss | Implied error PDF | Optimal estimator | Behaviour |
+| --- | --- | --- | --- |
+| $\sum e_i^2$ (L2) | Gaussian | **mean** / ordinary least squares | efficient; outliers dominate |
+| $\sum\lvert e_i\rvert$ (L1) | Laplace | **median** / least absolute deviations | robust to outliers; harder to solve |
+
+So the sensitivity to outliers noted above is not a flaw in least squares — it is the Gaussian assumption doing exactly what it was told. Gaussian tails fall off as $e^{-e^2}$, so a far-out point is so improbable under the model that the fit contorts itself to accommodate it. Laplace tails fall off as $e^{-|e|}$, which tolerates outliers, and the resulting estimator is the median.
+
+This also resolves what would otherwise look like a coincidence. The **mean** minimizes squared error, and the **Gaussian** is the maximum-entropy distribution for fixed *squared* deviation. The **median** minimizes absolute error, and the **Laplace** is maximum-entropy for fixed *absolute* deviation. Mean-with-Gaussian and median-with-Laplace are two self-consistent packages; picking a loss selects which one you are working in.
+
+None of this makes least squares wrong. Errors that accumulate from many small independent causes really are approximately Gaussian, by the Central Limit Theorem — which is why L2 is the sensible default. But it is a claim about your data, and it is the claim that fails when you have outliers.
+:::
 
 We now follow steps from our college Calculus I course and find the $a_1$ and $a_0$ that minimize $Q$ (sometimes called the cost function):
 

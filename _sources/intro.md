@@ -21,12 +21,21 @@ The course runs over 16 weeks, with the mid-term in Week 7 and the final in Week
 
 | Weeks | Topic |
 | --- | --- |
+| — | {ref}`Chapter 0 — the idea behind the course <The_Pattern>` |
 | 1-3 | {ref}`Rule 101 — foundations of statistics <Origin_of_Statisics>` |
 | 4-6 | {ref}`Regression & AR1 <Regression>` |
 | **7** | **Mid-term exam** |
 | 8-11 | {ref}`Seeking structure in data — EOFs & clustering <Seeking_Structure>` |
 | 12-15 | {ref}`Time series analysis — spectra & filtering <Time_Series>` |
 | **16** | **Final exam** |
+
+### Chapter 0: The Idea Behind the Course
+
+**{ref}`The_Pattern`** — read once now, revisit after each Part
+
+Every method in this course is the same move: **optimize a functional subject to constraints.** Maximizing entropy under known moments gives you the PDF a hypothesis test needs; minimizing a loss gives you the best model, because a loss function is a negative log-likelihood. The Lagrange multiplier that appears in both turns out, in Part III, to *be* the eigenvalue.
+
+This chapter is the most abstract material of the semester and nothing in Weeks 1-3 depends on it. Each Part opens with a short **"The pattern"** box pointing back here and filling in that Part's row.
 
 ### Part I: Foundations of Statistics
 

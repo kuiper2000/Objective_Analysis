@@ -171,6 +171,7 @@
             </li>
         </ul>
         <ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../Chapter0/The_Pattern.html">Chapter 0: The Idea Behind the Course</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../General_statistical_test/Origin_of_Statisics.html">Week 1-3: Rule101</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Week 4-6: Regression &amp; AR1</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../Matrix_Operation/Seeking_Structure_in_Data.html">Week 8-11: Seeking Structure in Data</a></li>
@@ -414,6 +415,10 @@
                   
   <section class="tex2jax_ignore mathjax_ignore" id="week-4-6-regression-ar1">
 <span id="regression"></span><h1>Week 4-6: Regression &amp; AR1<a class="headerlink" href="#week-4-6-regression-ar1" title="Link to this heading">#</a></h1>
+<div class="seealso admonition">
+<p class="admonition-title">The pattern — Part II</p>
+<p>The functional here is the <strong>loss function</strong>, and the constraint is the model family you allow. Because a loss is a negative log-likelihood (<a class="reference internal" href="../Chapter0/The_Pattern.html#the-pattern"><span class="std std-ref">Chapter 0</span></a>), picking least squares is not a neutral convenience — it asserts that your errors are Gaussian. See <em>“Why we square the errors”</em> below.</p>
+</div>
 <section id="linear-regression">
 <h2>Linear Regression<a class="headerlink" href="#linear-regression" title="Link to this heading">#</a></h2>
 <p>In linear regression, the goal is to determine</p>
@@ -443,6 +448,44 @@
 <li><p>the minimization of <span class="math notranslate nohighlight">\(Q\)</span> (the derivative of <span class="math notranslate nohighlight">\(Q\)</span>) is a linear problem</p></li>
 </ul>
 <p>Note: the square causes larger errors to be more heavily weighted.</p>
+<div class="note admonition">
+<p class="admonition-title">Example / deeper dive</p>
+<p><strong>Why we square the errors — the honest answer</strong></p>
+<p>The two reasons above are true, and both are <em>conveniences</em> rather than reasons. The real reason is that <strong>choosing a loss function is choosing an error distribution</strong>, and squaring asserts that the errors are Gaussian.</p>
+<p>Suppose the errors <span class="math notranslate nohighlight">\(e_i = y_i - \hat{y}_i\)</span> are independent draws from a density <span class="math notranslate nohighlight">\(f\)</span>. The likelihood of your data is <span class="math notranslate nohighlight">\(L = \prod_i f(e_i)\)</span>, so maximizing it is the same as minimizing</p>
+<div class="math notranslate nohighlight">
+\[-\ln L = -\sum_i\ln f(e_i)\]</div>
+<p><strong>The loss function <em>is</em> the negative log-likelihood.</strong> Substituting the two densities from <a class="reference internal" href="../Chapter0/The_Pattern.html#the-pattern"><span class="std std-ref">Chapter 0</span></a>:</p>
+<div class="math notranslate nohighlight">
+\[f(e)\propto e^{-e^2/2\sigma^2} \;\Longrightarrow\; -\ln L \propto \sum_i e_i^2 \qquad\text{(Gaussian)}\]</div>
+<div class="math notranslate nohighlight">
+\[f(e)\propto e^{-\lvert e\rvert/b} \;\Longrightarrow\; -\ln L \propto \sum_i\lvert e_i\rvert \qquad\text{(Laplace)}\]</div>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Loss</p></th>
+<th class="head"><p>Implied error PDF</p></th>
+<th class="head"><p>Optimal estimator</p></th>
+<th class="head"><p>Behaviour</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(\sum e_i^2\)</span> (L2)</p></td>
+<td><p>Gaussian</p></td>
+<td><p><strong>mean</strong> / ordinary least squares</p></td>
+<td><p>efficient; outliers dominate</p></td>
+</tr>
+<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(\sum\lvert e_i\rvert\)</span> (L1)</p></td>
+<td><p>Laplace</p></td>
+<td><p><strong>median</strong> / least absolute deviations</p></td>
+<td><p>robust to outliers; harder to solve</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>So the sensitivity to outliers noted above is not a flaw in least squares — it is the Gaussian assumption doing exactly what it was told. Gaussian tails fall off as <span class="math notranslate nohighlight">\(e^{-e^2}\)</span>, so a far-out point is so improbable under the model that the fit contorts itself to accommodate it. Laplace tails fall off as <span class="math notranslate nohighlight">\(e^{-|e|}\)</span>, which tolerates outliers, and the resulting estimator is the median.</p>
+<p>This also resolves what would otherwise look like a coincidence. The <strong>mean</strong> minimizes squared error, and the <strong>Gaussian</strong> is the maximum-entropy distribution for fixed <em>squared</em> deviation. The <strong>median</strong> minimizes absolute error, and the <strong>Laplace</strong> is maximum-entropy for fixed <em>absolute</em> deviation. Mean-with-Gaussian and median-with-Laplace are two self-consistent packages; picking a loss selects which one you are working in.</p>
+<p>None of this makes least squares wrong. Errors that accumulate from many small independent causes really are approximately Gaussian, by the Central Limit Theorem — which is why L2 is the sensible default. But it is a claim about your data, and it is the claim that fails when you have outliers.</p>
+</div>
 <p>We now follow steps from our college Calculus I course and find the <span class="math notranslate nohighlight">\(a_1\)</span> and <span class="math notranslate nohighlight">\(a_0\)</span> that minimize <span class="math notranslate nohighlight">\(Q\)</span> (sometimes called the cost function):</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{aligned}
