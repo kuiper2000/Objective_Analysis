@@ -1,0 +1,887 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Chapter 0: The Idea Behind the Course &#8212; Objective Analysis</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=a3416100" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css?v=be8a1c11" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js?v=4a39c7ea"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="../_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'Chapter0/The_Pattern';</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Week 1-3: Rule101" href="../General_statistical_test/Origin_of_Statisics.html" />
+    <link rel="prev" title="Syllabus" href="../intro.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../intro.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/logo.png" class="logo__image only-light" alt="Objective Analysis - Home"/>
+    <img src="../_static/logo.png" class="logo__image only-dark pst-js-only" alt="Objective Analysis - Home"/>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../intro.html">
+                    Syllabus
+                </a>
+            </li>
+        </ul>
+        <ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Chapter 0: The Idea Behind the Course</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../General_statistical_test/Origin_of_Statisics.html">Week 1-3: Rule101</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Regression/regressiom.html">Week 4-6: Regression &amp; AR1</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Matrix_Operation/Seeking_Structure_in_Data.html">Week 8-11: Seeking Structure in Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Time_Series/Time_Series_Analysis.html">Week 12-15: Time Series Analysis</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/executablebooks/jupyter-book" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/executablebooks/jupyter-book/issues/new?title=Issue%20on%20page%20%2FChapter0/The_Pattern.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/Chapter0/The_Pattern.md" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.md</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
+
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Chapter 0: The Idea Behind the Course</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#two-questions-one-answer">Two questions, one answer</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#interlude-what-a-lagrange-multiplier-actually-is">Interlude: what a Lagrange multiplier actually is</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-problem-it-solves">The problem it solves</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-picture-contour-lines-and-a-fence">The picture: contour lines and a fence</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#what-you-actually-do">What you actually do</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#what-lambda-means-an-exchange-rate">What <span class="math notranslate nohighlight">\(\lambda\)</span> means: an exchange rate</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#question-1-which-pdf-maximize-entropy">Question 1: which PDF? — maximize entropy</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#step-1-chop-the-axis-into-bins">Step 1: chop the axis into bins</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#step-2-attach-one-multiplier-per-constraint">Step 2: attach one multiplier per constraint</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#step-3-differentiate-with-respect-to-one-bin">Step 3: differentiate with respect to one bin</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#step-4-fix-the-multipliers-using-the-constraints">Step 4: fix the multipliers using the constraints</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#other-constraints-other-distributions">Other constraints, other distributions</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#question-2-which-model-minimize-a-loss">Question 2: which model? — minimize a loss</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-same-move-everywhere">The same move, everywhere</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#where-the-pattern-stops">Where the pattern stops</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-to-carry-forward">What to carry forward</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="chapter-0-the-idea-behind-the-course">
+<span id="the-pattern"></span><h1>Chapter 0: The Idea Behind the Course<a class="headerlink" href="#chapter-0-the-idea-behind-the-course" title="Link to this heading">#</a></h1>
+<div class="warning admonition">
+<p class="admonition-title">How to read this chapter</p>
+<p>This chapter states, in one place, the single idea that every later part of the course is an instance of. It is deliberately the most abstract thing you will read all semester.</p>
+<p><strong>You are not expected to absorb it on first reading.</strong> Nothing in Weeks 1-3 depends on it. Skim it now so the shape is familiar, then come back at the end of each Part — there is a short <em>“The pattern”</em> box at the head of every Part that points back here and fills in that Part’s row of the table below. The idea is meant to accumulate, not to land all at once.</p>
+<p><strong>There are no prerequisites.</strong> The one tool everything runs on — the <strong>Lagrange multiplier</strong> — is explained from scratch in the interlude below, in plain language, before it is used. Every derivation here is then done in ordinary partial derivatives. Where the continuum version of an argument would need calculus of variations, it is quarantined in a blue box you can skip.</p>
+</div>
+<section id="two-questions-one-answer">
+<h2>Two questions, one answer<a class="headerlink" href="#two-questions-one-answer" title="Link to this heading">#</a></h2>
+<p>Almost everything we do this semester is one of two questions:</p>
+<ol class="arabic simple">
+<li><p><strong>Which probability distribution should I assume?</strong> You want to test whether a trend is significant, or whether two composites differ. Before you can test anything you must commit to a PDF, because the null hypothesis <em>is</em> a PDF — it says “here is the distribution the data would follow if nothing interesting were happening,” and the test asks which aspect of that distribution the data contradicts.</p></li>
+<li><p><strong>Which model best represents the data?</strong> You want a line through a scatterplot, a spatial pattern that explains the most variance, or a set of Fourier coefficients. In each case there are infinitely many candidate answers and you must pick one.</p></li>
+</ol>
+<p>These look like different problems. They are the same problem, and it has the same shape in both cases:</p>
+<blockquote>
+<div><p><strong>Write down a quantity that measures how good a candidate answer is. Then find the candidate that optimizes it, subject to whatever you are unwilling to give up.</strong></p>
+</div></blockquote>
+<p>The quantity you optimize is a <strong>functional</strong> — a function whose input is itself a whole function (a PDF, a fitted curve, a spatial pattern) and whose output is a single number. The things you are unwilling to give up are <strong>constraints</strong>. The machinery that handles “optimize this, subject to that” is the <strong>method of Lagrange multipliers</strong>.</p>
+<p>That word <em>functional</em> sounds like it demands new mathematics. It does not, and you will never have to handle one abstractly here: chop the function into finitely many values and a functional becomes an ordinary function of finitely many variables, at which point the ordinary multiplier recipe applies. That is exactly how the derivation below proceeds.</p>
+<p>That is the whole idea. The rest of this chapter shows it working twice, and the rest of the course is the same move applied to progressively richer objects.</p>
+<p>Before either, though, we need the one tool both of them use.</p>
+</section>
+<hr class="docutils" />
+<section id="interlude-what-a-lagrange-multiplier-actually-is">
+<h2>Interlude: what a Lagrange multiplier actually is<a class="headerlink" href="#interlude-what-a-lagrange-multiplier-actually-is" title="Link to this heading">#</a></h2>
+<p>Every derivation in this chapter — and the EOF derivation in Part III — runs on Lagrange multipliers. If the phrase means nothing to you, or means only “a symbol you introduce and then cancel,” this section is the one to read properly. Everything else follows easily once this is clear.</p>
+<section id="the-problem-it-solves">
+<h3>The problem it solves<a class="headerlink" href="#the-problem-it-solves" title="Link to this heading">#</a></h3>
+<p>Maximizing something is easy when you are free to try anything: differentiate, set to zero, done. The hard case is when you are <strong>not</strong> free — when the answer must also satisfy some requirement. Find the highest point on a hill, <em>but you must stay on the marked path</em>. Fit the data as well as possible, <em>but the pattern must have unit length</em>. Spread the probability out as much as possible, <em>but the variance must come out to <span class="math notranslate nohighlight">\(\sigma^2\)</span></em>.</p>
+<p>Formally: maximize <span class="math notranslate nohighlight">\(f(x,y)\)</span> subject to <span class="math notranslate nohighlight">\(g(x,y) = c\)</span>.</p>
+</section>
+<section id="the-picture-contour-lines-and-a-fence">
+<h3>The picture: contour lines and a fence<a class="headerlink" href="#the-picture-contour-lines-and-a-fence" title="Link to this heading">#</a></h3>
+<p>Think of <span class="math notranslate nohighlight">\(f\)</span> as the height of a hill, drawn as contour lines — curves along which the height is constant. The constraint <span class="math notranslate nohighlight">\(g = c\)</span> is a fence you must walk along.</p>
+<p>Now walk. <strong>As long as your fence <em>crosses</em> a contour line, you are still going uphill or downhill</strong>, so you cannot be at the highest reachable point yet — take another step and you improve.</p>
+<p>So at the best point, the fence cannot cross a contour. It must just <strong>graze</strong> it — the fence and the contour are <em>tangent</em>. And two curves are tangent exactly when their gradients point along the same line:</p>
+<div class="math notranslate nohighlight">
+\[\nabla f = \lambda\,\nabla g\]</div>
+<p><strong>That equation is the whole method, and <span class="math notranslate nohighlight">\(\lambda\)</span> is nothing more exotic than the number that makes the two arrows match.</strong> The gradients must be <em>parallel</em>; <span class="math notranslate nohighlight">\(\lambda\)</span> says by what factor they differ in length.</p>
+</section>
+<section id="what-you-actually-do">
+<h3>What you actually do<a class="headerlink" href="#what-you-actually-do" title="Link to this heading">#</a></h3>
+<p>Rather than reason geometrically each time, bundle the condition into a single object — the <strong>Lagrangian</strong> — by subtracting the constraint with a multiplier attached:</p>
+<div class="math notranslate nohighlight">
+\[\mathcal{L}(x,y,\lambda) = f(x,y) - \lambda\big(g(x,y) - c\big)\]</div>
+<p>Then set <em>all</em> of its partial derivatives to zero, treating <span class="math notranslate nohighlight">\(\lambda\)</span> as just another variable:</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(\partial\mathcal{L}/\partial x = 0\)</span> and <span class="math notranslate nohighlight">\(\partial\mathcal{L}/\partial y = 0\)</span> together give <span class="math notranslate nohighlight">\(\nabla f = \lambda\nabla g\)</span>, the tangency condition</p></li>
+<li><p><span class="math notranslate nohighlight">\(\partial\mathcal{L}/\partial\lambda = 0\)</span> gives back <span class="math notranslate nohighlight">\(g = c\)</span>, the constraint itself</p></li>
+</ul>
+<p>So the trick is this: <strong>you trade a constrained problem in <span class="math notranslate nohighlight">\(n\)</span> variables for an unconstrained one in <span class="math notranslate nohighlight">\(n+1\)</span>.</strong> Paying one extra unknown buys you the right to differentiate freely, as if the constraint were not there. That is why it is worth doing.</p>
+<div class="note admonition">
+<p class="admonition-title">Example / deeper dive</p>
+<p><strong>A two-line example</strong></p>
+<p>Maximize <span class="math notranslate nohighlight">\(xy\)</span> subject to <span class="math notranslate nohighlight">\(x + y = 10\)</span>. (Largest rectangle for a fixed perimeter.)</p>
+<div class="math notranslate nohighlight">
+\[\mathcal{L} = xy - \lambda(x + y - 10)\]</div>
+<div class="math notranslate nohighlight">
+\[\frac{\partial\mathcal{L}}{\partial x} = y - \lambda = 0, \qquad \frac{\partial\mathcal{L}}{\partial y} = x - \lambda = 0, \qquad \frac{\partial\mathcal{L}}{\partial\lambda} = -(x+y-10) = 0\]</div>
+<p>The first two give <span class="math notranslate nohighlight">\(x = y = \lambda\)</span>; the third then gives <span class="math notranslate nohighlight">\(x = y = 5\)</span>, so <span class="math notranslate nohighlight">\(\lambda = 5\)</span> and the maximum is <span class="math notranslate nohighlight">\(25\)</span>.</p>
+<p>Notice we never solved the constraint for one variable and substituted. For this problem you easily could; for the ones later in this chapter — where the “variables” are the values of a probability density at every point — you cannot, and the multiplier is the only practical route.</p>
+</div>
+</section>
+<section id="what-lambda-means-an-exchange-rate">
+<h3>What <span class="math notranslate nohighlight">\(\lambda\)</span> means: an exchange rate<a class="headerlink" href="#what-lambda-means-an-exchange-rate" title="Link to this heading">#</a></h3>
+<p>Here is the part usually left out, and it is the part that matters most for this course.</p>
+<p><span class="math notranslate nohighlight">\(\lambda\)</span> is not scaffolding to be discarded once the algebra is done. It has a meaning: <strong><span class="math notranslate nohighlight">\(\lambda\)</span> is the rate at which the best achievable value improves if you loosen the constraint.</strong></p>
+<div class="math notranslate nohighlight">
+\[\boxed{\frac{df^*}{dc} = \lambda}\]</div>
+<p>where <span class="math notranslate nohighlight">\(f^*\)</span> is the maximum attainable given the constraint level <span class="math notranslate nohighlight">\(c\)</span>. Economists call this a <strong>shadow price</strong> — <em>“how much more profit would one extra dollar of budget buy me?”</em> If the constraint is a budget, <span class="math notranslate nohighlight">\(\lambda\)</span> is what one more unit of budget is worth.</p>
+<p>Check it on the example above. Maximizing <span class="math notranslate nohighlight">\(xy\)</span> subject to <span class="math notranslate nohighlight">\(x+y=c\)</span> gives <span class="math notranslate nohighlight">\(x=y=c/2\)</span> and a maximum of <span class="math notranslate nohighlight">\(c^2/4\)</span>. Then</p>
+<div class="math notranslate nohighlight">
+\[\frac{d}{dc}\left(\frac{c^2}{4}\right) = \frac{c}{2} = 5 \quad\text{at } c = 10\]</div>
+<p>which is exactly the <span class="math notranslate nohighlight">\(\lambda = 5\)</span> we found.</p>
+<div class="seealso admonition">
+<p class="admonition-title">Why the multiplier keeps turning out to be the thing you wanted</p>
+<p>Three times in this course a Lagrange multiplier will come back as a quantity with clear physical meaning:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Constraint</p></th>
+<th class="head"><p>Multiplier turns out to be</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>variance <span class="math notranslate nohighlight">\(= \sigma^2\)</span> (Chapter 0)</p></td>
+<td><p><span class="math notranslate nohighlight">\(\lambda_2 = 1/2\sigma^2\)</span>, the inverse variance</p></td>
+</tr>
+<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(\mathbf{e}^T\mathbf{e} = 1\)</span> (Part III, EOFs)</p></td>
+<td><p><span class="math notranslate nohighlight">\(\lambda\)</span> = the eigenvalue = variance explained</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>This is not luck. The exchange-rate property <em>guarantees</em> it: <span class="math notranslate nohighlight">\(\lambda\)</span> is the derivative of the thing you maximized with respect to the thing you constrained, so it is automatically a meaningful rate.</p>
+<p>You can verify the first row right now. The entropy of a Gaussian is <span class="math notranslate nohighlight">\(S = \tfrac12\ln(2\pi e\sigma^2)\)</span>, so the rate at which entropy grows as you permit more variance is</p>
+<div class="math notranslate nohighlight">
+\[\frac{dS}{d(\sigma^2)} = \frac{1}{2\sigma^2}\]</div>
+<p>which is precisely the <span class="math notranslate nohighlight">\(\lambda_2\)</span> that will fall out of the derivation below. <strong>So when a multiplier appears in this course, always ask what it turned out to be — it is usually the answer, not the bookkeeping.</strong></p>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="question-1-which-pdf-maximize-entropy">
+<h2>Question 1: which PDF? — maximize entropy<a class="headerlink" href="#question-1-which-pdf-maximize-entropy" title="Link to this heading">#</a></h2>
+<p>Suppose all you know about a quantity is its mean and its variance. Infinitely many distributions have that mean and that variance. Which should you assume?</p>
+<p>The answer that has survived is: <strong>assume the one that commits you to as little as possible beyond what you actually know.</strong> Any other choice smuggles in structure you have no evidence for. The measure of “how little is committed” is the <strong>entropy</strong> of the distribution,</p>
+<div class="math notranslate nohighlight">
+\[S[f] = -\int f(x)\ln f(x)\,dx\]</div>
+<p>which is large when <span class="math notranslate nohighlight">\(f\)</span> is spread out and noncommittal, and small when <span class="math notranslate nohighlight">\(f\)</span> is sharply peaked and therefore highly specific. So the recipe is: <strong>maximize <span class="math notranslate nohighlight">\(S[f]\)</span> subject to the constraints that encode what you actually know.</strong></p>
+<section id="step-1-chop-the-axis-into-bins">
+<h3>Step 1: chop the axis into bins<a class="headerlink" href="#step-1-chop-the-axis-into-bins" title="Link to this heading">#</a></h3>
+<p>“Maximize over all functions <span class="math notranslate nohighlight">\(f\)</span>” sounds like it needs machinery you may not have met. It does not. <strong>Discretize first, and it becomes an ordinary Lagrange multiplier problem of the kind you already know.</strong></p>
+<p>Chop the <span class="math notranslate nohighlight">\(x\)</span>-axis into <span class="math notranslate nohighlight">\(N\)</span> narrow bins, and let <span class="math notranslate nohighlight">\(p_i\)</span> be the probability of landing in bin <span class="math notranslate nohighlight">\(i\)</span> (centred at <span class="math notranslate nohighlight">\(x_i\)</span>). The entropy is now an ordinary function of <span class="math notranslate nohighlight">\(N\)</span> ordinary variables,</p>
+<div class="math notranslate nohighlight">
+\[S(p_1,\dots,p_N) = -\sum_{i=1}^{N}p_i\ln p_i\]</div>
+<p>and the three things we know become three ordinary constraints:</p>
+<div class="math notranslate nohighlight">
+\[\sum_i p_i = 1, \qquad \sum_i x_i p_i = \mu, \qquad \sum_i (x_i-\mu)^2 p_i = \sigma^2\]</div>
+</section>
+<section id="step-2-attach-one-multiplier-per-constraint">
+<h3>Step 2: attach one multiplier per constraint<a class="headerlink" href="#step-2-attach-one-multiplier-per-constraint" title="Link to this heading">#</a></h3>
+<p>This is exactly the recipe from multivariable calculus — one multiplier for each thing you are unwilling to give up:</p>
+<div class="math notranslate nohighlight">
+\[\mathcal{L}(p_1,\dots,p_N) = -\sum_i p_i\ln p_i - \lambda_0\Big(\sum_i p_i - 1\Big) - \lambda_1\Big(\sum_i x_ip_i - \mu\Big) - \lambda_2\Big(\sum_i (x_i-\mu)^2p_i - \sigma^2\Big)\]</div>
+</section>
+<section id="step-3-differentiate-with-respect-to-one-bin">
+<h3>Step 3: differentiate with respect to one bin<a class="headerlink" href="#step-3-differentiate-with-respect-to-one-bin" title="Link to this heading">#</a></h3>
+<p>Take an ordinary partial derivative with respect to a single <span class="math notranslate nohighlight">\(p_j\)</span>. Only the <span class="math notranslate nohighlight">\(i = j\)</span> term of each sum survives, and <span class="math notranslate nohighlight">\(\frac{d}{dp}(p\ln p) = \ln p + 1\)</span>, so</p>
+<div class="math notranslate nohighlight">
+\[\frac{\partial\mathcal{L}}{\partial p_j} = -\ln p_j - 1 - \lambda_0 - \lambda_1 x_j - \lambda_2(x_j-\mu)^2 = 0\]</div>
+<p>Rearranging and exponentiating,</p>
+<div class="math notranslate nohighlight">
+\[p_j = \exp\left(-1-\lambda_0-\lambda_1x_j-\lambda_2(x_j-\mu)^2\right)\]</div>
+<p><strong>That is the whole derivation.</strong> Nothing beyond a partial derivative and the multiplier recipe. Now shrink the bins: <span class="math notranslate nohighlight">\(p_j \to f(x)\,dx\)</span>, the index <span class="math notranslate nohighlight">\(j\)</span> becomes the continuous label <span class="math notranslate nohighlight">\(x\)</span>, and</p>
+<div class="math notranslate nohighlight">
+\[f(x) = \exp\left(-1-\lambda_0-\lambda_1x-\lambda_2(x-\mu)^2\right)\]</div>
+<div class="note admonition">
+<p class="admonition-title">Example / deeper dive</p>
+<p><strong>What the continuum version is really doing</strong></p>
+<p>Taken directly in the continuum, the object being maximized is a <strong>functional</strong> — its input is a whole function and its output is one number — and the derivative you need is the <strong>functional derivative</strong> <span class="math notranslate nohighlight">\(\delta\mathcal{L}/\delta f\)</span>. The bin picture is the honest intuition for it: <span class="math notranslate nohighlight">\(\delta/\delta f\)</span> is nothing more than <span class="math notranslate nohighlight">\(\partial/\partial p_j\)</span> in the limit of infinitely many bins.</p>
+<p>If you want the continuum argument on its own terms: write everything under one integral with integrand</p>
+<div class="math notranslate nohighlight">
+\[G(f,x) = -f\ln f - \lambda_0 f - \lambda_1 xf - \lambda_2(x-\mu)^2f\]</div>
+<p>perturb the maximizer by an arbitrary test function, <span class="math notranslate nohighlight">\(f \to f + \varepsilon\eta\)</span>, and demand stationarity:</p>
+<div class="math notranslate nohighlight">
+\[\left.\frac{d}{d\varepsilon}\mathcal{L}[f+\varepsilon\eta]\right|_{\varepsilon=0} = \int\frac{\partial G}{\partial f}\,\eta(x)\,dx = 0\]</div>
+<p>This has to hold for <em>every</em> <span class="math notranslate nohighlight">\(\eta\)</span>, and the <strong>fundamental lemma of the calculus of variations</strong> says that if <span class="math notranslate nohighlight">\(\int g(x)\eta(x)dx = 0\)</span> for all smooth <span class="math notranslate nohighlight">\(\eta\)</span>, then <span class="math notranslate nohighlight">\(g\equiv0\)</span>. Hence <span class="math notranslate nohighlight">\(\partial G/\partial f = 0\)</span> pointwise, which is the same condition Step 3 produced.</p>
+<p>Note that it is the multipliers that let <span class="math notranslate nohighlight">\(\eta\)</span> be <em>arbitrary</em>. Without them you could only perturb in directions that preserve normalization and both moments, and the argument would be far messier. That is what buying the multipliers actually buys you.</p>
+<p><strong>One loose end in the bin argument.</strong> The discrete and continuous entropies are not quite equal. Putting <span class="math notranslate nohighlight">\(p_i = f(x_i)\Delta x\)</span>,</p>
+<div class="math notranslate nohighlight">
+\[-\sum_i p_i\ln p_i = -\int f\ln f\,dx - \ln\Delta x\]</div>
+<p>and that <span class="math notranslate nohighlight">\(-\ln\Delta x\)</span> blows up as the bins shrink. It is harmless here because it is a <em>constant</em> — it depends only on the bin width, not on the shape of <span class="math notranslate nohighlight">\(f\)</span> — so it shifts the value of the entropy without moving the location of its maximum. The two routes therefore find the same <span class="math notranslate nohighlight">\(f\)</span>. (This offset is why the continuous quantity is properly called <em>differential</em> entropy and, unlike the discrete version, can be negative.)</p>
+</div>
+</section>
+<section id="step-4-fix-the-multipliers-using-the-constraints">
+<h3>Step 4: fix the multipliers using the constraints<a class="headerlink" href="#step-4-fix-the-multipliers-using-the-constraints" title="Link to this heading">#</a></h3>
+<p>We have the shape but not yet the numbers. Three multipliers, three constraints.</p>
+<p><strong>The linear term vanishes.</strong> Complete the square in <span class="math notranslate nohighlight">\(u = x-\mu\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[-\lambda_1 u - \lambda_2u^2 = -\lambda_2\left(u + \frac{\lambda_1}{2\lambda_2}\right)^2 + \frac{\lambda_1^2}{4\lambda_2}\]</div>
+<p>so <span class="math notranslate nohighlight">\(f\)</span> is a bell curve centred at <span class="math notranslate nohighlight">\(x = \mu - \lambda_1/(2\lambda_2)\)</span>. But the mean constraint says the centre is at <span class="math notranslate nohighlight">\(\mu\)</span>. That <strong>forces</strong> <span class="math notranslate nohighlight">\(\lambda_1 = 0\)</span> — it is a consequence of the constraints, not an assumption. Absorbing the remaining constants into one prefactor <span class="math notranslate nohighlight">\(A\)</span>,</p>
+<div class="math notranslate nohighlight">
+\[f(x) = A\exp\left(-\lambda_2(x-\mu)^2\right)\]</div>
+<p><strong>The other two follow from two standard integrals:</strong></p>
+<div class="math notranslate nohighlight">
+\[\int_{-\infty}^{\infty}e^{-au^2}du = \sqrt{\frac{\pi}{a}}, \qquad \frac{\int_{-\infty}^{\infty}u^2e^{-au^2}du}{\int_{-\infty}^{\infty}e^{-au^2}du} = \frac{1}{2a}\]</div>
+<p>The second is just the variance of <span class="math notranslate nohighlight">\(e^{-au^2}\)</span>, so the variance constraint reads <span class="math notranslate nohighlight">\(\sigma^2 = 1/(2\lambda_2)\)</span>, giving</p>
+<div class="math notranslate nohighlight">
+\[\lambda_2 = \frac{1}{2\sigma^2}\]</div>
+<p>and normalization then gives <span class="math notranslate nohighlight">\(A = \sqrt{\lambda_2/\pi} = 1/(\sigma\sqrt{2\pi})\)</span>. Therefore</p>
+<div class="math notranslate nohighlight">
+\[\boxed{f(x) = \frac{1}{\sigma\sqrt{2\pi}}\exp\left(-\frac{(x-\mu)^2}{2\sigma^2}\right)}\]</div>
+<div class="seealso admonition">
+<p class="admonition-title">The prediction from the interlude, confirmed</p>
+<p>The exchange-rate argument said <span class="math notranslate nohighlight">\(\lambda_2\)</span> <em>had</em> to equal <span class="math notranslate nohighlight">\(dS/d(\sigma^2) = 1/2\sigma^2\)</span>. The derivation just produced exactly that, without ever using the shadow-price property. The multiplier was never bookkeeping.</p>
+</div>
+<div class="note admonition">
+<p class="admonition-title">Two principles, one curve</p>
+<p>This is the <strong>same Gaussian</strong> that Week 1-3 derives from Gauss’s 1809 argument — and the two derivations share no assumptions at all.</p>
+<ul class="simple">
+<li><p><strong>Gauss:</strong> <em>postulate that the sample mean is the maximum-likelihood estimate of the true value.</em> That forces <span class="math notranslate nohighlight">\(f'/f\)</span> to be linear, which is a differential equation, whose solution is the Gaussian.</p></li>
+<li><p><strong>Maximum entropy:</strong> <em>postulate nothing beyond a known mean and variance, and assume as little as possible otherwise.</em> That is a constrained optimization, whose solution is the Gaussian.</p></li>
+</ul>
+<p>One argument is about estimation, the other about ignorance. They converge on the same curve. This is the strongest reason to regard the normal distribution as genuinely special rather than merely convenient — and it is why so much of the course is built on it.</p>
+</div>
+</section>
+<section id="other-constraints-other-distributions">
+<h3>Other constraints, other distributions<a class="headerlink" href="#other-constraints-other-distributions" title="Link to this heading">#</a></h3>
+<p>The Gaussian is not privileged by the method — it is what you get from <em>those particular</em> constraints. Change what you know and the same procedure returns a different distribution:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>What you know</p></th>
+<th class="head"><p>MaxEnt distribution</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>support is bounded, <span class="math notranslate nohighlight">\(x\in[a,b]\)</span>; nothing else</p></td>
+<td><p><strong>uniform</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(x \ge 0\)</span>, mean <span class="math notranslate nohighlight">\(\mu\)</span> fixed</p></td>
+<td><p><strong>exponential</strong>, <span class="math notranslate nohighlight">\(f = \frac{1}{\mu}e^{-x/\mu}\)</span></p></td>
+</tr>
+<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(x\in\mathbb{R}\)</span>, mean and <strong>variance</strong> <span class="math notranslate nohighlight">\(E[(x-\mu)^2]\)</span> fixed</p></td>
+<td><p><strong>Gaussian</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(x\in\mathbb{R}\)</span>, mean and <strong>absolute deviation</strong> <span class="math notranslate nohighlight">\(E\lvert x-\mu\rvert\)</span> fixed</p></td>
+<td><p><strong>Laplace</strong>, <span class="math notranslate nohighlight">\(f \propto e^{-\lvert x-\mu\rvert/b}\)</span></p></td>
+</tr>
+<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(x \in \{0,1,2,\dots\}\)</span>, mean fixed</p></td>
+<td><p><strong>geometric</strong></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Hold onto the Gaussian/Laplace pair — the difference between constraining the <em>squared</em> deviation and the <em>absolute</em> deviation is about to reappear as the difference between two loss functions.</p>
+</section>
+</section>
+<hr class="docutils" />
+<section id="question-2-which-model-minimize-a-loss">
+<h2>Question 2: which model? — minimize a loss<a class="headerlink" href="#question-2-which-model-minimize-a-loss" title="Link to this heading">#</a></h2>
+<p>Now the second question. You have data and a family of candidate models, and you need to pick one. The engineering move is to define a <strong>loss function</strong> measuring how bad a candidate is, then choose the candidate that minimizes it.</p>
+<p>This looks like a different kind of activity — pragmatic, not principled. It is not. <strong>A loss function is a likelihood in disguise.</strong></p>
+<p>Suppose your model makes predictions <span class="math notranslate nohighlight">\(\hat{y}_i\)</span> and the errors <span class="math notranslate nohighlight">\(e_i = y_i - \hat{y}_i\)</span> are independent draws from some density <span class="math notranslate nohighlight">\(f\)</span>. The likelihood of your data is <span class="math notranslate nohighlight">\(L = \prod_i f(e_i)\)</span>, and maximizing it is the same as minimizing</p>
+<div class="math notranslate nohighlight">
+\[-\ln L = -\sum_i \ln f(e_i)\]</div>
+<p>So the loss function <strong>is</strong> the negative log-likelihood, which means <strong>choosing a loss is choosing an error distribution</strong>. Work it through for the two densities highlighted above:</p>
+<div class="math notranslate nohighlight">
+\[f(e) \propto e^{-e^2/2\sigma^2} \;\Longrightarrow\; -\ln L \propto \sum_i e_i^2\]</div>
+<div class="math notranslate nohighlight">
+\[f(e) \propto e^{-\lvert e\rvert/b} \;\Longrightarrow\; -\ln L \propto \sum_i \lvert e_i\rvert\]</div>
+<p>which gives the correspondence:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Loss</p></th>
+<th class="head"><p>Implied error PDF</p></th>
+<th class="head"><p>Optimal estimator</p></th>
+<th class="head"><p>Behaviour</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(\sum e_i^2\)</span> (L2)</p></td>
+<td><p>Gaussian</p></td>
+<td><p><strong>mean</strong> / ordinary least squares</p></td>
+<td><p>efficient, but outliers dominate</p></td>
+</tr>
+<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(\sum \lvert e_i\rvert\)</span> (L1)</p></td>
+<td><p>Laplace</p></td>
+<td><p><strong>median</strong> / least absolute deviations</p></td>
+<td><p>robust to outliers, harder to solve</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="note admonition">
+<p class="admonition-title">Why we square the errors — the honest answer</p>
+<p>Week 4-6 introduces least squares with the remark that squaring keeps errors positive and makes the minimization linear. Both are true, and both are conveniences rather than reasons.</p>
+<p>The real reason is the table above. <strong>Squaring the errors is equivalent to asserting that the errors are Gaussian.</strong> That assertion is usually reasonable — by the Central Limit Theorem, errors that accumulate from many small independent causes tend to be Gaussian — but it is an assumption about your data, not a mathematical necessity, and it is the assumption that fails when you have outliers.</p>
+<p>This also explains a fact that would otherwise look like coincidence: the mean is the estimator that minimizes squared error, and the Gaussian is the maximum-entropy distribution for fixed <em>squared</em> deviation. The median is the estimator that minimizes absolute error, and the Laplace is the maximum-entropy distribution for fixed <em>absolute</em> deviation. Mean-with-Gaussian and median-with-Laplace are two self-consistent packages, and the loss you pick selects which one you are in.</p>
+</div>
+</section>
+<hr class="docutils" />
+<section id="the-same-move-everywhere">
+<h2>The same move, everywhere<a class="headerlink" href="#the-same-move-everywhere" title="Link to this heading">#</a></h2>
+<p>Both questions turned out to be: <em>optimize a functional subject to constraints.</em> So does everything that follows.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Part</p></th>
+<th class="head"><p>Functional optimized</p></th>
+<th class="head"><p>Subject to</p></th>
+<th class="head"><p>Solution</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>1-3</strong> Statistics</p></td>
+<td><p>entropy <span class="math notranslate nohighlight">\(-\int f\ln f\)</span></p></td>
+<td><p>known moments</p></td>
+<td><p>the PDF you assume</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>1-3</strong> Statistics</p></td>
+<td><p>likelihood <span class="math notranslate nohighlight">\(\prod f(x_i-\mu)\)</span></p></td>
+<td><p>mean is optimal</p></td>
+<td><p>the Gaussian</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>4-6</strong> Regression</p></td>
+<td><p>loss <span class="math notranslate nohighlight">\(=-\ln L\)</span></p></td>
+<td><p>choice of model family</p></td>
+<td><p>regression coefficients</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>8-11</strong> EOFs</p></td>
+<td><p>variance explained <span class="math notranslate nohighlight">\(\mathbf{e}^T\mathbf{C}\mathbf{e}\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(\mathbf{e}^T\mathbf{e} = 1\)</span></p></td>
+<td><p>eigenvectors of <span class="math notranslate nohighlight">\(\mathbf{C}\)</span></p></td>
+</tr>
+<tr class="row-even"><td><p><strong>8-11</strong> Clustering</p></td>
+<td><p>within-cluster sum of squares</p></td>
+<td><p>exactly <span class="math notranslate nohighlight">\(k\)</span> clusters</p></td>
+<td><p>cluster centroids</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>12-15</strong> Fourier</p></td>
+<td><p>squared projection onto each harmonic</p></td>
+<td><p>orthonormal basis</p></td>
+<td><p>Fourier coefficients</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="note admonition">
+<p class="admonition-title">Example / deeper dive</p>
+<p><strong>A preview: the Lagrange multiplier you will meet again</strong></p>
+<p>The EOF row of that table is worth doing now, because it shows the multiplier is not just bookkeeping.</p>
+<p>In Weeks 8-11 we look for the spatial pattern <span class="math notranslate nohighlight">\(\mathbf{e}\)</span> explaining the most variance. “Most variance” means maximizing <span class="math notranslate nohighlight">\(\mathbf{e}^T\mathbf{C}\mathbf{e}\)</span>, where <span class="math notranslate nohighlight">\(\mathbf{C}\)</span> is the covariance matrix. But that can be inflated without limit just by lengthening <span class="math notranslate nohighlight">\(\mathbf{e}\)</span>, so we constrain <span class="math notranslate nohighlight">\(\mathbf{e}\)</span> to unit length. Same shape as before — attach a multiplier:</p>
+<div class="math notranslate nohighlight">
+\[\mathcal{L}(\mathbf{e}) = \mathbf{e}^T\mathbf{C}\mathbf{e} - \lambda\left(\mathbf{e}^T\mathbf{e} - 1\right)\]</div>
+<p>Differentiate and set to zero:</p>
+<div class="math notranslate nohighlight">
+\[\frac{\partial\mathcal{L}}{\partial\mathbf{e}} = 2\mathbf{C}\mathbf{e} - 2\lambda\mathbf{e} = 0 \qquad\Longrightarrow\qquad \boxed{\mathbf{C}\mathbf{e} = \lambda\mathbf{e}}\]</div>
+<p>That is the eigenvalue equation. <strong>The Lagrange multiplier turns out to be the eigenvalue — which is the variance explained by that pattern.</strong> The multiplier is not an algebraic device to be discarded at the end; it is the answer you were looking for.</p>
+<p>You will meet exactly the same structure in the Fourier chapter, where the “constraint” is that the basis functions are orthonormal, which is what collapses the multiple-regression normal equations into one-line formulas for the coefficients.</p>
+</div>
+</section>
+<hr class="docutils" />
+<section id="where-the-pattern-stops">
+<h2>Where the pattern stops<a class="headerlink" href="#where-the-pattern-stops" title="Link to this heading">#</a></h2>
+<p>A framing is only useful if you know its edges. Two things this one does <strong>not</strong> cover.</p>
+<p><strong>Derived distributions are not chosen.</strong> Maximum entropy explains the distributions you <em>assume</em> — Gaussian, exponential, uniform, Laplace. It does not explain the <span class="math notranslate nohighlight">\(t\)</span>, <span class="math notranslate nohighlight">\(\chi^2\)</span> and <span class="math notranslate nohighlight">\(F\)</span> distributions you will meet in Weeks 1-3. Those are not separate maximum-entropy solutions and nobody chose them: they are <strong>consequences</strong> of assuming a Gaussian and then sampling it finitely. The <span class="math notranslate nohighlight">\(t\)</span> distribution is what you get when you estimate <span class="math notranslate nohighlight">\(\sigma\)</span> from the same small sample you are testing; <span class="math notranslate nohighlight">\(\chi^2\)</span> is what a sum of squared Gaussians does; <span class="math notranslate nohighlight">\(F\)</span> is a ratio of two such sums. Keep the categories separate:</p>
+<ul class="simple">
+<li><p><strong>distributions you choose</strong> — fixed by what you know, via maximum entropy</p></li>
+<li><p><strong>distributions that follow</strong> — forced on you by the sampling, given that choice</p></li>
+</ul>
+<p><strong>Non-parametric methods refuse the question.</strong> Bootstrap, jackknife and Monte Carlo tests are not an odds-and-ends appendix to Weeks 1-3. They are the deliberate opposite pole of this whole chapter: instead of choosing a functional and deriving a distribution, they <strong>decline to assume any PDF at all</strong> and build the null distribution by resampling the data itself. That is the right move when you have no basis for the constraints maximum entropy needs, and the price is that you need enough data for the resampling to be meaningful.</p>
+</section>
+<hr class="docutils" />
+<section id="what-to-carry-forward">
+<h2>What to carry forward<a class="headerlink" href="#what-to-carry-forward" title="Link to this heading">#</a></h2>
+<p>Three sentences:</p>
+<ol class="arabic simple">
+<li><p><strong>The null hypothesis is a PDF, and you can derive rather than guess it</strong> — maximize entropy subject to what you actually know.</p></li>
+<li><p><strong>A loss function is a negative log-likelihood, so choosing a loss is choosing an error distribution</strong> — L2 asserts Gaussian errors, L1 asserts Laplace.</p></li>
+<li><p><strong>Whenever you want “the best” of something subject to a restriction, attach a Lagrange multiplier</strong> — and check what the multiplier turns out to mean, because it is often the quantity you actually wanted.</p></li>
+</ol>
+<p>Everything else this semester is these three sentences applied to bigger objects.</p>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./Chapter0"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="../intro.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Syllabus</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="../General_statistical_test/Origin_of_Statisics.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Week 1-3: Rule101</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#two-questions-one-answer">Two questions, one answer</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#interlude-what-a-lagrange-multiplier-actually-is">Interlude: what a Lagrange multiplier actually is</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-problem-it-solves">The problem it solves</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-picture-contour-lines-and-a-fence">The picture: contour lines and a fence</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#what-you-actually-do">What you actually do</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#what-lambda-means-an-exchange-rate">What <span class="math notranslate nohighlight">\(\lambda\)</span> means: an exchange rate</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#question-1-which-pdf-maximize-entropy">Question 1: which PDF? — maximize entropy</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#step-1-chop-the-axis-into-bins">Step 1: chop the axis into bins</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#step-2-attach-one-multiplier-per-constraint">Step 2: attach one multiplier per constraint</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#step-3-differentiate-with-respect-to-one-bin">Step 3: differentiate with respect to one bin</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#step-4-fix-the-multipliers-using-the-constraints">Step 4: fix the multipliers using the constraints</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#other-constraints-other-distributions">Other constraints, other distributions</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#question-2-which-model-minimize-a-loss">Question 2: which model? — minimize a loss</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-same-move-everywhere">The same move, everywhere</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#where-the-pattern-stops">Where the pattern stops</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-to-carry-forward">What to carry forward</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By The Jupyter Book Community
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2023.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
