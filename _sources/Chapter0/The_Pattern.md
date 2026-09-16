@@ -26,7 +26,7 @@ The quantity you optimize is a **functional** — a function whose input is itse
 
 That word *functional* sounds like it demands new mathematics. It does not, and you will never have to handle one abstractly here: chop the function into finitely many values and a functional becomes an ordinary function of finitely many variables, at which point the ordinary multiplier recipe applies. That is exactly how the derivation below proceeds.
 
-That is the whole idea. The rest of this chapter shows it working twice, and the rest of the course is the same move applied to progressively richer objects.
+That is the whole idea. The rest of this chapter shows it working twice, then shows the two answers merging into one — the merged version is **Bayes' theorem**. After that, the rest of the course is the same move applied to progressively richer objects.
 
 Before either, though, we need the one tool both of them use.
 
@@ -34,7 +34,7 @@ Before either, though, we need the one tool both of them use.
 
 ## Interlude: what a Lagrange multiplier actually is
 
-Every derivation in this chapter — and the EOF derivation in Part III — runs on Lagrange multipliers. If the phrase means nothing to you, or means only "a symbol you introduce and then cancel," this section is the one to read properly. Everything else follows easily once this is clear.
+Every derivation in this chapter — and the EOF derivation in Weeks 8-11 — runs on Lagrange multipliers. If the phrase means nothing to you, or means only "a symbol you introduce and then cancel," this section is the one to read properly. Everything else follows easily once this is clear.
 
 ### The problem it solves
 
@@ -105,7 +105,8 @@ Three times in this course a Lagrange multiplier will come back as a quantity wi
 | Constraint | Multiplier turns out to be |
 | --- | --- |
 | variance $= \sigma^2$ (Chapter 0) | $\lambda_2 = 1/2\sigma^2$, the inverse variance |
-| $\mathbf{e}^T\mathbf{e} = 1$ (Part III, EOFs) | $\lambda$ = the eigenvalue = variance explained |
+| $\sum_i q_i = 1$ when updating a prior (Chapter 0, Bayes) | $e^{1+\lambda_0} = p(\text{data})$, the **evidence** |
+| $\mathbf{e}^T\mathbf{e} = 1$ (Weeks 8-11, EOFs) | $\lambda$ = the eigenvalue = variance explained |
 
 This is not luck. The exchange-rate property *guarantees* it: $\lambda$ is the derivative of the thing you maximized with respect to the thing you constrained, so it is automatically a meaningful rate.
 
@@ -253,7 +254,7 @@ The exchange-rate argument said $\lambda_2$ *had* to equal $dS/d(\sigma^2) = 1/2
 
 :::{admonition} Two principles, one curve
 :class: note
-This is the **same Gaussian** that Week 1-3 derives from Gauss's 1809 argument — and the two derivations share no assumptions at all.
+This is the **same Gaussian** that Weeks 1-3 derive from Gauss's 1809 argument — and the two derivations share no assumptions at all.
 
 - **Gauss:** *postulate that the sample mean is the maximum-likelihood estimate of the true value.* That forces $f'/f$ to be linear, which is a differential equation, whose solution is the Gaussian.
 - **Maximum entropy:** *postulate nothing beyond a known mean and variance, and assume as little as possible otherwise.* That is a constrained optimization, whose solution is the Gaussian.
@@ -302,7 +303,7 @@ which gives the correspondence:
 
 :::{admonition} Why we square the errors — the honest answer
 :class: note
-Week 4-6 introduces least squares with the remark that squaring keeps errors positive and makes the minimization linear. Both are true, and both are conveniences rather than reasons.
+Weeks 4-6 introduce least squares with the remark that squaring keeps errors positive and makes the minimization linear. Both are true, and both are conveniences rather than reasons.
 
 The real reason is the table above. **Squaring the errors is equivalent to asserting that the errors are Gaussian.** That assertion is usually reasonable — by the Central Limit Theorem, errors that accumulate from many small independent causes tend to be Gaussian — but it is an assumption about your data, not a mathematical necessity, and it is the assumption that fails when you have outliers.
 
@@ -311,12 +312,131 @@ This also explains a fact that would otherwise look like coincidence: the mean i
 
 ---
 
+## Both questions at once — Bayes' theorem
+
+Look at what each question quietly assumed.
+
+**Question 1 had no prior opinion.** Among all PDFs with the right mean and variance it chose the most noncommittal one, deliberately refusing to favour any particular shape.
+
+**Question 2 had no prior opinion either.** Among all candidate models it chose whichever one the data liked best — however implausible that model looked *before* the data arrived.
+
+Neither is the usual situation. Usually you have **both**: something you believed beforehand, and data that bears on it. Putting the two together takes the same move and exactly one new ingredient.
+
+### The functional: the cost of changing your mind
+
+Entropy measures how noncommittal a distribution is in absolute terms. That was the right thing to maximize when you started from nothing. But now you start from somewhere — a **prior** $\pi_i$, your probability for hypothesis $i$ before the data — and the principle becomes: *move as little as possible, but move enough to accommodate what you saw.*
+
+So the quantity to measure is not how noncommittal a candidate belief $q_i$ is, but how far it has **moved** from $\pi_i$. That is the **relative entropy**, also called the Kullback-Leibler divergence:
+
+$$D[q\|\pi] = \sum_i q_i\ln\frac{q_i}{\pi_i}$$
+
+(Here $\pi_i$ is a prior probability — nothing to do with $3.14159$.) Read it as a **cost of revision**, in the same units as entropy: zero when $q = \pi$, since you changed nothing and so paid nothing; positive otherwise; and very large when $q$ puts weight where $\pi$ had put almost none, which is what a drastic change of mind looks like.
+
+This does not replace Question 1 — it contains it. Set the prior flat, $\pi_i = 1/N$, and
+
+$$-D[q\|\pi] = -\sum_i q_i\ln q_i - \ln N$$
+
+which is the entropy of Question 1 up to an additive constant, the same kind of harmless offset as the $-\ln\Delta x$ in Step 1's loose end, and it moves no maximum. **Maximizing entropy is minimizing the departure from a flat prior.** Question 1 was the special case of believing nothing in particular to begin with.
+
+### The constraint: the data
+
+Let $L_i$ be the **likelihood** — the probability of the data you actually observed, if hypothesis $i$ were the true one. A belief that takes the data seriously must assign it a decent log-likelihood on average, so the constraint is
+
+$$\sum_i q_i\ln L_i = c$$
+
+with $c$ stating how far you insist on deferring to what you saw. And, as always, that the answer is a probability distribution: $\sum_i q_i = 1$.
+
+### Attach one multiplier per constraint and differentiate
+
+Two constraints, two multipliers. We are minimizing rather than maximizing now, so the signs read the other way round; nothing else changes:
+
+$$\mathcal{L}(q_1,\dots,q_N) = \sum_i q_i\ln\frac{q_i}{\pi_i} + \lambda_0\Big(\sum_i q_i - 1\Big) - \beta\Big(\sum_i q_i\ln L_i - c\Big)$$
+
+Differentiate with respect to a single hypothesis $q_j$. Only the $i=j$ term of each sum survives, and $\frac{d}{dq}\big(q\ln(q/\pi)\big) = \ln(q/\pi) + 1$, so
+
+$$\frac{\partial\mathcal{L}}{\partial q_j} = \ln\frac{q_j}{\pi_j} + 1 + \lambda_0 - \beta\ln L_j = 0$$
+
+Rearranging and exponentiating, exactly as in Step 3 above,
+
+$$q_j = \frac{\pi_j\,L_j^{\beta}}{Z}, \qquad Z = \sum_i \pi_i L_i^{\beta}$$
+
+Set $\beta = 1$ and read it out loud — **posterior $\propto$ prior $\times$ likelihood**:
+
+$$\boxed{q_j = \frac{\pi_j L_j}{\sum_i \pi_i L_i}}$$
+
+That is **Bayes' theorem**. It was not assumed anywhere. It is what this chapter's one move returns when the functional is the cost of revision and the constraint is the data.
+
+### What the two multipliers turn out to be
+
+Now do what the interlude said to always do.
+
+**$\lambda_0$, on normalization, is the evidence.** Normalizing $q_j = \pi_j L_j^{\beta}e^{-(1+\lambda_0)}$ gives $e^{1+\lambda_0} = Z$, and at $\beta = 1$,
+
+$$Z = \sum_i \pi_i L_i = p(\text{data})$$
+
+the **marginal likelihood**, or *evidence* — the denominator of Bayes' theorem and the quantity all Bayesian model comparison is built on. The multiplier that did nothing but enforce "probabilities sum to one" turned out to be the probability of your data. (The stray $-1$ is the same one that appeared in Step 3, and comes from the same derivative.)
+
+**$\beta$, on the data constraint, is an exchange rate between the data and your prior.** By the shadow-price property, $dD^*/dc = \beta$: it is how many nats of revision you must pay per extra nat of fit demanded. $\beta = 1$ is ordinary Bayes — each observation counted once, at face value. $\beta < 1$ deliberately discounts the data, which is what you want when the likelihood is misspecified, or when the observations are autocorrelated and therefore are not really $n$ independent facts. So **Bayes' rule is one member of a one-parameter family, and the parameter is a Lagrange multiplier.**
+
+:::{admonition} Example / deeper dive
+:class: note
+**Bayes with no free parameter — and what a revision costs**
+
+Introducing the likelihood as a *constraint* is what produced the adjustable $\beta$. There is a tighter version in which no such freedom exists.
+
+Work in the joint space of hypothesis *and* data. Your prior there is $\pi(\theta,x) = \pi(\theta)\,p(x\mid\theta)$ — it already contains the likelihood, because to have a model at all is to know what data each hypothesis would produce. Then observing $x = x_0$ is not a soft constraint but a hard one: *all* the probability must sit on $x = x_0$. Minimize $D[q\|\pi]$ subject to that and to normalization, and the single remaining multiplier delivers
+
+$$q(\theta) = \frac{\pi(\theta)\,p(x_0\mid\theta)}{p(x_0)} = \pi(\theta\mid x_0)$$
+
+with no $\beta$ anywhere: the likelihood enters with power exactly one because it was never a constraint to be priced. **Conditioning on data is the projection of your prior onto the set of beliefs compatible with what you saw**, measured in relative entropy. The $\beta$ of the main derivation is the price of having smuggled the likelihood in as a constraint instead.
+
+The value of the minimum is worth computing too. Substituting back,
+
+$$D^* = \sum_\theta \pi(\theta\mid x_0)\ln\frac{\pi(\theta\mid x_0)}{\pi(\theta,x_0)} = -\ln p(x_0)$$
+
+**The minimum cost of revising your beliefs is exactly the surprisal of the data.** Unsurprising data is cheap to absorb; data your prior thought nearly impossible forces an expensive revision. Note that the evidence has now appeared twice over — once as the multiplier, once as the optimal value.
+:::
+
+### A penalty is a negative log prior
+
+Question 2 established that a loss function is a negative log-likelihood. Bayes finishes the sentence. Take logs of posterior $\propto$ prior $\times$ likelihood:
+
+$$-\ln p(\theta\mid y) = \underbrace{-\ln L(y\mid\theta)}_{\text{a loss}}\;\underbrace{-\ln\pi(\theta)}_{\text{a penalty}} + \text{const}$$
+
+**A penalty term is a negative log prior**, exactly as a loss term is a negative log-likelihood. And what converts a stated belief into a penalty is a Lagrange multiplier. Suppose you fit coefficients $\mathbf{w}$ by least squares but refuse to let them grow large — because you have more predictors than you trust, or they are collinear. That is a constrained problem of precisely this chapter's shape:
+
+$$\text{minimize }\lVert y - X\mathbf{w}\rVert^2 \quad\text{subject to}\quad \lVert\mathbf{w}\rVert^2 \le t \qquad\Longrightarrow\qquad \mathcal{L} = \lVert y - X\mathbf{w}\rVert^2 + \lambda\lVert\mathbf{w}\rVert^2$$
+
+Now compare that with the negative log posterior for Gaussian errors of variance $\sigma^2$ and a Gaussian prior of variance $\tau^2$ on each coefficient, which is $\lVert y - X\mathbf{w}\rVert^2 + (\sigma^2/\tau^2)\lVert\mathbf{w}\rVert^2$. The two are the same problem, so
+
+$$\boxed{\lambda = \frac{\sigma^2}{\tau^2}}$$
+
+**The multiplier is the ratio of how noisy the data is to how confident the prior is** — an exchange rate between data and belief, in the most literal sense available. $\lambda\to0$ is a prior so vague it may as well be absent, and ordinary least squares returns; $\lambda\to\infty$ is a prior so rigid that no data can move it.
+
+And the Gaussian/Laplace pair comes back a third time:
+
+| Prior on the coefficients | Penalty it becomes | Effect |
+|---|---|---|
+| Gaussian | $\lambda\lVert\mathbf{w}\rVert^2$ (L2) | shrinks every coefficient smoothly toward zero |
+| Laplace | $\lambda\lVert\mathbf{w}\rVert_1$ (L1) | sets most coefficients exactly to zero |
+
+Squared-versus-absolute chose the error distribution in Question 2; the identical choice chooses the prior here. Same two constraints from the maximum-entropy table, same two densities, same two norms — applied now to the parameters instead of the residuals.
+
+### Where the prior comes from
+
+One honest gap. Minimum relative entropy tells you how to **revise** a belief, not how to **start** one: it needs $\pi$ handed to it from outside.
+
+The usual answer is Question 1. Choose the prior by maximum entropy from whatever you genuinely know, then let the data revise it by minimum relative entropy — the two halves of this chapter, in that order. What the pattern will not do is excuse you from saying what you believed beforehand. It only forces that statement into the open, where it can be argued with, which is more than a method that leaves it implicit can offer.
+
+---
+
 ## The same move, everywhere
 
-Both questions turned out to be: *optimize a functional subject to constraints.* So does everything that follows.
+Both questions — and their combination — turned out to be: *optimize a functional subject to constraints.* So does everything that follows.
 
 | Part | Functional optimized | Subject to | Solution |
 |---|---|---|---|
+| **0** Bayes | revision cost $\sum q\ln(q/\pi)$ | the observed likelihood | the posterior |
 | **1-3** Statistics | entropy $-\int f\ln f$ | known moments | the PDF you assume |
 | **1-3** Statistics | likelihood $\prod f(x_i-\mu)$ | mean is optimal | the Gaussian |
 | **4-6** Regression | loss $=-\ln L$ | choice of model family | regression coefficients |
@@ -360,10 +480,11 @@ A framing is only useful if you know its edges. Two things this one does **not**
 
 ## What to carry forward
 
-Three sentences:
+Four sentences:
 
 1. **The null hypothesis is a PDF, and you can derive rather than guess it** — maximize entropy subject to what you actually know.
 2. **A loss function is a negative log-likelihood, so choosing a loss is choosing an error distribution** — L2 asserts Gaussian errors, L1 asserts Laplace.
-3. **Whenever you want "the best" of something subject to a restriction, attach a Lagrange multiplier** — and check what the multiplier turns out to mean, because it is often the quantity you actually wanted.
+3. **Bayes' theorem is this same move with a prior attached** — minimize the cost of revising what you believed, subject to honouring what you saw; a penalty term is then a negative log prior, just as a loss is a negative log-likelihood.
+4. **Whenever you want "the best" of something subject to a restriction, attach a Lagrange multiplier** — and check what the multiplier turns out to mean, because it is often the quantity you actually wanted.
 
-Everything else this semester is these three sentences applied to bigger objects.
+Everything else this semester is these four sentences applied to bigger objects.

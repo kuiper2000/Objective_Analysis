@@ -386,6 +386,15 @@
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#question-2-which-model-minimize-a-loss">Question 2: which model? — minimize a loss</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#both-questions-at-once-bayes-theorem">Both questions at once — Bayes’ theorem</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-functional-the-cost-of-changing-your-mind">The functional: the cost of changing your mind</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-constraint-the-data">The constraint: the data</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#attach-one-multiplier-per-constraint-and-differentiate">Attach one multiplier per constraint and differentiate</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#what-the-two-multipliers-turn-out-to-be">What the two multipliers turn out to be</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#a-penalty-is-a-negative-log-prior">A penalty is a negative log prior</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#where-the-prior-comes-from">Where the prior comes from</a></li>
+</ul>
+</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-same-move-everywhere">The same move, everywhere</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#where-the-pattern-stops">Where the pattern stops</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-to-carry-forward">What to carry forward</a></li>
@@ -421,13 +430,13 @@
 </div></blockquote>
 <p>The quantity you optimize is a <strong>functional</strong> — a function whose input is itself a whole function (a PDF, a fitted curve, a spatial pattern) and whose output is a single number. The things you are unwilling to give up are <strong>constraints</strong>. The machinery that handles “optimize this, subject to that” is the <strong>method of Lagrange multipliers</strong>.</p>
 <p>That word <em>functional</em> sounds like it demands new mathematics. It does not, and you will never have to handle one abstractly here: chop the function into finitely many values and a functional becomes an ordinary function of finitely many variables, at which point the ordinary multiplier recipe applies. That is exactly how the derivation below proceeds.</p>
-<p>That is the whole idea. The rest of this chapter shows it working twice, and the rest of the course is the same move applied to progressively richer objects.</p>
+<p>That is the whole idea. The rest of this chapter shows it working twice, then shows the two answers merging into one — the merged version is <strong>Bayes’ theorem</strong>. After that, the rest of the course is the same move applied to progressively richer objects.</p>
 <p>Before either, though, we need the one tool both of them use.</p>
 </section>
 <hr class="docutils" />
 <section id="interlude-what-a-lagrange-multiplier-actually-is">
 <h2>Interlude: what a Lagrange multiplier actually is<a class="headerlink" href="#interlude-what-a-lagrange-multiplier-actually-is" title="Link to this heading">#</a></h2>
-<p>Every derivation in this chapter — and the EOF derivation in Part III — runs on Lagrange multipliers. If the phrase means nothing to you, or means only “a symbol you introduce and then cancel,” this section is the one to read properly. Everything else follows easily once this is clear.</p>
+<p>Every derivation in this chapter — and the EOF derivation in Weeks 8-11 — runs on Lagrange multipliers. If the phrase means nothing to you, or means only “a symbol you introduce and then cancel,” this section is the one to read properly. Everything else follows easily once this is clear.</p>
 <section id="the-problem-it-solves">
 <h3>The problem it solves<a class="headerlink" href="#the-problem-it-solves" title="Link to this heading">#</a></h3>
 <p>Maximizing something is easy when you are free to try anything: differentiate, set to zero, done. The hard case is when you are <strong>not</strong> free — when the answer must also satisfy some requirement. Find the highest point on a hill, <em>but you must stay on the marked path</em>. Fit the data as well as possible, <em>but the pattern must have unit length</em>. Spread the probability out as much as possible, <em>but the variance must come out to <span class="math notranslate nohighlight">\(\sigma^2\)</span></em>.</p>
@@ -489,7 +498,10 @@
 <tr class="row-even"><td><p>variance <span class="math notranslate nohighlight">\(= \sigma^2\)</span> (Chapter 0)</p></td>
 <td><p><span class="math notranslate nohighlight">\(\lambda_2 = 1/2\sigma^2\)</span>, the inverse variance</p></td>
 </tr>
-<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(\mathbf{e}^T\mathbf{e} = 1\)</span> (Part III, EOFs)</p></td>
+<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(\sum_i q_i = 1\)</span> when updating a prior (Chapter 0, Bayes)</p></td>
+<td><p><span class="math notranslate nohighlight">\(e^{1+\lambda_0} = p(\text{data})\)</span>, the <strong>evidence</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(\mathbf{e}^T\mathbf{e} = 1\)</span> (Weeks 8-11, EOFs)</p></td>
 <td><p><span class="math notranslate nohighlight">\(\lambda\)</span> = the eigenvalue = variance explained</p></td>
 </tr>
 </tbody>
@@ -607,7 +619,7 @@
 </div>
 <div class="note admonition">
 <p class="admonition-title">Two principles, one curve</p>
-<p>This is the <strong>same Gaussian</strong> that Week 1-3 derives from Gauss’s 1809 argument — and the two derivations share no assumptions at all.</p>
+<p>This is the <strong>same Gaussian</strong> that Weeks 1-3 derive from Gauss’s 1809 argument — and the two derivations share no assumptions at all.</p>
 <ul class="simple">
 <li><p><strong>Gauss:</strong> <em>postulate that the sample mean is the maximum-likelihood estimate of the true value.</em> That forces <span class="math notranslate nohighlight">\(f'/f\)</span> to be linear, which is a differential equation, whose solution is the Gaussian.</p></li>
 <li><p><strong>Maximum entropy:</strong> <em>postulate nothing beyond a known mean and variance, and assume as little as possible otherwise.</em> That is a constrained optimization, whose solution is the Gaussian.</p></li>
@@ -684,15 +696,119 @@
 </div>
 <div class="note admonition">
 <p class="admonition-title">Why we square the errors — the honest answer</p>
-<p>Week 4-6 introduces least squares with the remark that squaring keeps errors positive and makes the minimization linear. Both are true, and both are conveniences rather than reasons.</p>
+<p>Weeks 4-6 introduce least squares with the remark that squaring keeps errors positive and makes the minimization linear. Both are true, and both are conveniences rather than reasons.</p>
 <p>The real reason is the table above. <strong>Squaring the errors is equivalent to asserting that the errors are Gaussian.</strong> That assertion is usually reasonable — by the Central Limit Theorem, errors that accumulate from many small independent causes tend to be Gaussian — but it is an assumption about your data, not a mathematical necessity, and it is the assumption that fails when you have outliers.</p>
 <p>This also explains a fact that would otherwise look like coincidence: the mean is the estimator that minimizes squared error, and the Gaussian is the maximum-entropy distribution for fixed <em>squared</em> deviation. The median is the estimator that minimizes absolute error, and the Laplace is the maximum-entropy distribution for fixed <em>absolute</em> deviation. Mean-with-Gaussian and median-with-Laplace are two self-consistent packages, and the loss you pick selects which one you are in.</p>
 </div>
 </section>
 <hr class="docutils" />
+<section id="both-questions-at-once-bayes-theorem">
+<h2>Both questions at once — Bayes’ theorem<a class="headerlink" href="#both-questions-at-once-bayes-theorem" title="Link to this heading">#</a></h2>
+<p>Look at what each question quietly assumed.</p>
+<p><strong>Question 1 had no prior opinion.</strong> Among all PDFs with the right mean and variance it chose the most noncommittal one, deliberately refusing to favour any particular shape.</p>
+<p><strong>Question 2 had no prior opinion either.</strong> Among all candidate models it chose whichever one the data liked best — however implausible that model looked <em>before</em> the data arrived.</p>
+<p>Neither is the usual situation. Usually you have <strong>both</strong>: something you believed beforehand, and data that bears on it. Putting the two together takes the same move and exactly one new ingredient.</p>
+<section id="the-functional-the-cost-of-changing-your-mind">
+<h3>The functional: the cost of changing your mind<a class="headerlink" href="#the-functional-the-cost-of-changing-your-mind" title="Link to this heading">#</a></h3>
+<p>Entropy measures how noncommittal a distribution is in absolute terms. That was the right thing to maximize when you started from nothing. But now you start from somewhere — a <strong>prior</strong> <span class="math notranslate nohighlight">\(\pi_i\)</span>, your probability for hypothesis <span class="math notranslate nohighlight">\(i\)</span> before the data — and the principle becomes: <em>move as little as possible, but move enough to accommodate what you saw.</em></p>
+<p>So the quantity to measure is not how noncommittal a candidate belief <span class="math notranslate nohighlight">\(q_i\)</span> is, but how far it has <strong>moved</strong> from <span class="math notranslate nohighlight">\(\pi_i\)</span>. That is the <strong>relative entropy</strong>, also called the Kullback-Leibler divergence:</p>
+<div class="math notranslate nohighlight">
+\[D[q\|\pi] = \sum_i q_i\ln\frac{q_i}{\pi_i}\]</div>
+<p>(Here <span class="math notranslate nohighlight">\(\pi_i\)</span> is a prior probability — nothing to do with <span class="math notranslate nohighlight">\(3.14159\)</span>.) Read it as a <strong>cost of revision</strong>, in the same units as entropy: zero when <span class="math notranslate nohighlight">\(q = \pi\)</span>, since you changed nothing and so paid nothing; positive otherwise; and very large when <span class="math notranslate nohighlight">\(q\)</span> puts weight where <span class="math notranslate nohighlight">\(\pi\)</span> had put almost none, which is what a drastic change of mind looks like.</p>
+<p>This does not replace Question 1 — it contains it. Set the prior flat, <span class="math notranslate nohighlight">\(\pi_i = 1/N\)</span>, and</p>
+<div class="math notranslate nohighlight">
+\[-D[q\|\pi] = -\sum_i q_i\ln q_i - \ln N\]</div>
+<p>which is the entropy of Question 1 up to an additive constant, the same kind of harmless offset as the <span class="math notranslate nohighlight">\(-\ln\Delta x\)</span> in Step 1’s loose end, and it moves no maximum. <strong>Maximizing entropy is minimizing the departure from a flat prior.</strong> Question 1 was the special case of believing nothing in particular to begin with.</p>
+</section>
+<section id="the-constraint-the-data">
+<h3>The constraint: the data<a class="headerlink" href="#the-constraint-the-data" title="Link to this heading">#</a></h3>
+<p>Let <span class="math notranslate nohighlight">\(L_i\)</span> be the <strong>likelihood</strong> — the probability of the data you actually observed, if hypothesis <span class="math notranslate nohighlight">\(i\)</span> were the true one. A belief that takes the data seriously must assign it a decent log-likelihood on average, so the constraint is</p>
+<div class="math notranslate nohighlight">
+\[\sum_i q_i\ln L_i = c\]</div>
+<p>with <span class="math notranslate nohighlight">\(c\)</span> stating how far you insist on deferring to what you saw. And, as always, that the answer is a probability distribution: <span class="math notranslate nohighlight">\(\sum_i q_i = 1\)</span>.</p>
+</section>
+<section id="attach-one-multiplier-per-constraint-and-differentiate">
+<h3>Attach one multiplier per constraint and differentiate<a class="headerlink" href="#attach-one-multiplier-per-constraint-and-differentiate" title="Link to this heading">#</a></h3>
+<p>Two constraints, two multipliers. We are minimizing rather than maximizing now, so the signs read the other way round; nothing else changes:</p>
+<div class="math notranslate nohighlight">
+\[\mathcal{L}(q_1,\dots,q_N) = \sum_i q_i\ln\frac{q_i}{\pi_i} + \lambda_0\Big(\sum_i q_i - 1\Big) - \beta\Big(\sum_i q_i\ln L_i - c\Big)\]</div>
+<p>Differentiate with respect to a single hypothesis <span class="math notranslate nohighlight">\(q_j\)</span>. Only the <span class="math notranslate nohighlight">\(i=j\)</span> term of each sum survives, and <span class="math notranslate nohighlight">\(\frac{d}{dq}\big(q\ln(q/\pi)\big) = \ln(q/\pi) + 1\)</span>, so</p>
+<div class="math notranslate nohighlight">
+\[\frac{\partial\mathcal{L}}{\partial q_j} = \ln\frac{q_j}{\pi_j} + 1 + \lambda_0 - \beta\ln L_j = 0\]</div>
+<p>Rearranging and exponentiating, exactly as in Step 3 above,</p>
+<div class="math notranslate nohighlight">
+\[q_j = \frac{\pi_j\,L_j^{\beta}}{Z}, \qquad Z = \sum_i \pi_i L_i^{\beta}\]</div>
+<p>Set <span class="math notranslate nohighlight">\(\beta = 1\)</span> and read it out loud — <strong>posterior <span class="math notranslate nohighlight">\(\propto\)</span> prior <span class="math notranslate nohighlight">\(\times\)</span> likelihood</strong>:</p>
+<div class="math notranslate nohighlight">
+\[\boxed{q_j = \frac{\pi_j L_j}{\sum_i \pi_i L_i}}\]</div>
+<p>That is <strong>Bayes’ theorem</strong>. It was not assumed anywhere. It is what this chapter’s one move returns when the functional is the cost of revision and the constraint is the data.</p>
+</section>
+<section id="what-the-two-multipliers-turn-out-to-be">
+<h3>What the two multipliers turn out to be<a class="headerlink" href="#what-the-two-multipliers-turn-out-to-be" title="Link to this heading">#</a></h3>
+<p>Now do what the interlude said to always do.</p>
+<p><strong><span class="math notranslate nohighlight">\(\lambda_0\)</span>, on normalization, is the evidence.</strong> Normalizing <span class="math notranslate nohighlight">\(q_j = \pi_j L_j^{\beta}e^{-(1+\lambda_0)}\)</span> gives <span class="math notranslate nohighlight">\(e^{1+\lambda_0} = Z\)</span>, and at <span class="math notranslate nohighlight">\(\beta = 1\)</span>,</p>
+<div class="math notranslate nohighlight">
+\[Z = \sum_i \pi_i L_i = p(\text{data})\]</div>
+<p>the <strong>marginal likelihood</strong>, or <em>evidence</em> — the denominator of Bayes’ theorem and the quantity all Bayesian model comparison is built on. The multiplier that did nothing but enforce “probabilities sum to one” turned out to be the probability of your data. (The stray <span class="math notranslate nohighlight">\(-1\)</span> is the same one that appeared in Step 3, and comes from the same derivative.)</p>
+<p><strong><span class="math notranslate nohighlight">\(\beta\)</span>, on the data constraint, is an exchange rate between the data and your prior.</strong> By the shadow-price property, <span class="math notranslate nohighlight">\(dD^*/dc = \beta\)</span>: it is how many nats of revision you must pay per extra nat of fit demanded. <span class="math notranslate nohighlight">\(\beta = 1\)</span> is ordinary Bayes — each observation counted once, at face value. <span class="math notranslate nohighlight">\(\beta &lt; 1\)</span> deliberately discounts the data, which is what you want when the likelihood is misspecified, or when the observations are autocorrelated and therefore are not really <span class="math notranslate nohighlight">\(n\)</span> independent facts. So <strong>Bayes’ rule is one member of a one-parameter family, and the parameter is a Lagrange multiplier.</strong></p>
+<div class="note admonition">
+<p class="admonition-title">Example / deeper dive</p>
+<p><strong>Bayes with no free parameter — and what a revision costs</strong></p>
+<p>Introducing the likelihood as a <em>constraint</em> is what produced the adjustable <span class="math notranslate nohighlight">\(\beta\)</span>. There is a tighter version in which no such freedom exists.</p>
+<p>Work in the joint space of hypothesis <em>and</em> data. Your prior there is <span class="math notranslate nohighlight">\(\pi(\theta,x) = \pi(\theta)\,p(x\mid\theta)\)</span> — it already contains the likelihood, because to have a model at all is to know what data each hypothesis would produce. Then observing <span class="math notranslate nohighlight">\(x = x_0\)</span> is not a soft constraint but a hard one: <em>all</em> the probability must sit on <span class="math notranslate nohighlight">\(x = x_0\)</span>. Minimize <span class="math notranslate nohighlight">\(D[q\|\pi]\)</span> subject to that and to normalization, and the single remaining multiplier delivers</p>
+<div class="math notranslate nohighlight">
+\[q(\theta) = \frac{\pi(\theta)\,p(x_0\mid\theta)}{p(x_0)} = \pi(\theta\mid x_0)\]</div>
+<p>with no <span class="math notranslate nohighlight">\(\beta\)</span> anywhere: the likelihood enters with power exactly one because it was never a constraint to be priced. <strong>Conditioning on data is the projection of your prior onto the set of beliefs compatible with what you saw</strong>, measured in relative entropy. The <span class="math notranslate nohighlight">\(\beta\)</span> of the main derivation is the price of having smuggled the likelihood in as a constraint instead.</p>
+<p>The value of the minimum is worth computing too. Substituting back,</p>
+<div class="math notranslate nohighlight">
+\[D^* = \sum_\theta \pi(\theta\mid x_0)\ln\frac{\pi(\theta\mid x_0)}{\pi(\theta,x_0)} = -\ln p(x_0)\]</div>
+<p><strong>The minimum cost of revising your beliefs is exactly the surprisal of the data.</strong> Unsurprising data is cheap to absorb; data your prior thought nearly impossible forces an expensive revision. Note that the evidence has now appeared twice over — once as the multiplier, once as the optimal value.</p>
+</div>
+</section>
+<section id="a-penalty-is-a-negative-log-prior">
+<h3>A penalty is a negative log prior<a class="headerlink" href="#a-penalty-is-a-negative-log-prior" title="Link to this heading">#</a></h3>
+<p>Question 2 established that a loss function is a negative log-likelihood. Bayes finishes the sentence. Take logs of posterior <span class="math notranslate nohighlight">\(\propto\)</span> prior <span class="math notranslate nohighlight">\(\times\)</span> likelihood:</p>
+<div class="math notranslate nohighlight">
+\[-\ln p(\theta\mid y) = \underbrace{-\ln L(y\mid\theta)}_{\text{a loss}}\;\underbrace{-\ln\pi(\theta)}_{\text{a penalty}} + \text{const}\]</div>
+<p><strong>A penalty term is a negative log prior</strong>, exactly as a loss term is a negative log-likelihood. And what converts a stated belief into a penalty is a Lagrange multiplier. Suppose you fit coefficients <span class="math notranslate nohighlight">\(\mathbf{w}\)</span> by least squares but refuse to let them grow large — because you have more predictors than you trust, or they are collinear. That is a constrained problem of precisely this chapter’s shape:</p>
+<div class="math notranslate nohighlight">
+\[\text{minimize }\lVert y - X\mathbf{w}\rVert^2 \quad\text{subject to}\quad \lVert\mathbf{w}\rVert^2 \le t \qquad\Longrightarrow\qquad \mathcal{L} = \lVert y - X\mathbf{w}\rVert^2 + \lambda\lVert\mathbf{w}\rVert^2\]</div>
+<p>Now compare that with the negative log posterior for Gaussian errors of variance <span class="math notranslate nohighlight">\(\sigma^2\)</span> and a Gaussian prior of variance <span class="math notranslate nohighlight">\(\tau^2\)</span> on each coefficient, which is <span class="math notranslate nohighlight">\(\lVert y - X\mathbf{w}\rVert^2 + (\sigma^2/\tau^2)\lVert\mathbf{w}\rVert^2\)</span>. The two are the same problem, so</p>
+<div class="math notranslate nohighlight">
+\[\boxed{\lambda = \frac{\sigma^2}{\tau^2}}\]</div>
+<p><strong>The multiplier is the ratio of how noisy the data is to how confident the prior is</strong> — an exchange rate between data and belief, in the most literal sense available. <span class="math notranslate nohighlight">\(\lambda\to0\)</span> is a prior so vague it may as well be absent, and ordinary least squares returns; <span class="math notranslate nohighlight">\(\lambda\to\infty\)</span> is a prior so rigid that no data can move it.</p>
+<p>And the Gaussian/Laplace pair comes back a third time:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Prior on the coefficients</p></th>
+<th class="head"><p>Penalty it becomes</p></th>
+<th class="head"><p>Effect</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Gaussian</p></td>
+<td><p><span class="math notranslate nohighlight">\(\lambda\lVert\mathbf{w}\rVert^2\)</span> (L2)</p></td>
+<td><p>shrinks every coefficient smoothly toward zero</p></td>
+</tr>
+<tr class="row-odd"><td><p>Laplace</p></td>
+<td><p><span class="math notranslate nohighlight">\(\lambda\lVert\mathbf{w}\rVert_1\)</span> (L1)</p></td>
+<td><p>sets most coefficients exactly to zero</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Squared-versus-absolute chose the error distribution in Question 2; the identical choice chooses the prior here. Same two constraints from the maximum-entropy table, same two densities, same two norms — applied now to the parameters instead of the residuals.</p>
+</section>
+<section id="where-the-prior-comes-from">
+<h3>Where the prior comes from<a class="headerlink" href="#where-the-prior-comes-from" title="Link to this heading">#</a></h3>
+<p>One honest gap. Minimum relative entropy tells you how to <strong>revise</strong> a belief, not how to <strong>start</strong> one: it needs <span class="math notranslate nohighlight">\(\pi\)</span> handed to it from outside.</p>
+<p>The usual answer is Question 1. Choose the prior by maximum entropy from whatever you genuinely know, then let the data revise it by minimum relative entropy — the two halves of this chapter, in that order. What the pattern will not do is excuse you from saying what you believed beforehand. It only forces that statement into the open, where it can be argued with, which is more than a method that leaves it implicit can offer.</p>
+</section>
+</section>
+<hr class="docutils" />
 <section id="the-same-move-everywhere">
 <h2>The same move, everywhere<a class="headerlink" href="#the-same-move-everywhere" title="Link to this heading">#</a></h2>
-<p>Both questions turned out to be: <em>optimize a functional subject to constraints.</em> So does everything that follows.</p>
+<p>Both questions — and their combination — turned out to be: <em>optimize a functional subject to constraints.</em> So does everything that follows.</p>
 <div class="pst-scrollable-table-container"><table class="table">
 <thead>
 <tr class="row-odd"><th class="head"><p>Part</p></th>
@@ -702,32 +818,37 @@
 </tr>
 </thead>
 <tbody>
-<tr class="row-even"><td><p><strong>1-3</strong> Statistics</p></td>
+<tr class="row-even"><td><p><strong>0</strong> Bayes</p></td>
+<td><p>revision cost <span class="math notranslate nohighlight">\(\sum q\ln(q/\pi)\)</span></p></td>
+<td><p>the observed likelihood</p></td>
+<td><p>the posterior</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>1-3</strong> Statistics</p></td>
 <td><p>entropy <span class="math notranslate nohighlight">\(-\int f\ln f\)</span></p></td>
 <td><p>known moments</p></td>
 <td><p>the PDF you assume</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>1-3</strong> Statistics</p></td>
+<tr class="row-even"><td><p><strong>1-3</strong> Statistics</p></td>
 <td><p>likelihood <span class="math notranslate nohighlight">\(\prod f(x_i-\mu)\)</span></p></td>
 <td><p>mean is optimal</p></td>
 <td><p>the Gaussian</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>4-6</strong> Regression</p></td>
+<tr class="row-odd"><td><p><strong>4-6</strong> Regression</p></td>
 <td><p>loss <span class="math notranslate nohighlight">\(=-\ln L\)</span></p></td>
 <td><p>choice of model family</p></td>
 <td><p>regression coefficients</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>8-11</strong> EOFs</p></td>
+<tr class="row-even"><td><p><strong>8-11</strong> EOFs</p></td>
 <td><p>variance explained <span class="math notranslate nohighlight">\(\mathbf{e}^T\mathbf{C}\mathbf{e}\)</span></p></td>
 <td><p><span class="math notranslate nohighlight">\(\mathbf{e}^T\mathbf{e} = 1\)</span></p></td>
 <td><p>eigenvectors of <span class="math notranslate nohighlight">\(\mathbf{C}\)</span></p></td>
 </tr>
-<tr class="row-even"><td><p><strong>8-11</strong> Clustering</p></td>
+<tr class="row-odd"><td><p><strong>8-11</strong> Clustering</p></td>
 <td><p>within-cluster sum of squares</p></td>
 <td><p>exactly <span class="math notranslate nohighlight">\(k\)</span> clusters</p></td>
 <td><p>cluster centroids</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>12-15</strong> Fourier</p></td>
+<tr class="row-even"><td><p><strong>12-15</strong> Fourier</p></td>
 <td><p>squared projection onto each harmonic</p></td>
 <td><p>orthonormal basis</p></td>
 <td><p>Fourier coefficients</p></td>
@@ -763,13 +884,14 @@
 <hr class="docutils" />
 <section id="what-to-carry-forward">
 <h2>What to carry forward<a class="headerlink" href="#what-to-carry-forward" title="Link to this heading">#</a></h2>
-<p>Three sentences:</p>
+<p>Four sentences:</p>
 <ol class="arabic simple">
 <li><p><strong>The null hypothesis is a PDF, and you can derive rather than guess it</strong> — maximize entropy subject to what you actually know.</p></li>
 <li><p><strong>A loss function is a negative log-likelihood, so choosing a loss is choosing an error distribution</strong> — L2 asserts Gaussian errors, L1 asserts Laplace.</p></li>
+<li><p><strong>Bayes’ theorem is this same move with a prior attached</strong> — minimize the cost of revising what you believed, subject to honouring what you saw; a penalty term is then a negative log prior, just as a loss is a negative log-likelihood.</p></li>
 <li><p><strong>Whenever you want “the best” of something subject to a restriction, attach a Lagrange multiplier</strong> — and check what the multiplier turns out to mean, because it is often the quantity you actually wanted.</p></li>
 </ol>
-<p>Everything else this semester is these three sentences applied to bigger objects.</p>
+<p>Everything else this semester is these four sentences applied to bigger objects.</p>
 </section>
 </section>
 
@@ -856,6 +978,15 @@
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#question-2-which-model-minimize-a-loss">Question 2: which model? — minimize a loss</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#both-questions-at-once-bayes-theorem">Both questions at once — Bayes’ theorem</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-functional-the-cost-of-changing-your-mind">The functional: the cost of changing your mind</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-constraint-the-data">The constraint: the data</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#attach-one-multiplier-per-constraint-and-differentiate">Attach one multiplier per constraint and differentiate</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#what-the-two-multipliers-turn-out-to-be">What the two multipliers turn out to be</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#a-penalty-is-a-negative-log-prior">A penalty is a negative log prior</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#where-the-prior-comes-from">Where the prior comes from</a></li>
+</ul>
+</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-same-move-everywhere">The same move, everywhere</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#where-the-pattern-stops">Where the pattern stops</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-to-carry-forward">What to carry forward</a></li>
