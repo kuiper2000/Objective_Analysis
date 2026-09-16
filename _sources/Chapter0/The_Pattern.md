@@ -116,6 +116,43 @@ $$\frac{dS}{d(\sigma^2)} = \frac{1}{2\sigma^2}$$
 which is precisely the $\lambda_2$ that will fall out of the derivation below. **So when a multiplier appears in this course, always ask what it turned out to be — it is usually the answer, not the bookkeeping.**
 :::
 
+### But why does *defining* $\mathcal{L}$ get us what we want?
+
+This is the step that most often feels like a sleight of hand, so it is worth saying plainly what is and is not happening.
+
+**Nothing is proved by writing down $\mathcal{L}$.** It is a container, not an argument. You already believe two things about the answer — tangency, $\nabla f = \lambda\nabla g$, and feasibility, $g = c$. That is $n+1$ equations in $n+1$ unknowns ($x_1,\dots,x_n$ and $\lambda$), and you could solve them and never write a Lagrangian at all.
+
+The object
+
+$$\mathcal{L} = f - \lambda(g-c)$$
+
+is built precisely so that differentiating it hands those same two facts back to you — the $x_j$ derivatives give the components of $\nabla f = \lambda\nabla g$, and the $\lambda$ derivative gives $g = c$. Note *why* that last one is so simple: $\mathcal{L}$ is **linear** in $\lambda$, so $\partial\mathcal{L}/\partial\lambda$ is nothing but $-(g-c)$. That is not deep; it is engineered. The payoff is only that you no longer have to remember two different *kinds* of condition, one geometric and one algebraic — you turn the same crank on every variable, $\lambda$ included.
+
+**Where the tangency condition actually comes from.** The fence-and-contour picture above is correct but is the two-dimensional shadow of a cleaner statement, and it is the cleaner statement that survives into the $N$-bin problem below, where nothing can be drawn:
+
+At the best point, $f$ must stop changing **in every direction you are allowed to move** — every direction tangent to the surface $g=c$. "No change along $\mathbf{v}$" means $\nabla f\cdot\mathbf{v}=0$. So $\nabla f$ is perpendicular to every tangent direction. But $\nabla g$ is perpendicular to that same surface too, since a gradient is always normal to its own level set. The directions perpendicular to the surface form a single line, and two vectors on one line are multiples of each other:
+
+$$\nabla f = \lambda\,\nabla g$$
+
+In words: **$\nabla f$ has no component along the permitted directions, so all of it lies along the forbidden one — which is where $\nabla g$ already points.** $\lambda$ is only the ratio of their lengths.
+
+**What the multiplier actually buys.** Without it you are *not entitled* to set $\partial f/\partial x_j = 0$, because the $x_j$ are not free: nudging one forces another to move to stay on the constraint. Plain stationarity is simply false for a constrained problem. The term $-\lambda(g-c)$ is exactly the correction that removes the component of the gradient pointing off the constraint surface, so that after the subtraction the "as if unconstrained" condition $\partial\mathcal{L}/\partial x_j = 0$ becomes legitimate — it now encodes only the tangential part, which is the part that genuinely has to vanish. That is the trade stated above: one extra unknown in exchange for the right to differentiate every variable independently.
+
+:::{admonition} Example / deeper dive
+:class: note
+**A reading that makes the definition feel inevitable**
+
+If $\mathcal{L}$ still looks pulled from a hat, read $-\lambda(g-c)$ as a **charge for violating the constraint**, at price $\lambda$ per unit. Then $\mathcal{L}$ is simply *payoff minus bill*.
+
+- Price too low → cheating is cheap, and the free optimizer of $\mathcal{L}$ overshoots, $g > c$.
+- Price too high → cheating is over-penalized, and it undershoots, $g < c$.
+- There is exactly one price $\lambda^*$ at which the **unconstrained** optimizer of $\mathcal{L}$ lands on $g=c$ of its own accord.
+
+At that price the constraint stops being a wall and becomes a cost you have already internalized, so you may optimize freely and the constraint enforces itself. The equation $\partial\mathcal{L}/\partial\lambda = 0$ is precisely the statement "$\lambda$ has been tuned to that price." This is also why $\lambda$ *has* to be the shadow price $df^*/dc$ of the previous section — by construction it is a price. The two readings are one fact.
+
+**One caveat.** You are finding a **stationary point** of $\mathcal{L}$, not a maximum of it. Because $\mathcal{L}$ is linear in $\lambda$ it is unbounded in that direction — the solution is a saddle (a maximum over $x$, a minimum over $\lambda$), never a maximum in all the variables at once. So "maximize the Lagrangian" is sloppy; the honest recipe is *set all partials to zero, then confirm separately that the stationary point is the extremum you wanted.* In the entropy derivation below, the concavity of $-\sum p\ln p$ is what supplies that confirmation.
+:::
+
 ---
 
 ## Question 1: which PDF? — maximize entropy
@@ -189,11 +226,11 @@ and that $-\ln\Delta x$ blows up as the bins shrink. It is harmless here because
 
 We have the shape but not yet the numbers. Three multipliers, three constraints.
 
-**The linear term vanishes.** Complete the square in $u = x-\mu$:
+**The linear term vanishes.** Substitute $u = x-\mu$. The exponent becomes $-1-\lambda_0-\lambda_1\mu-\lambda_1u-\lambda_2u^2$; the first three terms carry no $u$, so set them aside into an overall prefactor and complete the square in what remains:
 
 $$-\lambda_1 u - \lambda_2u^2 = -\lambda_2\left(u + \frac{\lambda_1}{2\lambda_2}\right)^2 + \frac{\lambda_1^2}{4\lambda_2}$$
 
-so $f$ is a bell curve centred at $x = \mu - \lambda_1/(2\lambda_2)$. But the mean constraint says the centre is at $\mu$. That **forces** $\lambda_1 = 0$ — it is a consequence of the constraints, not an assumption. Absorbing the remaining constants into one prefactor $A$,
+so $f$ is a bell curve centred at $x = \mu - \lambda_1/(2\lambda_2)$ (the leftover $\lambda_1^2/4\lambda_2$ is another $u$-free constant, and joins the prefactor too). But the mean constraint says the centre is at $\mu$. That **forces** $\lambda_1 = 0$ — it is a consequence of the constraints, not an assumption. Absorbing the remaining constants into one prefactor $A$,
 
 $$f(x) = A\exp\left(-\lambda_2(x-\mu)^2\right)$$
 
