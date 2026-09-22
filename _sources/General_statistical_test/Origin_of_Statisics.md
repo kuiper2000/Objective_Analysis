@@ -469,6 +469,51 @@ In our Bayesian formulation, we used additional a priori information, namely, th
 
 For the cab accident example, a frequentist would say the probability of the cab in the accident being Blue is 80%, the probability the witness was correct. The Bayesian approach, however, also took into account the background rate of the number of cars in the city, information that the frequentist approach couldn't use.
 
+:::{admonition} Worked comparison: "Was 2025 the warmest year on record?"
+:class: note
+
+The two philosophies differ in more than just whether prior information is used. The deeper split is over **what kind of thing is allowed to carry a probability**. The cleanest way to see this is to hand both approaches the *same* numbers and watch them produce different sentences.
+
+**The setup.** Global-mean surface temperature is not measured perfectly: the station network is uneven, instruments drift, and the ocean is sparsely sampled. Suppose an analysis centre reports
+
+$$\begin{aligned}
+\text{2025 anomaly} &= 1.28^\circ\text{C} \\
+\text{2024 anomaly (previous record)} &= 1.24^\circ\text{C} \\
+\text{gap } d &= 0.04^\circ\text{C}, \quad \sigma_d = 0.05^\circ\text{C}
+\end{aligned}$$
+
+The uncertainty on the *gap*, $\sigma_d$, is smaller than the uncertainty on either year alone, because both years are estimated from the same station network and much of the error cancels in the difference. Both camps accept these numbers. They disagree about what may be said next.
+
+**The frequentist.** The true 2025 anomaly is a fixed physical constant. The event "2025 was the warmest year" already happened, exactly once — it is either true or false, and its probability is $0$ or $1$; we simply don't know which. Since it is not repeatable, a frequentist declines to attach a probability to it at all, and instead makes a statement about the **measurement procedure**:
+
+> *If the two years were truly tied ($d_{\text{true}} = 0$), then measurement noise alone would produce an apparent gap of $0.04^\circ$C or larger in magnitude about 42% of the time.*
+
+(From $z = 0.04/0.05 = 0.8$; we formalise this kind of calculation later under hypothesis testing.) The conclusion: the observed gap is comfortably within what noise alone generates, so the data do not establish a new record. Note where the probability sits — on the **data**, given a hypothesis: $\Pr(\text{data} \mid H)$.
+
+**The Bayesian.** The quantity $d = \mu_{2025} - \mu_{2024}$ is simply unknown, and probability measures how strongly the evidence pins it down. With a flat prior — no reason beforehand to favour either year — the posterior is centred on the observed gap:
+
+$$d \mid \text{data} \;\sim\; \mathcal{N}(0.04,\; 0.05^2)$$
+
+$$\Pr(\text{2025 warmest} \mid \text{data}) = \Pr(d > 0 \mid \text{data}) = \Phi\!\left(\frac{0.04}{0.05}\right) = \Phi(0.8) = 0.79$$
+
+> *Given the observations, there is a 79% probability that 2025 was the warmest year on record.*
+
+Here the probability sits on the **hypothesis**, given the data: $\Pr(H \mid \text{data})$.
+
+**Same data, two headlines.**
+
+| | Frequentist | Bayesian |
+|---|---|---|
+| What is random? | the data | the unknown quantity |
+| Can "2025 was warmest" have a probability? | No — it is a fixed fact | Yes — it is an unknown |
+| The statement produced | "noise alone would fake a gap this big 42% of the time" | "79% probability 2025 set a record" |
+| Form of the answer | $\Pr(\text{data} \mid H)$ | $\Pr(H \mid \text{data})$ |
+
+**Why both numbers are correct.** 42% and 79% are not in conflict; they are answers to different questions. In fact they are arithmetically linked: $1 - 0.79 = 0.21$, which is exactly half of $0.42$. With a flat prior and Gaussian errors, the Bayesian posterior and the one-sided frequentist calculation land on the same number. What never coincides is *what the number is a probability of*.
+
+**The practical lesson.** Whenever you hear "there is a 95% chance the true value lies in this range," that is a Bayesian sentence — even when the interval was produced by frequentist machinery. Misreading frequentist output as a probability statement about the truth is the single most common error in applied statistics, and we will return to it when we construct confidence intervals.
+:::
+
 Bayes Theorem is actually used quite often in atmospheric science in the form of the Kalman Filter, for example, for forecasts. At its base level, the Kalman Filter is an iterative application of Bayes Theorem which uses uncertainties in measurements to weigh their use when updating the next time step.
 
 ## Tying it together: Moments, PDFs, and Bayes' Theorem

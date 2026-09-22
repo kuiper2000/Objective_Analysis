@@ -833,6 +833,62 @@ E_2 &amp;= \tilde{C} = \text{the chemical is not present}
 <p>For example, in the Monty Hall problem, we wanted to know the probability that the car was behind a certain door, say door C. A frequentist approach would be to say, if I run this experiment thousands of times, how often will the car be behind door C? The answer is <span class="math notranslate nohighlight">\(1/3\)</span> of the time.</p>
 <p>In our Bayesian formulation, we used additional a priori information, namely, that Monty Hall showed us that it wasn’t behind a certain door. A frequentist approach does not use this information, while a Bayesian approach does.</p>
 <p>For the cab accident example, a frequentist would say the probability of the cab in the accident being Blue is 80%, the probability the witness was correct. The Bayesian approach, however, also took into account the background rate of the number of cars in the city, information that the frequentist approach couldn’t use.</p>
+<div class="note admonition">
+<p class="admonition-title">Worked comparison: “Was 2025 the warmest year on record?”</p>
+<p>The two philosophies differ in more than just whether prior information is used. The deeper split is over <strong>what kind of thing is allowed to carry a probability</strong>. The cleanest way to see this is to hand both approaches the <em>same</em> numbers and watch them produce different sentences.</p>
+<p><strong>The setup.</strong> Global-mean surface temperature is not measured perfectly: the station network is uneven, instruments drift, and the ocean is sparsely sampled. Suppose an analysis centre reports</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{aligned}
+\text{2025 anomaly} &amp;= 1.28^\circ\text{C} \\
+\text{2024 anomaly (previous record)} &amp;= 1.24^\circ\text{C} \\
+\text{gap } d &amp;= 0.04^\circ\text{C}, \quad \sigma_d = 0.05^\circ\text{C}
+\end{aligned}\end{split}\]</div>
+<p>The uncertainty on the <em>gap</em>, <span class="math notranslate nohighlight">\(\sigma_d\)</span>, is smaller than the uncertainty on either year alone, because both years are estimated from the same station network and much of the error cancels in the difference. Both camps accept these numbers. They disagree about what may be said next.</p>
+<p><strong>The frequentist.</strong> The true 2025 anomaly is a fixed physical constant. The event “2025 was the warmest year” already happened, exactly once — it is either true or false, and its probability is <span class="math notranslate nohighlight">\(0\)</span> or <span class="math notranslate nohighlight">\(1\)</span>; we simply don’t know which. Since it is not repeatable, a frequentist declines to attach a probability to it at all, and instead makes a statement about the <strong>measurement procedure</strong>:</p>
+<blockquote>
+<div><p><em>If the two years were truly tied (<span class="math notranslate nohighlight">\(d_{\text{true}} = 0\)</span>), then measurement noise alone would produce an apparent gap of <span class="math notranslate nohighlight">\(0.04^\circ\)</span>C or larger in magnitude about 42% of the time.</em></p>
+</div></blockquote>
+<p>(From <span class="math notranslate nohighlight">\(z = 0.04/0.05 = 0.8\)</span>; we formalise this kind of calculation later under hypothesis testing.) The conclusion: the observed gap is comfortably within what noise alone generates, so the data do not establish a new record. Note where the probability sits — on the <strong>data</strong>, given a hypothesis: <span class="math notranslate nohighlight">\(\Pr(\text{data} \mid H)\)</span>.</p>
+<p><strong>The Bayesian.</strong> The quantity <span class="math notranslate nohighlight">\(d = \mu_{2025} - \mu_{2024}\)</span> is simply unknown, and probability measures how strongly the evidence pins it down. With a flat prior — no reason beforehand to favour either year — the posterior is centred on the observed gap:</p>
+<div class="math notranslate nohighlight">
+\[d \mid \text{data} \;\sim\; \mathcal{N}(0.04,\; 0.05^2)\]</div>
+<div class="math notranslate nohighlight">
+\[\Pr(\text{2025 warmest} \mid \text{data}) = \Pr(d &gt; 0 \mid \text{data}) = \Phi\!\left(\frac{0.04}{0.05}\right) = \Phi(0.8) = 0.79\]</div>
+<blockquote>
+<div><p><em>Given the observations, there is a 79% probability that 2025 was the warmest year on record.</em></p>
+</div></blockquote>
+<p>Here the probability sits on the <strong>hypothesis</strong>, given the data: <span class="math notranslate nohighlight">\(\Pr(H \mid \text{data})\)</span>.</p>
+<p><strong>Same data, two headlines.</strong></p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p></p></th>
+<th class="head"><p>Frequentist</p></th>
+<th class="head"><p>Bayesian</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>What is random?</p></td>
+<td><p>the data</p></td>
+<td><p>the unknown quantity</p></td>
+</tr>
+<tr class="row-odd"><td><p>Can “2025 was warmest” have a probability?</p></td>
+<td><p>No — it is a fixed fact</p></td>
+<td><p>Yes — it is an unknown</p></td>
+</tr>
+<tr class="row-even"><td><p>The statement produced</p></td>
+<td><p>“noise alone would fake a gap this big 42% of the time”</p></td>
+<td><p>“79% probability 2025 set a record”</p></td>
+</tr>
+<tr class="row-odd"><td><p>Form of the answer</p></td>
+<td><p><span class="math notranslate nohighlight">\(\Pr(\text{data} \mid H)\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(\Pr(H \mid \text{data})\)</span></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>Why both numbers are correct.</strong> 42% and 79% are not in conflict; they are answers to different questions. In fact they are arithmetically linked: <span class="math notranslate nohighlight">\(1 - 0.79 = 0.21\)</span>, which is exactly half of <span class="math notranslate nohighlight">\(0.42\)</span>. With a flat prior and Gaussian errors, the Bayesian posterior and the one-sided frequentist calculation land on the same number. What never coincides is <em>what the number is a probability of</em>.</p>
+<p><strong>The practical lesson.</strong> Whenever you hear “there is a 95% chance the true value lies in this range,” that is a Bayesian sentence — even when the interval was produced by frequentist machinery. Misreading frequentist output as a probability statement about the truth is the single most common error in applied statistics, and we will return to it when we construct confidence intervals.</p>
+</div>
 <p>Bayes Theorem is actually used quite often in atmospheric science in the form of the Kalman Filter, for example, for forecasts. At its base level, the Kalman Filter is an iterative application of Bayes Theorem which uses uncertainties in measurements to weigh their use when updating the next time step.</p>
 </section>
 </section>
