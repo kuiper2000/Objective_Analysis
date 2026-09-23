@@ -417,7 +417,7 @@
 </li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#type-i-and-type-ii-errors">Type I and Type II errors</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#a-priori-vs-a-posteriori">A priori vs. A posteriori</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#bayesian-vs-frequentist-approach">Bayesian vs Frequentist approach</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#bayesian-vs-frequentist-approach-revisited">Bayesian vs Frequentist approach, revisited</a></li>
 </ul>
 </li>
 </ul>
@@ -605,11 +605,6 @@ s &amp;= \text{the sample standard deviation}
 <p>What we want is the first term, and the second term is our bias. You can show that adding the <span class="math notranslate nohighlight">\(N-1\)</span> gets rid of the low bias of the variance, but we don’t go into that derivation here. In practice, if using <span class="math notranslate nohighlight">\(N\)</span> or <span class="math notranslate nohighlight">\(N-1\)</span> matters in your analysis, you are in trouble anyway.</p>
 <p>The mean is the average picture (stationary picture), while the variance describes all the interesting wiggles and variability about the mean.</p>
 <p>The estimate of the variance depends greatly on the sample rate (e.g. if you are using daily data, monthly data, yearly data, etc).</p>
-<div class="tip admonition">
-<p class="admonition-title">Figure / in-class demonstration</p>
-<p>Run <a class="reference download internal" download="" href="../_downloads/e23f31c768771afb7293d1592bc53797/variance_example.py"><span class="xref download myst"><code class="docutils literal notranslate"><span class="pre">variance_example.py</span></code></span></a>
-<img alt="Variance vs sample size" src="../_images/variance_example.png" /></p>
-</div>
 <p>Also, one can show that two time series with the same variance (say, of 1) but with different persistences can give different answers depending on the sample window (how long of the record you look).</p>
 </section>
 <section id="higher-moments">
@@ -623,16 +618,11 @@ s &amp;= \text{the sample standard deviation}
 \[a_r = m_r / s^r\]</div>
 <p>where <span class="math notranslate nohighlight">\(s\)</span> is the sample standard deviation.</p>
 <p>The skewness indicates the degree of asymmetry of the distribution about the mean. <span class="math notranslate nohighlight">\(a_3 &gt; 0\)</span> indicates a long tail on the positive side of the mean (a Gaussian has <span class="math notranslate nohighlight">\(a_3 = 0\)</span>).</p>
-<div class="tip admonition">
-<p class="admonition-title">Figure / in-class demonstration</p>
-<p>Run <a class="reference download internal" download="" href="../_downloads/55477aaa6e4c868b02334e21a8685c63/skewness_kurtosis.py"><span class="xref download myst"><code class="docutils literal notranslate"><span class="pre">skewness_kurtosis.py</span></code></span></a>
-<img alt="Skewness" src="../_images/skewness_kurtosis.png" /></p>
-</div>
 <p>The kurtosis indicates the degree of peakedness of the distribution. <span class="math notranslate nohighlight">\(a_4 &gt; 3\)</span> indicates a more peaked distribution compared to a Gaussian, which has <span class="math notranslate nohighlight">\(a_4 = 3\)</span>.</p>
 <div class="tip admonition">
 <p class="admonition-title">Figure / in-class demonstration</p>
-<p>Run <a class="reference download internal" download="" href="../_downloads/55477aaa6e4c868b02334e21a8685c63/skewness_kurtosis.py"><span class="xref download myst"><code class="docutils literal notranslate"><span class="pre">skewness_kurtosis.py</span></code></span></a>
-<img alt="Kurtosis" src="../_images/skewness_kurtosis.png" /></p>
+<p>Run <a class="reference download internal" download="" href="../_downloads/55477aaa6e4c868b02334e21a8685c63/skewness_kurtosis.py"><span class="xref download myst"><code class="docutils literal notranslate"><span class="pre">skewness_kurtosis.py</span></code></span></a> — the left panel illustrates skewness, the right panel kurtosis.
+<img alt="Skewness and kurtosis" src="../_images/skewness_kurtosis.png" /></p>
 </div>
 <p>Typically, higher order moments are given in terms of the standardized units, for ease of comparison (and so units don’t matter).</p>
 </section>
@@ -827,8 +817,22 @@ E_2 &amp;= \tilde{C} = \text{the chemical is not present}
 <p><strong>Frequentist:</strong> if you give an event many opportunities to occur, the probability of occurrence is the</p>
 <div class="math notranslate nohighlight">
 \[\frac{\text{\# of occurrences}}{\text{\# of opportunities}}\]</div>
-<p>This approach works well when you can repeat an experiment many, many times.</p>
-<p><strong>Bayesian:</strong> this approach is named after the frequent use of Bayes theorem, which takes into account a priori information that may not be useable by a frequentist.</p>
+<p>This approach works well when you can repeat an experiment many, many times. In more detail:</p>
+<ul class="simple">
+<li><p>any given experiment can be considered as one of an infinite sequence of possible repetitions</p></li>
+<li><p>probability is seen as the “potential frequency of an outcome”</p></li>
+<li><p>the result is often a “true or false” conclusion from a significance test</p></li>
+<li><p>it answers the question “how likely is my data if the null hypothesis is true?”, that is, <span class="math notranslate nohighlight">\(\Pr(\text{data} \mid \text{null hypothesis})\)</span></p></li>
+</ul>
+<p><strong>Bayesian:</strong> this approach is named after the frequent use of Bayes theorem, which takes into account a priori information that may not be useable by a frequentist. In more detail:</p>
+<ul class="simple">
+<li><p>the evidence about the true state of the world is expressed in terms of degrees of belief</p></li>
+<li><p>any probability is a conditional probability given what one knows (varies from person to person)</p></li>
+<li><p>probability is seen as the “plausibility of an outcome”</p></li>
+<li><p>it “updates” a prior hypothesis when new information comes to light</p></li>
+<li><p>it answers the question “how likely is it that a hypothesis is true given my data?”, that is, <span class="math notranslate nohighlight">\(\Pr(\text{hypothesis} \mid \text{data})\)</span></p></li>
+</ul>
+<p>The last bullet in each list is the entire disagreement compressed into one line: a frequentist reports <span class="math notranslate nohighlight">\(\Pr(\text{data} \mid H)\)</span>, whereas a Bayesian reports <span class="math notranslate nohighlight">\(\Pr(H \mid \text{data})\)</span>. Bayes’ theorem is precisely the bridge between the two, which is why it sits at the centre of this debate.</p>
 <p>Often, these two approaches can give different answers:</p>
 <p>For example, in the Monty Hall problem, we wanted to know the probability that the car was behind a certain door, say door C. A frequentist approach would be to say, if I run this experiment thousands of times, how often will the car be behind door C? The answer is <span class="math notranslate nohighlight">\(1/3\)</span> of the time.</p>
 <p>In our Bayesian formulation, we used additional a priori information, namely, that Monty Hall showed us that it wasn’t behind a certain door. A frequentist approach does not use this information, while a Bayesian approach does.</p>
@@ -1233,8 +1237,8 @@ E_2 &amp;= \tilde{C} = \text{the chemical is not present}
 <p>(note that the <span class="math notranslate nohighlight">\(\sigma\)</span> no longer appears in the denominator due to the transformation of <span class="math notranslate nohighlight">\(F(z)\)</span> using <span class="math notranslate nohighlight">\(z = (x-\mu)/\sigma\)</span> and needing to replace <span class="math notranslate nohighlight">\(dx\)</span> with <span class="math notranslate nohighlight">\(\sigma \cdot dz\)</span>)</p>
 <div class="tip admonition">
 <p class="admonition-title">Figure / in-class demonstration</p>
-<p>Run <a class="reference download internal" download="" href="../_downloads/b4090ff2488eb11c8862a7813722049f/normal_distribution.py"><span class="xref download myst"><code class="docutils literal notranslate"><span class="pre">normal_distribution.py</span></code></span></a>
-<img alt="Normal distribution and histograms" src="../_images/normal_distribution.png" /></p>
+<p>Run <a class="reference download internal" download="" href="../_downloads/b4090ff2488eb11c8862a7813722049f/normal_distribution.py"><span class="xref download myst"><code class="docutils literal notranslate"><span class="pre">normal_distribution.py</span></code></span></a> — the left panel compares a sample histogram with the theoretical PDF, while the centre and right panels show the two-tailed and one-tailed regions used just below.
+<img alt="Normal distribution: histogram vs PDF, two-tailed and one-tailed regions" src="../_images/normal_distribution.png" /></p>
 </div>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{aligned}
@@ -1242,12 +1246,7 @@ E_2 &amp;= \tilde{C} = \text{the chemical is not present}
 \Pr(-2 \leq z \leq 2) &amp;= 95.45\% \\
 \Pr(-3 \leq z \leq 3) &amp;= 99.73\%
 \end{aligned}\end{split}\]</div>
-<p>Recall that <span class="math notranslate nohighlight">\(z\)</span> is a standardized normal variable, and so, <span class="math notranslate nohighlight">\(z=2\)</span> is <span class="math notranslate nohighlight">\(z=2\)</span> standard deviations. Thus, there is a 4.55% probability that <span class="math notranslate nohighlight">\(z\)</span> will fall outside of 2 standard deviations of its mean (two-tailed probability) and a 2.275% chance it will exceed <span class="math notranslate nohighlight">\(+2\)</span> standard deviations (one-tailed probability).</p>
-<div class="tip admonition">
-<p class="admonition-title">Figure / in-class demonstration</p>
-<p>Run <a class="reference download internal" download="" href="../_downloads/b4090ff2488eb11c8862a7813722049f/normal_distribution.py"><span class="xref download myst"><code class="docutils literal notranslate"><span class="pre">normal_distribution.py</span></code></span></a> (one-tailed and two-tailed panels) and <a class="reference download internal" download="" href="../_downloads/d5c21239231b7577a99dae379ad11586/what_is_pdf.py"><span class="xref download myst"><code class="docutils literal notranslate"><span class="pre">what_is_pdf.py</span></code></span></a> (uniform distribution panel).
-<img alt="One-tailed and two-tailed" src="../_images/normal_distribution.png" /></p>
-</div>
+<p>Recall that <span class="math notranslate nohighlight">\(z\)</span> is a standardized normal variable, and so, <span class="math notranslate nohighlight">\(z=2\)</span> is <span class="math notranslate nohighlight">\(z=2\)</span> standard deviations. Thus, there is a 4.55% probability that <span class="math notranslate nohighlight">\(z\)</span> will fall outside of 2 standard deviations of its mean (two-tailed probability) and a 2.275% chance it will exceed <span class="math notranslate nohighlight">\(+2\)</span> standard deviations (one-tailed probability). These two cases are exactly the centre and right panels of the figure above.</p>
 </section>
 <section id="statistical-significance-testing-the-t-statistic-and-z-statistic">
 <h3>Statistical Significance Testing: the t-statistic and z-statistic<a class="headerlink" href="#statistical-significance-testing-the-t-statistic-and-z-statistic" title="Link to this heading">#</a></h3>
@@ -1469,12 +1468,7 @@ z &amp;= \frac{\overline{X} - \mu}{\sigma/\sqrt{N}} \\
 <p>When applying the t-test, you are implicitly making a very strong assumption: that the underlying distribution is normal.</p>
 <p><strong>Always check your normality assumption:</strong> plot your data, look at the skewness, kurtosis, etc. There are fancy tests to check for normality, e.g. the Kolmogorov–Smirnov test (<code class="docutils literal notranslate"><span class="pre">kstest</span></code> in Matlab).</p>
 <p>Now, we previously discussed the Central Limit Theorem (CLT), which tells us that for a “large enough” sample size, the distribution of sample means is normal. <strong>However</strong>, note that the t-test applies for small <span class="math notranslate nohighlight">\(N\)</span> but for underlying normal distributions, whereas the CLT only applies for large <span class="math notranslate nohighlight">\(N\)</span>.</p>
-<p>Thus, you cannot blindly apply the t-test to test differences in sample means if the underlying distributions are not already normal! This is a common mistake made in our field.</p>
-<div class="tip admonition">
-<p class="admonition-title">Figure / in-class demonstration</p>
-<p>Run <a class="reference download internal" download="" href="../_downloads/cfdfe8e43106879722a3453dc60ac0fc/central_limit_theorem.py"><span class="xref download myst"><code class="docutils literal notranslate"><span class="pre">central_limit_theorem.py</span></code></span></a>
-<img alt="Central Limit Theorem revisited" src="../_images/central_limit_theorem.png" /></p>
-</div>
+<p>Thus, you cannot blindly apply the t-test to test differences in sample means if the underlying distributions are not already normal! This is a common mistake made in our field. It is worth revisiting the central limit theorem figure above with this caveat in mind: convergence to normality is guaranteed only in the limit of large <span class="math notranslate nohighlight">\(N\)</span>, and the lognormal parent shown there is still visibly skewed at small <span class="math notranslate nohighlight">\(N\)</span>.</p>
 </section>
 <section id="a-note-on-the-independence-on-n">
 <h3>A note on the independence on N<a class="headerlink" href="#a-note-on-the-independence-on-n" title="Link to this heading">#</a></h3>
@@ -1635,23 +1629,10 @@ z &amp;= \frac{\overline{X} - \mu}{\sigma/\sqrt{N}} \\
 <p>Thus, your 95% confidence level is really a 9% confidence level!</p>
 <p>By trial and error, we can calculate the significance level <span class="math notranslate nohighlight">\(\beta\)</span> for which <span class="math notranslate nohighlight">\(\beta^{48} \approx 0.95\)</span> (our a posteriori statistic). In this case, <span class="math notranslate nohighlight">\(\beta \approx 0.999\)</span>. Thus, if we require the blocking changes for each chance to pass at the 99.9% confidence level, then the probability of correctly rejecting the null hypothesis for all chances will be 95%.</p>
 </div>
-<section id="bayesian-vs-frequentist-approach">
-<h4>Bayesian vs Frequentist approach<a class="headerlink" href="#bayesian-vs-frequentist-approach" title="Link to this heading">#</a></h4>
-<p><strong>Bayesian probability:</strong></p>
-<ul class="simple">
-<li><p>the evidence about the true state of the world is expressed in terms of degrees of belief</p></li>
-<li><p>any probability is a conditional probability given what one knows (varies from person to person)</p></li>
-<li><p>probability is seen as the “plausibility of an outcome”</p></li>
-<li><p>“updates” a prior hypothesis when new information comes to light</p></li>
-<li><p>often answers the question of “how likely is it that a hypothesis is true given my data?”, that is, <span class="math notranslate nohighlight">\(\Pr(\text{hypothesis} \mid \text{data})\)</span></p></li>
-</ul>
-<p><strong>Frequentist probability/hypothesis testing:</strong></p>
-<ul class="simple">
-<li><p>any given experiment can be considered as one of an infinite sequence of possible repetitions</p></li>
-<li><p>result of a frequentist approach is often a “true or false” conclusion from a significance test</p></li>
-<li><p>probability is seen as the “potential frequency of an outcome”</p></li>
-<li><p>often answers the question “how likely is my data if the null hypothesis is true?”, that is, <span class="math notranslate nohighlight">\(\Pr(\text{data} \mid \text{null hypothesis})\)</span></p></li>
-</ul>
+<section id="bayesian-vs-frequentist-approach-revisited">
+<h4>Bayesian vs Frequentist approach, revisited<a class="headerlink" href="#bayesian-vs-frequentist-approach-revisited" title="Link to this heading">#</a></h4>
+<p>The two philosophies were introduced earlier, in the <strong>Probability philosophy</strong> section, where we saw that a frequentist reports <span class="math notranslate nohighlight">\(\Pr(\text{data} \mid H)\)</span> while a Bayesian reports <span class="math notranslate nohighlight">\(\Pr(H \mid \text{data})\)</span>. At that point we could only illustrate the distinction with counting arguments. Now that p-values and significance levels are in hand, we can return to it and see what the distinction actually costs in research practice.</p>
+<p>The issue is this: a significance test hands you <span class="math notranslate nohighlight">\(\Pr(\text{data} \mid H_0)\)</span>, but the quantity you almost always <em>want</em> is <span class="math notranslate nohighlight">\(\Pr(H_0 \mid \text{data})\)</span> — how plausible the hypothesis is, given what you observed. It is tempting to read the first as though it were the second. The two examples below show how badly that substitution can fail when the hypothesis was implausible to begin with, and how Bayes’ theorem repairs it.</p>
 <div class="note admonition">
 <p class="admonition-title">Bayesian vs Frequentist approach cont.</p>
 <p>You’ve heard the hypothesis that variations in cosmic rays are driving the increase in global-mean temperatures we’ve seen over the last century, but you are very skeptical. You’ve been to a lot of seminars by experts in the field suggesting there is little evidence for this hypothesis. You calculate the correlation between incoming cosmic ray intensity and global-mean temperature and the resulting correlation has a p-value of 0.05. Should you now accept that cosmic rays are the answer and forget about CO<span class="math notranslate nohighlight">\(_2\)</span>?</p>
@@ -2120,7 +2101,7 @@ y_i &lt; x_i &amp;\rightarrow -1
 </li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#type-i-and-type-ii-errors">Type I and Type II errors</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#a-priori-vs-a-posteriori">A priori vs. A posteriori</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#bayesian-vs-frequentist-approach">Bayesian vs Frequentist approach</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#bayesian-vs-frequentist-approach-revisited">Bayesian vs Frequentist approach, revisited</a></li>
 </ul>
 </li>
 </ul>

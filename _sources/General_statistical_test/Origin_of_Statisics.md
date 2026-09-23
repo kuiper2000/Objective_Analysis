@@ -169,12 +169,6 @@ The mean is the average picture (stationary picture), while the variance describ
 
 The estimate of the variance depends greatly on the sample rate (e.g. if you are using daily data, monthly data, yearly data, etc).
 
-:::{admonition} Figure / in-class demonstration
-:class: tip
-Run [`variance_example.py`](variance_example.py)
-![Variance vs sample size](variance_example.png)
-:::
-
 Also, one can show that two time series with the same variance (say, of 1) but with different persistences can give different answers depending on the sample window (how long of the record you look).
 
 ### Higher moments
@@ -193,18 +187,12 @@ where $s$ is the sample standard deviation.
 
 The skewness indicates the degree of asymmetry of the distribution about the mean. $a_3 > 0$ indicates a long tail on the positive side of the mean (a Gaussian has $a_3 = 0$).
 
-:::{admonition} Figure / in-class demonstration
-:class: tip
-Run [`skewness_kurtosis.py`](skewness_kurtosis.py)
-![Skewness](skewness_kurtosis.png)
-:::
-
 The kurtosis indicates the degree of peakedness of the distribution. $a_4 > 3$ indicates a more peaked distribution compared to a Gaussian, which has $a_4 = 3$.
 
 :::{admonition} Figure / in-class demonstration
 :class: tip
-Run [`skewness_kurtosis.py`](skewness_kurtosis.py)
-![Kurtosis](skewness_kurtosis.png)
+Run [`skewness_kurtosis.py`](skewness_kurtosis.py) --- the left panel illustrates skewness, the right panel kurtosis.
+![Skewness and kurtosis](skewness_kurtosis.png)
 :::
 
 Typically, higher order moments are given in terms of the standardized units, for ease of comparison (and so units don't matter).
@@ -457,9 +445,29 @@ There are two general philosophies of thought on statistics: (a) frequentist app
 
 $$\frac{\text{\# of occurrences}}{\text{\# of opportunities}}$$
 
-This approach works well when you can repeat an experiment many, many times.
+This approach works well when you can repeat an experiment many, many times. In more detail:
 
-**Bayesian:** this approach is named after the frequent use of Bayes theorem, which takes into account a priori information that may not be useable by a frequentist.
+-   any given experiment can be considered as one of an infinite sequence of possible repetitions
+
+-   probability is seen as the "potential frequency of an outcome"
+
+-   the result is often a "true or false" conclusion from a significance test
+
+-   it answers the question "how likely is my data if the null hypothesis is true?", that is, $\Pr(\text{data} \mid \text{null hypothesis})$
+
+**Bayesian:** this approach is named after the frequent use of Bayes theorem, which takes into account a priori information that may not be useable by a frequentist. In more detail:
+
+-   the evidence about the true state of the world is expressed in terms of degrees of belief
+
+-   any probability is a conditional probability given what one knows (varies from person to person)
+
+-   probability is seen as the "plausibility of an outcome"
+
+-   it "updates" a prior hypothesis when new information comes to light
+
+-   it answers the question "how likely is it that a hypothesis is true given my data?", that is, $\Pr(\text{hypothesis} \mid \text{data})$
+
+The last bullet in each list is the entire disagreement compressed into one line: a frequentist reports $\Pr(\text{data} \mid H)$, whereas a Bayesian reports $\Pr(H \mid \text{data})$. Bayes' theorem is precisely the bridge between the two, which is why it sits at the centre of this debate.
 
 Often, these two approaches can give different answers:
 
@@ -770,8 +778,8 @@ $$f(z) = \frac{1}{\sqrt{2\pi}}\exp\left(\frac{-z^2}{2}\right)$$
 
 :::{admonition} Figure / in-class demonstration
 :class: tip
-Run [`normal_distribution.py`](normal_distribution.py)
-![Normal distribution and histograms](normal_distribution.png)
+Run [`normal_distribution.py`](normal_distribution.py) --- the left panel compares a sample histogram with the theoretical PDF, while the centre and right panels show the two-tailed and one-tailed regions used just below.
+![Normal distribution: histogram vs PDF, two-tailed and one-tailed regions](normal_distribution.png)
 :::
 
 $$\begin{aligned}
@@ -780,13 +788,7 @@ $$\begin{aligned}
 \Pr(-3 \leq z \leq 3) &= 99.73\%
 \end{aligned}$$
 
-Recall that $z$ is a standardized normal variable, and so, $z=2$ is $z=2$ standard deviations. Thus, there is a 4.55% probability that $z$ will fall outside of 2 standard deviations of its mean (two-tailed probability) and a 2.275% chance it will exceed $+2$ standard deviations (one-tailed probability).
-
-:::{admonition} Figure / in-class demonstration
-:class: tip
-Run [`normal_distribution.py`](normal_distribution.py) (one-tailed and two-tailed panels) and [`what_is_pdf.py`](what_is_pdf.py) (uniform distribution panel).
-![One-tailed and two-tailed](normal_distribution.png)
-:::
+Recall that $z$ is a standardized normal variable, and so, $z=2$ is $z=2$ standard deviations. Thus, there is a 4.55% probability that $z$ will fall outside of 2 standard deviations of its mean (two-tailed probability) and a 2.275% chance it will exceed $+2$ standard deviations (one-tailed probability). These two cases are exactly the centre and right panels of the figure above.
 
 ### Statistical Significance Testing: the t-statistic and z-statistic
 
@@ -1077,13 +1079,7 @@ When applying the t-test, you are implicitly making a very strong assumption: th
 
 Now, we previously discussed the Central Limit Theorem (CLT), which tells us that for a "large enough" sample size, the distribution of sample means is normal. **However**, note that the t-test applies for small $N$ but for underlying normal distributions, whereas the CLT only applies for large $N$.
 
-Thus, you cannot blindly apply the t-test to test differences in sample means if the underlying distributions are not already normal! This is a common mistake made in our field.
-
-:::{admonition} Figure / in-class demonstration
-:class: tip
-Run [`central_limit_theorem.py`](central_limit_theorem.py)
-![Central Limit Theorem revisited](central_limit_theorem.png)
-:::
+Thus, you cannot blindly apply the t-test to test differences in sample means if the underlying distributions are not already normal! This is a common mistake made in our field. It is worth revisiting the central limit theorem figure above with this caveat in mind: convergence to normality is guaranteed only in the limit of large $N$, and the lognormal parent shown there is still visibly skewed at small $N$.
 
 ### A note on the independence on N
 
@@ -1281,29 +1277,11 @@ Thus, your 95% confidence level is really a 9% confidence level!
 By trial and error, we can calculate the significance level $\beta$ for which $\beta^{48} \approx 0.95$ (our a posteriori statistic). In this case, $\beta \approx 0.999$. Thus, if we require the blocking changes for each chance to pass at the 99.9% confidence level, then the probability of correctly rejecting the null hypothesis for all chances will be 95%.
 :::
 
-#### Bayesian vs Frequentist approach
+#### Bayesian vs Frequentist approach, revisited
 
-**Bayesian probability:**
+The two philosophies were introduced earlier, in the **Probability philosophy** section, where we saw that a frequentist reports $\Pr(\text{data} \mid H)$ while a Bayesian reports $\Pr(H \mid \text{data})$. At that point we could only illustrate the distinction with counting arguments. Now that p-values and significance levels are in hand, we can return to it and see what the distinction actually costs in research practice.
 
--   the evidence about the true state of the world is expressed in terms of degrees of belief
-
--   any probability is a conditional probability given what one knows (varies from person to person)
-
--   probability is seen as the "plausibility of an outcome"
-
--   "updates" a prior hypothesis when new information comes to light
-
--   often answers the question of "how likely is it that a hypothesis is true given my data?", that is, $\Pr(\text{hypothesis} \mid \text{data})$
-
-**Frequentist probability/hypothesis testing:**
-
--   any given experiment can be considered as one of an infinite sequence of possible repetitions
-
--   result of a frequentist approach is often a "true or false" conclusion from a significance test
-
--   probability is seen as the "potential frequency of an outcome"
-
--   often answers the question "how likely is my data if the null hypothesis is true?", that is, $\Pr(\text{data} \mid \text{null hypothesis})$
+The issue is this: a significance test hands you $\Pr(\text{data} \mid H_0)$, but the quantity you almost always *want* is $\Pr(H_0 \mid \text{data})$ --- how plausible the hypothesis is, given what you observed. It is tempting to read the first as though it were the second. The two examples below show how badly that substitution can fail when the hypothesis was implausible to begin with, and how Bayes' theorem repairs it.
 
 :::{admonition} Bayesian vs Frequentist approach cont.
 :class: note
