@@ -507,32 +507,35 @@ White noise is the special case of AR1 with $a = 0$ (i.e. $\rho(\tau > 0) = 0$).
 ::::{admonition} Side note: diffusion models in machine learning and their connection to AR processes
 :class: note
 
-**Diffusion models** (also called Denoising Diffusion Probabilistic Models, DDPMs) have become the dominant generative model architecture in machine learning — used for image synthesis, weather downscaling, and bias correction. At their core, they are built on a process that is mathematically identical to AR(1).
+**Diffusion models** (also called Denoising Diffusion Probabilistic Models, DDPMs) have become the dominant generative model architecture in machine learning — used for image synthesis, weather downscaling, and bias correction. They belong in this chapter for a specific reason, not as a digression: **the process that destroys the data is an AR(1) process, and the process that rebuilds it is a least-squares regression.** Both halves of the algorithm are objects you have already met. The rest is engineering.
 
-**What is in this note, and in what order**
+**How to read this note**
 
-This note is long because it does three separate jobs: it explains the *mechanism*, it derives the *training objective*, and it ties both back to the regression material in this chapter. The map:
+The note runs in three parts — **mechanism** (what the algorithm does), **theory** (why its loss takes the form it does, and what the network ends up learning), then **use** (what it looks like and what it is for). There are no forward references, so it can be read straight through; each subsection is numbered, so the table doubles as an index.
 
-Each subsection below is labelled with its number, so this table can be used as an index.
+| part | # | subsection | the question it answers |
+|---|---|---|---|
+| **mechanism** | **1a** | *Two derivations, and why this note gives both* | why are there two derivations? |
+| | **1b** | *Notation — the symbols change meaning here* | what do $\mathbf{x}_0$, $\mathbf{x}_t$, $\mathbf{y}$ and $t$ mean? |
+| | **2a** | *The forward process* | how is the data destroyed? |
+| | **2b** | *The reverse process* | how is it rebuilt? |
+| **theory** | **3** | *Where does the "noisy data distribution" come from?* | what is $p_t$? — a blurred copy of your data, i.e. a KDE |
+| | **4** | *Where the training objective comes from* | why is the loss $\|\boldsymbol{\epsilon}-\boldsymbol{\epsilon}_\theta\|^2$? — the variational bound |
+| | **5a** | *A second reading: $\boldsymbol{\epsilon}_\theta$ as an estimate of the score* | what has the trained network learned? |
+| | **5b** | *How to read the identity* | how should that formula be interpreted? |
+| **use** | **6** | *Watching it happen* | what does the process actually look like? — an animation |
+| | **7a** | *Application to downscaling* | what is it for? |
+| | **7b** | *Why conditioning is necessary* | why must it be conditioned? — the $r^2$ link |
+| | **8** | *Summary of the AR1–diffusion connection* | how does all of it map back onto AR(1)? |
 
-| # | subsection | the question it answers |
-|---|---|---|
-| **1a** | *Two derivations, and why this note gives both* | why are there two derivations? |
-| **1b** | *Notation — the symbols change meaning here* | what do $\mathbf{x}_0$, $\mathbf{x}_t$, $\mathbf{y}$ and $t$ mean? |
-| **2a** | *The forward process* | how is the data destroyed? |
-| **2b** | *The reverse process* | how is it rebuilt? |
-| **3** | *Where does the "noisy data distribution" come from?* | what is $p_t$? — a blurred copy of your data, i.e. a KDE |
-| **4** | *Where the training objective comes from* | why is the loss $\|\boldsymbol{\epsilon}-\boldsymbol{\epsilon}_\theta\|^2$? — the variational bound |
-| **5a** | *A second reading: $\boldsymbol{\epsilon}_\theta$ as an estimate of the score* | what has the trained network learned? |
-| **5b** | *How to read the identity* | how should that formula be interpreted? |
-| **6** | *Watching it happen* | what does the process actually look like? — an animation |
-| **7a** | *Application to downscaling* | what is it for? |
-| **7b** | *Why conditioning is necessary* | why must it be conditioned? — the $r^2$ link |
-| **8** | *Summary of the AR1–diffusion connection* | how does all of it map back onto AR(1)? |
+For a first pass or a lecture, read **1 → 2 → 6 → 7 → 8**: what the algorithm does, what it looks like, and what it is for. Parts 3–5 justify the loss and interpret the trained network; they can be skipped without losing the thread.
 
-The order is: **mechanism** (1–2), then **theory** (3–5), then **illustration and use** (6–8). Nothing depends on anything below it, so it can be read straight through.
+:::{admonition} Companion: the full derivation
+:class: seealso
+Section 4 below compresses the variational derivation into five steps, which is the right level for a lecture but skips the algebra. The companion note {download}`DDPM: A Complete Derivation <DDPM_full_derivation.pdf>` carries out every step in full — the induction for the closed-form forward marginal $q(\mathbf{x}_t\mid\mathbf{x}_0)$, the telescoping that turns the ELBO into KL divergences (Appendix A of Ho et al., 2020), the Bayes-rule construction of the true posterior $q(\mathbf{x}_{t-1}\mid\mathbf{x}_t,\mathbf{x}_0)$ with its mean and variance matched term by term, the Gaussian KL identity, and the noise reparameterisation that collapses it to $L_{\text{simple}}$.
 
-For a first pass or a lecture, read **1 → 2 → 6 → 7 → 8** — that is, what the algorithm does, what it looks like, and what it is for — and skip the derivations in 3–5 entirely. They are needed only to justify the loss and to interpret what the network has learned.
+It also opens with something this note assumes: the **variance-exploding** process you get if you add noise *without* rescaling, $\mathbf{x}_t = \mathbf{x}_{t-1} + \sqrt{\beta}\,\boldsymbol{\epsilon}_t$. Its mean stays pinned at $\mathbf{x}_0$ and its variance grows as $t\beta \to \infty$, so it never converges to $\mathcal{N}(\mathbf{0},\mathbf{I})$ and there is no fixed noise distribution to start sampling from. That failure is what forces the $\sqrt{1-\beta_t}$ factor in §2a — it is exactly the coefficient that holds the variance at 1.
+:::
 
 **1a. Two derivations, and why this note gives both**
 
