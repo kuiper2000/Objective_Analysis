@@ -509,58 +509,14 @@ White noise is the special case of AR1 with $a = 0$ (i.e. $\rho(\tau > 0) = 0$).
 
 **Diffusion models** (also called Denoising Diffusion Probabilistic Models, DDPMs) have become the dominant generative model architecture in machine learning — used for image synthesis, weather downscaling, and bias correction. They belong in this chapter for a specific reason, not as a digression: **the process that destroys the data is an AR(1) process, and the process that rebuilds it is a least-squares regression.** Both halves of the algorithm are objects you have already met. The rest is engineering.
 
-**How to read this note**
-
-The note runs in three parts — **mechanism** (what the algorithm does), **theory** (why its loss takes the form it does, and what the network ends up learning), then **use** (what it looks like and what it is for). There are no forward references, so it can be read straight through; each subsection is numbered, so the table doubles as an index.
-
-| part | # | subsection | the question it answers |
-|---|---|---|---|
-| **mechanism** | **1a** | *Two derivations, and why this note gives both* | why are there two derivations? |
-| | **1b** | *Notation — the symbols change meaning here* | what do $\mathbf{x}_0$, $\mathbf{x}_t$, $\mathbf{y}$ and $t$ mean? |
-| | **2a** | *The forward process* | how is the data destroyed? |
-| | **2b** | *The reverse process* | how is it rebuilt? |
-| **theory** | **3** | *Where does the "noisy data distribution" come from?* | what is $p_t$? — a blurred copy of your data, i.e. a KDE |
-| | **4** | *Where the training objective comes from* | why is the loss $\|\boldsymbol{\epsilon}-\boldsymbol{\epsilon}_\theta\|^2$? — the variational bound |
-| | **5a** | *A second reading: $\boldsymbol{\epsilon}_\theta$ as an estimate of the score* | what has the trained network learned? |
-| | **5b** | *How to read the identity* | how should that formula be interpreted? |
-| **use** | **6** | *Watching it happen* | what does the process actually look like? — an animation |
-| | **7a** | *Application to downscaling* | what is it for? |
-| | **7b** | *Why conditioning is necessary* | why must it be conditioned? — the $r^2$ link |
-| | **8** | *Summary of the AR1–diffusion connection* | how does all of it map back onto AR(1)? |
-
-For a first pass or a lecture, read **1 → 2 → 6 → 7 → 8**: what the algorithm does, what it looks like, and what it is for. Parts 3–5 justify the loss and interpret the trained network; they can be skipped without losing the thread.
+**How to read this note.** Sections 1–3 build the forward process, 4–9 derive the training loss, and 10 states the algorithm. That run is self-contained and strictly linear: if you only want to *implement* a DDPM, stop at 10. Sections 11–16 then re-read the trained network as a density estimate and apply it to downscaling — which is what you need in order to *interpret* or *modify* one.
 
 :::{admonition} Companion: the full derivation
 :class: seealso
-Section 4 below compresses the variational derivation into five steps, which is the right level for a lecture but skips the algebra. The companion note {download}`DDPM: A Complete Derivation <DDPM_full_derivation.pdf>` carries out every step in full — the induction for the closed-form forward marginal $q(\mathbf{x}_t\mid\mathbf{x}_0)$, the telescoping that turns the ELBO into KL divergences (Appendix A of Ho et al., 2020), the Bayes-rule construction of the true posterior $q(\mathbf{x}_{t-1}\mid\mathbf{x}_t,\mathbf{x}_0)$ with its mean and variance matched term by term, the Gaussian KL identity, and the noise reparameterisation that collapses it to $L_{\text{simple}}$.
-
-It also opens with something this note assumes: the **variance-exploding** process you get if you add noise *without* rescaling, $\mathbf{x}_t = \mathbf{x}_{t-1} + \sqrt{\beta}\,\boldsymbol{\epsilon}_t$. Its mean stays pinned at $\mathbf{x}_0$ and its variance grows as $t\beta \to \infty$, so it never converges to $\mathcal{N}(\mathbf{0},\mathbf{I})$ and there is no fixed noise distribution to start sampling from. That failure is what forces the $\sqrt{1-\beta_t}$ factor in §2a — it is exactly the coefficient that holds the variance at 1.
+Sections 1–10 below follow {download}`DDPM: A Complete Derivation <DDPM_full_derivation.pdf>` step for step, and the numbering matches. The companion note carries every intermediate line that is compressed here: the induction for the closed-form forward marginal, the telescoping ELBO decomposition (Appendix A of Ho et al., 2020), the term-by-term matching of the true posterior, the Gaussian KL identity, and the noise reparameterisation.
 :::
 
-**1a. Two derivations, and why this note gives both**
-
-A diffusion model can be arrived at along two independent routes. They were developed separately, and were only later shown to describe the same algorithm (Song et al., 2021). This note follows both, because they answer different questions:
-
-| route | the question it answers | what it hands you |
-|---|---|---|
-| **variational** (Ho et al., 2020) | *why is the training loss what it is?* | the likelihood bound collapses to $L_{\text{simple}}$: predict the noise you added |
-| **score matching** (Vincent, 2011; Song & Ermon, 2019) | *what has the trained network actually learned?* | $\boldsymbol{\epsilon}_\theta$ is a scaled estimate of $\nabla\log p_t$ |
-
-The distinction is one this chapter has already drawn once, about the regression slope. You can define $a_1$ **operationally**, as the number that minimises $Q=\sum(\hat y_i - y_i)^2$ — correct, but it tells you nothing beyond the recipe. The result $a_1 = \overline{x'y'}/\overline{x'^2}$ instead says what $a_1$ **is**: a property of the joint distribution of $x$ and $y$, independent of the fitting procedure that produced it. $L_{\text{simple}}$ defines $\boldsymbol{\epsilon}_\theta$ operationally; the score identity says what $\boldsymbol{\epsilon}_\theta$ is.
-
-Why you need each:
-
-- To **implement** a diffusion model, the variational route is enough. The score need never be mentioned — the original DDPM paper barely does.
-- To **interpret** one, you need the score. Everything intuitive below is stated in score language: the kernel-density picture of $p_t$, the reading of $t$ as a bandwidth knob, denoising as a weighted vote among training fields, and the memorisation-versus-generalisation argument.
-- To **modify** one, you need the score. Because the normalising constant vanishes under the gradient, Bayes' rule becomes *addition*:
-
-$$\nabla_{\mathbf{x}}\log p(\mathbf{x}\mid\mathbf{y}) = \nabla_{\mathbf{x}}\log p(\mathbf{x}) + \nabla_{\mathbf{x}}\log p(\mathbf{y}\mid\mathbf{x})$$
-
-So a single unconditional model, trained once on high-resolution fields, can afterwards be conditioned on coarse model output, station observations or satellite retrievals by attaching the appropriate likelihood *at sampling time* — with no retraining. In the purely variational picture there is no handle on this: each new observation type means feeding $\mathbf{y}$ to the network as an input and training a new model. The same view also yields deterministic samplers (20–50 steps rather than 1000) and exact likelihoods.
-
-That last point is the one worth remembering for downscaling: it converts "one trained model per data source" into "one prior, many observation operators" — which is precisely the structure of data assimilation.
-
-:::{admonition} 1b. Notation — the symbols change meaning here
+:::{admonition} Notation — the symbols change meaning here
 :class: warning
 Machine learning uses $x$ and $y$ in **the opposite sense** to the regression sections above. Statistics fixed $(x,y) = (\text{predictor},\text{response})$; generative ML fixed $\mathbf{x} = $ the field being modelled and $\mathbf{y} = $ the conditioning information. Both are entrenched, so this note keeps the ML convention — every diffusion paper you go on to read will use it — but you must hold the mapping in mind:
 
@@ -595,120 +551,224 @@ Three things to notice: $\mathbf{y}$ **never appears in that table** — it is n
 In `conditional_diffusion_demo.py` these are exactly the variables `x0`, `yobs = A @ x0`, and the running `x` inside `ddpm_sample`.
 :::
 
-**2a. The forward process — adding noise step by step**
+**Part A — The forward process (how the data is destroyed)**
 
-Given a data sample $\mathbf{x}_0$ (e.g., a high-resolution precipitation field), a diffusion model defines a sequence of increasingly noisy versions $\mathbf{x}_1, \mathbf{x}_2, \dots, \mathbf{x}_T$:
+**1. The naive forward process, and why it fails**
 
-$$\mathbf{x}_t = \sqrt{1-\beta_t}\,\mathbf{x}_{t-1} + \sqrt{\beta_t}\,\boldsymbol{\epsilon}_t, \qquad \boldsymbol{\epsilon}_t \sim \mathcal{N}(\mathbf{0}, \mathbf{I})$$
+The obvious way to destroy a field is to keep adding noise to it:
 
-where $\beta_t \in (0,1)$ is a **noise schedule** (a small, pre-defined sequence that increases with $t$). This is **exactly an AR(1) process** with time-varying coefficient $a_t = \sqrt{1-\beta_t}$ and noise amplitude $\sqrt{\beta_t}$.
+$$\mathbf{x}_t = \mathbf{x}_{t-1} + \sqrt{\beta}\,\boldsymbol{\epsilon}_t, \qquad \boldsymbol{\epsilon}_t\sim\mathcal{N}(\mathbf{0},\mathbf{I})$$
 
-By the end of the forward chain ($t = T$, typically $T = 1000$ steps), $\mathbf{x}_T \approx \mathcal{N}(\mathbf{0}, \mathbf{I})$ — pure Gaussian noise, regardless of what $\mathbf{x}_0$ was.
+Unrolling the recursion gives $\mathbf{x}_t = \mathbf{x}_0 + \sqrt{\beta}\,(\boldsymbol{\epsilon}_1+\cdots+\boldsymbol{\epsilon}_t)$, and a sum of $t$ independent $\mathcal{N}(\mathbf{0},\beta\mathbf{I})$ variables is $\mathcal{N}(\mathbf{0},t\beta\mathbf{I})$, so
 
-Using the telescoping property of AR(1), one can skip directly to any step:
+$$q(\mathbf{x}_t\mid\mathbf{x}_0) = \mathcal{N}\!\left(\mathbf{x}_t;\ \mathbf{x}_0,\ t\beta\mathbf{I}\right)$$
 
-$$\mathbf{x}_t = \sqrt{\bar{\alpha}_t}\,\mathbf{x}_0 + \sqrt{1-\bar{\alpha}_t}\,\boldsymbol{\epsilon}, \qquad \bar{\alpha}_t = \prod_{s=1}^{t}(1-\beta_s)$$
+The mean never moves off $\mathbf{x}_0$ and the variance grows without bound. This is the **variance-exploding** process, and it is useless for generation: there is no fixed distribution to start sampling *from*. To draw $\mathbf{x}_T$ you would already have to know $\mathbf{x}_0$ — which is the thing you were trying to generate.
 
-This is the closed-form solution for the AR(1) recursion: $\bar{\alpha}_t$ plays the role of $a^t$ (the t-step autocorrelation) in our notation.
+**2. The variance-preserving forward process**
 
-**2b. The reverse process — learning to denoise**
+The fix is to shrink the state slightly *before* adding the noise:
 
-The model learns the reverse: given $\mathbf{x}_t$, predict $\mathbf{x}_{t-1}$ (i.e., remove one step of noise). This reverse distribution is intractable analytically, so a neural network (usually a **U-Net**) $\boldsymbol{\epsilon}_\theta(\mathbf{x}_t, t)$ is trained to predict the noise $\boldsymbol{\epsilon}$ that was added at step $t$. Sampling then iterates:
+$$\mathbf{x}_t = \sqrt{1-\beta_t}\,\mathbf{x}_{t-1} + \sqrt{\beta_t}\,\boldsymbol{\epsilon}_t, \qquad q(\mathbf{x}_t\mid\mathbf{x}_{t-1}) = \mathcal{N}\!\left(\mathbf{x}_t;\ \sqrt{1-\beta_t}\,\mathbf{x}_{t-1},\ \beta_t\mathbf{I}\right)$$
 
-$$\mathbf{x}_{t-1} = \frac{1}{\sqrt{1-\beta_t}}\!\left(\mathbf{x}_t - \frac{\beta_t}{\sqrt{1-\bar{\alpha}_t}}\,\boldsymbol{\epsilon}_\theta(\mathbf{x}_t, t)\right) + \sqrt{\beta_t}\,\mathbf{z}, \qquad \mathbf{z} \sim \mathcal{N}(\mathbf{0},\mathbf{I})$$
+where $\beta_t\in(0,1)$ is a **noise schedule**, a small pre-defined sequence that increases with $t$.
 
-starting from $\mathbf{x}_T \sim \mathcal{N}(\mathbf{0},\mathbf{I})$ and working backwards to $\mathbf{x}_0$.
+**Why $\sqrt{1-\beta_t}$, and not something else?** Take the variance of both sides, exactly as we did for red noise above. If $\operatorname{Var}(\mathbf{x}_{t-1})=1$ then
 
-**3. Where does the "noisy data distribution" come from?**
+$$\operatorname{Var}(\mathbf{x}_t) = (1-\beta_t)\cdot 1 + \beta_t = 1$$
 
-To run the reverse process, the network must know which direction makes a noisy field look more like real data. That direction is the **score**, $\nabla_{\mathbf{x}}\log p_t(\mathbf{x}_t)$ — the gradient of the log-density of $p_t$, "the distribution of the data after $t$ steps of noise have been added." A fair question is: who decides what that distribution is? The answer is that **nobody does — it is not chosen, it is a consequence.** You only ever pick two things, and $p_t$ follows automatically:
+The coefficient is precisely what holds the variance fixed — hence *variance preserving*. **This is the AR(1) normalisation of this chapter, term for term.** Writing the chapter's $x(t) = a\,x(t-\Delta t) + b\,\epsilon(t)$ alongside it, $a_t = \sqrt{1-\beta_t}$ and $b_t = \sqrt{\beta_t}$, and the relation $a^2+b^2=1$ that gave us $b=\sqrt{1-a^2}$ is the identity being used here. A diffusion model's forward pass is an AR(1) process with a time-varying memory coefficient, nothing more.
+
+Define
+
+$$\alpha_t = 1-\beta_t, \qquad \bar\alpha_t = \prod_{s=1}^{t}\alpha_s$$
+
+**Closed form: jumping straight to step $t$.** By induction (substitute the $t-1$ result into the recursion), the two independent Gaussian contributions combine with variance $\alpha_t(1-\bar\alpha_{t-1}) + (1-\alpha_t) = 1-\bar\alpha_t$, giving
+
+$$\mathbf{x}_t = \sqrt{\bar\alpha_t}\,\mathbf{x}_0 + \sqrt{1-\bar\alpha_t}\,\boldsymbol{\epsilon}, \qquad q(\mathbf{x}_t\mid\mathbf{x}_0) = \mathcal{N}\!\left(\mathbf{x}_t;\ \sqrt{\bar\alpha_t}\,\mathbf{x}_0,\ (1-\bar\alpha_t)\mathbf{I}\right)$$
+
+This is the telescoping property of AR(1): $\sqrt{\bar\alpha_t}$ plays exactly the role of $a^n$, the $n$-step autocorrelation, in the notation above. For constant $\beta$, $\bar\alpha_t = (1-\beta)^t \to 0$, so the mean tends to $\mathbf{0}$ and the variance to $1$:
+
+$$q(\mathbf{x}_t\mid\mathbf{x}_0) \longrightarrow \mathcal{N}(\mathbf{0},\mathbf{I})$$
+
+regardless of what $\mathbf{x}_0$ was. Two consequences matter: there is now a **fixed distribution to start sampling from**, and training never has to run the chain — any noise level is one line of arithmetic away.
+
+**3. Forward and reverse joint distributions**
+
+Because the forward process is a Markov chain, the whole path factorises:
+
+$$q(\mathbf{x}_{1:T}\mid\mathbf{x}_0) = \prod_{t=1}^{T} q(\mathbf{x}_t\mid\mathbf{x}_{t-1})$$
+
+This is fixed and known — it contains no parameters and nothing is learned about it. The **reverse** process is a second Markov chain, started from pure noise, whose transitions the network must supply:
+
+$$p_\theta(\mathbf{x}_{0:T}) = p(\mathbf{x}_T)\prod_{t=1}^{T} p_\theta(\mathbf{x}_{t-1}\mid\mathbf{x}_t), \qquad p(\mathbf{x}_T) = \mathcal{N}(\mathbf{0},\mathbf{I})$$
+
+The difficulty is that the true single reverse step $q(\mathbf{x}_{t-1}\mid\mathbf{x}_t)$ is **intractable**: undoing one noising step requires knowing the distribution of all the data that could have produced $\mathbf{x}_t$. So each reverse transition is modelled as a Gaussian whose mean a neural network provides. Sections 4–9 determine what that network should be trained to output.
+
+**Part B — Where the training loss comes from**
+
+**4. From negative log-likelihood to the ELBO**
+
+We want the model to assign high likelihood to real data, i.e. to minimise $-\log p_\theta(\mathbf{x}_0)$. Marginalising,
+
+$$p_\theta(\mathbf{x}_0) = \int p_\theta(\mathbf{x}_{0:T})\,d\mathbf{x}_{1:T}$$
+
+which sums over *every* path from noise to $\mathbf{x}_0$ and cannot be computed. The standard remedy is to multiply and divide by the known forward process,
+
+$$p_\theta(\mathbf{x}_0) = \int q(\mathbf{x}_{1:T}\mid\mathbf{x}_0)\,\frac{p_\theta(\mathbf{x}_{0:T})}{q(\mathbf{x}_{1:T}\mid\mathbf{x}_0)}\,d\mathbf{x}_{1:T} = \mathbb{E}_{q}\!\left[\frac{p_\theta(\mathbf{x}_{0:T})}{q(\mathbf{x}_{1:T}\mid\mathbf{x}_0)}\right]$$
+
+and then apply Jensen's inequality. Since $-\log$ is convex, $-\log\mathbb{E}[Y] \le \mathbb{E}[-\log Y]$, so
+
+$$-\log p_\theta(\mathbf{x}_0) \;\le\; \mathbb{E}_q\!\left[-\log\frac{p_\theta(\mathbf{x}_{0:T})}{q(\mathbf{x}_{1:T}\mid\mathbf{x}_0)}\right] \;=:\; L$$
+
+$L$ is an upper bound on the negative log-likelihood; equivalently $-L$ is a lower bound on the log-likelihood, the **evidence lower bound** (ELBO). Minimising $L$ is what we can actually do.
+
+**5. Rewriting the ELBO as KL divergences**
+
+$L$ as written is still an expectation over whole paths. Four steps turn it into a sum of per-step terms.
+
+*Step 1 — expand.* Substituting both factorisations,
+
+$$L = \mathbb{E}_q\!\left[-\log p(\mathbf{x}_T) - \sum_{t=1}^{T}\log\frac{p_\theta(\mathbf{x}_{t-1}\mid\mathbf{x}_t)}{q(\mathbf{x}_t\mid\mathbf{x}_{t-1})}\right]$$
+
+and separate the $t=1$ term from the rest.
+
+*Step 2 — flip the forward step with Bayes' rule.* By the Markov property $q(\mathbf{x}_t\mid\mathbf{x}_{t-1}) = q(\mathbf{x}_t\mid\mathbf{x}_{t-1},\mathbf{x}_0)$, and then
+
+$$q(\mathbf{x}_t\mid\mathbf{x}_{t-1},\mathbf{x}_0) = \frac{q(\mathbf{x}_{t-1}\mid\mathbf{x}_t,\mathbf{x}_0)\,q(\mathbf{x}_t\mid\mathbf{x}_0)}{q(\mathbf{x}_{t-1}\mid\mathbf{x}_0)}$$
+
+**This is the key move of the whole derivation.** The intractable reverse step $q(\mathbf{x}_{t-1}\mid\mathbf{x}_t)$ has been replaced by $q(\mathbf{x}_{t-1}\mid\mathbf{x}_t,\mathbf{x}_0)$, which *is* tractable — conditioning on the clean starting point makes the exact reverse step available in closed form (section 6).
+
+*Step 3 — telescope.* The extra ratio introduced by Step 2 collapses:
+
+$$\sum_{t=2}^{T}\big[\log q(\mathbf{x}_{t-1}\mid\mathbf{x}_0) - \log q(\mathbf{x}_t\mid\mathbf{x}_0)\big] = \log q(\mathbf{x}_1\mid\mathbf{x}_0) - \log q(\mathbf{x}_T\mid\mathbf{x}_0)$$
+
+and the $q(\mathbf{x}_1\mid\mathbf{x}_0)$ factors cancel against the $t=1$ term held back in Step 1.
+
+*Step 4 — recognise KL divergences.* Each surviving log-ratio involves only a few variables, and averaging over the rest turns it into a KL divergence:
+
+$$L = \mathbb{E}_q\Big[\underbrace{D_{\mathrm{KL}}\big(q(\mathbf{x}_T\mid\mathbf{x}_0)\,\|\,p(\mathbf{x}_T)\big)}_{L_T} + \sum_{t=2}^{T}\underbrace{D_{\mathrm{KL}}\big(q(\mathbf{x}_{t-1}\mid\mathbf{x}_t,\mathbf{x}_0)\,\|\,p_\theta(\mathbf{x}_{t-1}\mid\mathbf{x}_t)\big)}_{L_{t-1}} \underbrace{-\log p_\theta(\mathbf{x}_0\mid\mathbf{x}_1)}_{L_0}\Big]$$
+
+*Dropping terms.* $L_T$ contains no trainable parameters — it only says the forward chain should end near $\mathcal{N}(\mathbf{0},\mathbf{I})$, which the schedule already guarantees. $L_0$ concerns the final, nearly noise-free step and carries little learning signal; it is dropped in practice (the paper models it with a separate discrete decoder). What remains is the sum of $L_{t-1}$ terms, and every one of them compares two Gaussians.
+
+**6. The true posterior $q(\mathbf{x}_{t-1}\mid\mathbf{x}_t,\mathbf{x}_0)$**
+
+By Bayes' rule, $q(\mathbf{x}_{t-1}\mid\mathbf{x}_t,\mathbf{x}_0)\propto q(\mathbf{x}_t\mid\mathbf{x}_{t-1})\,q(\mathbf{x}_{t-1}\mid\mathbf{x}_0)$. Both factors are known Gaussians, so up to an additive constant the log-density is
+
+$$-\frac{1}{2}\left[\frac{\|\mathbf{x}_t-\sqrt{\alpha_t}\,\mathbf{x}_{t-1}\|^2}{\beta_t} + \frac{\|\mathbf{x}_{t-1}-\sqrt{\bar\alpha_{t-1}}\,\mathbf{x}_0\|^2}{1-\bar\alpha_{t-1}}\right]$$
+
+This is **quadratic in $\mathbf{x}_{t-1}$**, so the posterior is itself Gaussian, $\mathcal{N}(\tilde{\boldsymbol{\mu}}_t,\tilde\beta_t\mathbf{I})$. Matching against $-\tfrac{1}{2\tilde\beta_t}\|\mathbf{x}_{t-1}-\tilde{\boldsymbol{\mu}}_t\|^2$ term by term:
+
+*Variance* — from the coefficient of $\|\mathbf{x}_{t-1}\|^2$,
+
+$$\frac{1}{\tilde\beta_t} = \frac{\alpha_t}{\beta_t} + \frac{1}{1-\bar\alpha_{t-1}} = \frac{1-\bar\alpha_t}{\beta_t(1-\bar\alpha_{t-1})} \qquad\Longrightarrow\qquad \tilde\beta_t = \frac{1-\bar\alpha_{t-1}}{1-\bar\alpha_t}\,\beta_t$$
+
+*Mean* — from the term linear in $\mathbf{x}_{t-1}$,
+
+$$\tilde{\boldsymbol{\mu}}_t = \frac{\sqrt{\alpha_t}\,(1-\bar\alpha_{t-1})}{1-\bar\alpha_t}\,\mathbf{x}_t + \frac{\sqrt{\bar\alpha_{t-1}}\,\beta_t}{1-\bar\alpha_t}\,\mathbf{x}_0$$
+
+The exact reverse step is a **weighted combination of where you are now and where you started** — which is why it is only available when $\mathbf{x}_0$ is known, and why Step 2 of section 5 was necessary.
+
+**7. The Gaussian KL reduces to a squared distance**
+
+Model the network's reverse step as $p_\theta(\mathbf{x}_{t-1}\mid\mathbf{x}_t) = \mathcal{N}\big(\boldsymbol{\mu}_\theta(\mathbf{x}_t,t),\,\sigma_t^2\mathbf{I}\big)$ with $\sigma_t^2$ **fixed, not learned** (the paper uses $\sigma_t^2=\beta_t$ or $\tilde\beta_t$). For isotropic Gaussians in $d$ dimensions,
+
+$$D_{\mathrm{KL}}\big(\mathcal{N}(\boldsymbol{\mu}_1,s_1^2\mathbf{I})\,\|\,\mathcal{N}(\boldsymbol{\mu}_2,s_2^2\mathbf{I})\big) = \frac{d}{2}\left(\frac{s_1^2}{s_2^2}-1-\log\frac{s_1^2}{s_2^2}\right) + \frac{\|\boldsymbol{\mu}_1-\boldsymbol{\mu}_2\|^2}{2s_2^2}$$
+
+Both variances are fixed, so the first group is a constant and only the mean term depends on $\theta$:
+
+$$L_{t-1} = \mathbb{E}_q\left[\frac{1}{2\sigma_t^2}\big\|\tilde{\boldsymbol{\mu}}_t(\mathbf{x}_t,\mathbf{x}_0)-\boldsymbol{\mu}_\theta(\mathbf{x}_t,t)\big\|^2\right] + C$$
+
+A divergence between distributions has become **a squared error between two means**. This is the same fact that makes least squares the natural loss under Gaussian errors, which is why the chapter's $Q=\sum(\hat y_i-y_i)^2$ reappears here unchanged.
+
+**8. Reparameterising in terms of noise**
+
+The closed form for $\tilde{\boldsymbol{\mu}}_t$ is an awkward mixture of $\mathbf{x}_0$ and $\mathbf{x}_t$, and the network never sees $\mathbf{x}_0$. But the closed-form forward marginal of section 2 can be rearranged,
+
+$$\mathbf{x}_0 = \frac{1}{\sqrt{\bar\alpha_t}}\left(\mathbf{x}_t-\sqrt{1-\bar\alpha_t}\,\boldsymbol{\epsilon}\right)$$
+
+Substituting this into $\tilde{\boldsymbol{\mu}}_t$ and using $\sqrt{\bar\alpha_{t-1}}/\sqrt{\bar\alpha_t} = 1/\sqrt{\alpha_t}$, the coefficient of $\mathbf{x}_t$ collapses to $1/\sqrt{\alpha_t}$ and the coefficient of $\boldsymbol{\epsilon}$ to $-\beta_t/(\sqrt{\alpha_t}\sqrt{1-\bar\alpha_t})$:
+
+$$\tilde{\boldsymbol{\mu}}_t = \frac{1}{\sqrt{\alpha_t}}\left(\mathbf{x}_t - \frac{\beta_t}{\sqrt{1-\bar\alpha_t}}\,\boldsymbol{\epsilon}\right)$$
+
+The network sees $\mathbf{x}_t$ but not $\boldsymbol{\epsilon}$, so we give its mean **the same functional form** and let it supply only the noise term:
+
+$$\boldsymbol{\mu}_\theta(\mathbf{x}_t,t) = \frac{1}{\sqrt{\alpha_t}}\left(\mathbf{x}_t - \frac{\beta_t}{\sqrt{1-\bar\alpha_t}}\,\boldsymbol{\epsilon}_\theta(\mathbf{x}_t,t)\right)$$
+
+Subtracting the two, the $\mathbf{x}_t$ terms are identical and cancel:
+
+$$\tilde{\boldsymbol{\mu}}_t-\boldsymbol{\mu}_\theta = \frac{\beta_t}{\sqrt{\alpha_t}\sqrt{1-\bar\alpha_t}}\big(\boldsymbol{\epsilon}_\theta(\mathbf{x}_t,t)-\boldsymbol{\epsilon}\big)$$
+
+so that
+
+$$L_{t-1} = \mathbb{E}_{\mathbf{x}_0,\boldsymbol{\epsilon}}\left[\frac{\beta_t^2}{2\sigma_t^2\alpha_t(1-\bar\alpha_t)}\Big\|\boldsymbol{\epsilon}-\boldsymbol{\epsilon}_\theta\big(\sqrt{\bar\alpha_t}\mathbf{x}_0+\sqrt{1-\bar\alpha_t}\boldsymbol{\epsilon},\,t\big)\Big\|^2\right]$$
+
+**9. Random time steps and the simplified loss**
+
+Summing over all $T$ steps for every training sample is expensive. Since $\sum_{t=1}^{T}f(t) = T\,\mathbb{E}_{t\sim U\{1,\dots,T\}}[f(t)]$, drawing **one random $t$ per sample** gives an unbiased estimate of the full objective. DDPM additionally sets the $t$-dependent prefactor to 1, which in practice trains better:
+
+$$\boxed{\ L_{\text{simple}}(\theta) = \mathbb{E}_{t,\,\mathbf{x}_0,\,\boldsymbol{\epsilon}}\Big[\big\|\boldsymbol{\epsilon}-\boldsymbol{\epsilon}_\theta\big(\sqrt{\bar\alpha_t}\mathbf{x}_0+\sqrt{1-\bar\alpha_t}\boldsymbol{\epsilon},\,t\big)\big\|^2\Big]\ }$$
+
+Minimising a divergence between complicated distributions has collapsed into a single sentence: **add noise you generated yourself, then ask the network to guess what it was.** Because you generated it, the right answer is free, and the intractable path integral of section 4 never appears anywhere in the training code. That — not the noise-adding, which is trivial — is the engineering insight behind diffusion models.
+
+One remark worth making to a class: discarding the prefactor $\beta_t^2/[2\sigma_t^2\alpha_t(1-\bar\alpha_t)]$ means $L_{\text{simple}}$ is an **unweighted** least-squares fit across noise levels, whereas the ELBO prescribes a **weighted** one. This is the same weighted-versus-unweighted choice met in ordinary regression; here the unweighted version de-emphasises the very small-$t$ terms and is found to train better.
+
+**Part C — The algorithm**
+
+**10. Training and sampling**
+
+Everything above reduces to two short loops. **Training** — repeat until converged:
+
+1. Sample $\mathbf{x}_0\sim p(\mathbf{x})$, $t\sim U\{1,\dots,T\}$, $\boldsymbol{\epsilon}\sim\mathcal{N}(\mathbf{0},\mathbf{I})$.
+2. Form $\mathbf{x}_t = \sqrt{\bar\alpha_t}\,\mathbf{x}_0+\sqrt{1-\bar\alpha_t}\,\boldsymbol{\epsilon}$.
+3. Take a gradient step on $\nabla_\theta\|\boldsymbol{\epsilon}-\boldsymbol{\epsilon}_\theta(\mathbf{x}_t,t)\|^2$.
+
+**Sampling** — start from $\mathbf{x}_T\sim\mathcal{N}(\mathbf{0},\mathbf{I})$, then for $t=T,\dots,1$:
+
+1. Draw $\mathbf{z}\sim\mathcal{N}(\mathbf{0},\mathbf{I})$ if $t>1$, else set $\mathbf{z}=\mathbf{0}$.
+2. Update
+
+$$\mathbf{x}_{t-1} = \frac{1}{\sqrt{\alpha_t}}\left(\mathbf{x}_t - \frac{\beta_t}{\sqrt{1-\bar\alpha_t}}\,\boldsymbol{\epsilon}_\theta(\mathbf{x}_t,t)\right) + \sigma_t\mathbf{z}$$
+
+and return $\mathbf{x}_0$. Typically $T=1000$.
+
+Note that the sampler is **not a separate construction**: that update is exactly $\boldsymbol{\mu}_\theta$ from section 8 plus a small amount of fresh noise — the learned posterior mean of section 6. The network $\boldsymbol{\epsilon}_\theta$ is usually a **U-Net**, but nothing in the derivation depends on that choice; it is simply a flexible regression function.
+
+**Part D — What the network has actually learned**
+
+Sections 1–10 are the **variational** route (Ho et al., 2020), and they answer *why the training loss takes the form it does*. They do not answer *what the trained network is*. For that there is a second, independently developed route — **score matching** (Vincent, 2011; Song & Ermon, 2019) — which was only later shown to describe the same algorithm (Song et al., 2021).
+
+The distinction is one this chapter has already drawn once, about the regression slope. You can define $a_1$ **operationally**, as the number that minimises $Q=\sum(\hat y_i - y_i)^2$ — correct, but it tells you nothing beyond the recipe. The result $a_1 = \overline{x'y'}/\overline{x'^2}$ instead says what $a_1$ **is**: a property of the joint distribution, independent of the fitting procedure. In the same way, $L_{\text{simple}}$ defines $\boldsymbol{\epsilon}_\theta$ operationally; the sections below say what $\boldsymbol{\epsilon}_\theta$ *is*.
+
+**11. The noisy data distribution $p_t$ is a kernel density estimate**
+
+To run the reverse process, the network must know which direction makes a noisy field look more like real data. That direction is the **score**, $\nabla_{\mathbf{x}}\log p_t(\mathbf{x}_t)$ — the gradient of the log-density of "the distribution of the data after $t$ steps of noise." A fair question is who decides what that distribution is. The answer is that **nobody does — it is not chosen, it is a consequence.** You only ever pick two things:
 
 1. your **data** (the training archive: all the precipitation fields you have), and
-2. your **noise schedule** (how much noise to add at each step).
+2. your **noise schedule** $\beta_t$ (how much noise to add at each step).
 
-Once those two are fixed, the distribution at step $t$ is completely determined: take every field in your archive, shrink it slightly, add the prescribed amount of Gaussian noise, and look at the spread of everything you get. Formally, that "take every field and blur it" operation is an integral:
+Once those are fixed, $p_t$ is completely determined: take every field in your archive, shrink it, add the prescribed Gaussian noise, and look at the spread of everything you get. Formally that is an integral, with $q$ the closed-form marginal of section 2:
 
 $$p_t(\mathbf{x}_t) = \int p_0(\mathbf{x}_0)\, q(\mathbf{x}_t\mid\mathbf{x}_0)\, d\mathbf{x}_0, \qquad q(\mathbf{x}_t\mid\mathbf{x}_0) = \mathcal{N}\!\left(\sqrt{\bar\alpha_t}\,\mathbf{x}_0,\ (1-\bar\alpha_t)\mathbf{I}\right)$$
 
-So $p_t$ is simply a **blurred copy of the real data distribution**, and $t$ controls how blurred. At $t=0$ there is no blur and $p_t$ is the data itself. At $t=T$ the blur is so heavy that every trace of the original is gone and $p_t$ is plain $\mathcal{N}(\mathbf{0},\mathbf{I})$. Everything in between is a partially recognisable version of the data — like a photograph going progressively out of focus.
+So $p_t$ is a **blurred copy of the real data distribution**, and $t$ controls how blurred. At $t=0$ there is no blur and $p_t$ is the data itself; at $t=T$ every trace is gone and $p_t$ is plain $\mathcal{N}(\mathbf{0},\mathbf{I})$. Everything in between is a partially recognisable version of the data — like a photograph going progressively out of focus.
 
-**It is a kernel density estimate.** This is the same object from earlier in your statistics training. With a finite archive of $n$ fields, the integral is just a sum of Gaussian bumps centred on the (shrunken) training samples:
+**It is a kernel density estimate.** With a finite archive of $n$ fields, the integral is just a sum of Gaussian bumps centred on the (shrunken) training samples:
 
 $$p_t(\mathbf{x}_t) = \frac{1}{n}\sum_{i=1}^{n}\mathcal{N}\!\left(\mathbf{x}_t;\ \sqrt{\bar\alpha_t}\,\mathbf{x}_0^{(i)},\ (1-\bar\alpha_t)\mathbf{I}\right)$$
 
-That is exactly a Gaussian KDE with bandwidth $h_t = \sqrt{1-\bar\alpha_t}$. **The diffusion timestep is a bandwidth knob.** Sampling starts from an enormously over-smoothed density — where the picture is so blurry that the only information left is roughly where the data lives — and sharpens the bandwidth step by step. This is why the reverse process is done gradually rather than in one jump: each step only has to solve an easy, slightly-less-blurry problem.
+That is exactly a Gaussian KDE with bandwidth $h_t = \sqrt{1-\bar\alpha_t}$. **The diffusion timestep is a bandwidth knob.** Sampling starts from an enormously over-smoothed density — so blurry that the only information left is roughly where the data lives — and sharpens the bandwidth step by step. This is why the reverse process is run gradually rather than in one jump: each step only has to solve an easy, slightly-less-blurry problem.
 
-**You never actually have to know $p_t$.** This is the part that makes diffusion models practical. That integral cannot be computed for real data — but we do not need the distribution itself, only its score (which direction makes the data look more realistic). And that can be obtained by pure supervised regression:
-
-> Take a training field. Pick a random $t$. Add noise *that you generated yourself, so you know exactly what it was*. Ask the network to guess the noise you added.
-
-Because you generated the noise, you have the right answer for free, and the intractable integral never appears anywhere in the training code. That — not the noise-adding, which is trivial — is the actual engineering insight behind diffusion models. Two things still have to be justified, and the next two subsections do exactly that: *where this loss comes from* (it is the residue of a variational bound, not a guess), and *why fitting it recovers the score of $p_t$*.
-
-In `conditional_diffusion_demo.py` the data distribution is deliberately chosen to be AR1 red noise, i.e. a Gaussian. A Gaussian blurred by a Gaussian is still Gaussian, so there the integral *does* close, giving $p_t = \mathcal{N}(\mathbf{0},\ \bar\alpha_t\Sigma + (1-\bar\alpha_t)\mathbf{I})$. That is why the demo needs no training at all — it can write down the exact answer that a real network would have to learn.
+Crucially, **you never have to know $p_t$**. The integral cannot be computed for real data, but section 9 showed that the training rule requires only noise you generated yourself. In `conditional_diffusion_demo.py` the data distribution is deliberately chosen to be AR1 red noise, i.e. a Gaussian. A Gaussian blurred by a Gaussian is still Gaussian, so there the integral *does* close, giving $p_t = \mathcal{N}(\mathbf{0},\ \bar\alpha_t\Sigma + (1-\bar\alpha_t)\mathbf{I})$. That is why the demo needs no training at all — it can write down the exact answer a real network would have to learn.
 
 :::{admonition} A caveat that follows from the KDE view
 :class: warning
 If the network learned the score of $p_t$ *perfectly*, it would reproduce the training fields exactly and generate nothing new — because the score of a KDE points back at the samples used to build it. Real diffusion models generalise only because a finite network cannot fit that target exactly. Perfect optimisation of the training objective would be memorisation; useful generation is a controlled failure to reach it. This is worth remembering before trusting a generative downscaling product to produce genuinely unseen extremes.
 :::
 
-**4. Where the training objective comes from**
+**12. $\boldsymbol{\epsilon}_\theta$ is an estimate of the score**
 
-Above, the training rule was stated informally: *add noise you generated yourself, then ask the network to guess it*. That rule is not a heuristic — it is what remains after a chain of exact simplifications, and the derivation is worth seeing because every step reduces to something already familiar from least squares.
-
-*Step 1 — write down both processes.* The forward process is a Markov chain (each noising step depends only on the previous one), and the reverse process is a second Markov chain whose transitions the network supplies:
-
-$$q(\mathbf{x}_{1:T}\mid\mathbf{x}_0) = \prod_{t=1}^{T} q(\mathbf{x}_t\mid\mathbf{x}_{t-1}), \qquad p_\theta(\mathbf{x}_{0:T}) = p(\mathbf{x}_T)\prod_{t=1}^{T} p_\theta(\mathbf{x}_{t-1}\mid\mathbf{x}_t)$$
-
-Here $q$ is fixed and known (it is just noise addition); $p_\theta$ starts from pure noise $p(\mathbf{x}_T)=\mathcal{N}(\mathbf{0},\mathbf{I})$ and must be learned.
-
-*Step 2 — bound the likelihood (the ELBO).* We would like to maximise the likelihood $p_\theta(\mathbf{x}_0)$ of generating real data, i.e. minimise $-\log p_\theta(\mathbf{x}_0)$. That is intractable, because it requires summing over every possible noising path that could have produced $\mathbf{x}_0$. The standard remedy is to multiply and divide by the known forward density and apply Jensen's inequality, giving the **evidence lower bound**:
-
-$$-\log p_\theta(\mathbf{x}_0) \;\le\; \mathbb{E}_q\left[-\log\frac{p_\theta(\mathbf{x}_{0:T})}{q(\mathbf{x}_{1:T}\mid\mathbf{x}_0)}\right] \;=\; \underbrace{L_T}_{\text{no }\theta} + \sum_{t=2}^{T} L_{t-1} + \underbrace{L_0}_{\text{final step}}$$
-
-$L_T = D_{\mathrm{KL}}(q(\mathbf{x}_T\mid\mathbf{x}_0)\,\|\,p(\mathbf{x}_T))$ contains no trainable parameters, so it is dropped. $L_0$ describes the last reconstruction step from $\mathbf{x}_1$ to $\mathbf{x}_0$, where almost no noise remains and there is correspondingly little to learn, so it is dropped in practice. What is left is the middle sum, and every term in it is a KL divergence.
-
-*Step 3 — match two Gaussians.* Each remaining term compares the **true posterior** with the network's **approximate posterior**:
-
-$$L_{t-1} = D_{\mathrm{KL}}\big(\,q(\mathbf{x}_{t-1}\mid\mathbf{x}_t,\mathbf{x}_0)\ \big\|\ p_\theta(\mathbf{x}_{t-1}\mid\mathbf{x}_t)\,\big)$$
-
-The left-hand distribution is tractable *because it is conditioned on the clean $\mathbf{x}_0$* — knowing where you started makes the exact reverse step available in closed form, $q(\mathbf{x}_{t-1}\mid\mathbf{x}_t,\mathbf{x}_0)=\mathcal{N}(\tilde{\boldsymbol{\mu}}_t(\mathbf{x}_t,\mathbf{x}_0),\ \tilde\beta_t\mathbf{I})$. The network's variance is *fixed* to a constant $\sigma_t^2$ rather than learned, so only the mean $\boldsymbol{\mu}_\theta$ has to be predicted. The KL divergence between two Gaussians of equal, fixed variance collapses to the squared distance between their means:
-
-$$L_{t-1} = \frac{1}{2\sigma_t^2}\big\|\tilde{\boldsymbol{\mu}}_t(\mathbf{x}_t,\mathbf{x}_0)-\boldsymbol{\mu}_\theta(\mathbf{x}_t,t)\big\|^2 + \text{const}$$
-
-This is the same fact that makes least squares the natural loss under Gaussian errors, which is why the chapter's $Q=\sum(\hat y_i-y_i)^2$ appears here unchanged.
-
-*Step 4 — reparameterise.* The closed form for $\tilde{\boldsymbol{\mu}}_t$ is an awkward weighted combination of $\mathbf{x}_0$ and $\mathbf{x}_t$. But the forward process $\mathbf{x}_t=\sqrt{\bar\alpha_t}\mathbf{x}_0+\sqrt{1-\bar\alpha_t}\boldsymbol{\epsilon}$ can be rearranged,
-
-$$\mathbf{x}_0 = \frac{\mathbf{x}_t-\sqrt{1-\bar\alpha_t}\,\boldsymbol{\epsilon}}{\sqrt{\bar\alpha_t}}$$
-
-and substituting this removes $\mathbf{x}_0$ entirely, leaving the true mean as a function of $\mathbf{x}_t$ and the actual noise only:
-
-$$\tilde{\boldsymbol{\mu}}_t = \frac{1}{\sqrt{\alpha_t}}\left(\mathbf{x}_t - \frac{\beta_t}{\sqrt{1-\bar\alpha_t}}\,\boldsymbol{\epsilon}\right)$$
-
-Since the network also sees $\mathbf{x}_t$, we give it the *same* functional form and let it supply only the noise term:
-
-$$\boldsymbol{\mu}_\theta = \frac{1}{\sqrt{\alpha_t}}\left(\mathbf{x}_t - \frac{\beta_t}{\sqrt{1-\bar\alpha_t}}\,\boldsymbol{\epsilon}_\theta(\mathbf{x}_t,t)\right)$$
-
-*Step 5 — everything cancels.* Subtracting the two, the terms proportional to $\mathbf{x}_t$ are identical on both sides and vanish:
-
-$$\big\|\tilde{\boldsymbol{\mu}}_t-\boldsymbol{\mu}_\theta\big\|^2 = \frac{\beta_t^2}{\alpha_t(1-\bar\alpha_t)}\big\|\boldsymbol{\epsilon}-\boldsymbol{\epsilon}_\theta(\mathbf{x}_t,t)\big\|^2$$
-
-Dropping the $t$-dependent prefactor — that is, weighting all noise levels equally — leaves the objective actually used in practice:
-
-$$\boxed{\ L_{\text{simple}} = \mathbb{E}_{t,\,\mathbf{x}_0,\,\boldsymbol{\epsilon}}\Big[\big\|\boldsymbol{\epsilon}-\boldsymbol{\epsilon}_\theta(\mathbf{x}_t,t)\big\|^2\Big]\ }$$
-
-Minimising a divergence between complicated distributions has collapsed into making the network's guess of the noise match the noise actually added. Two remarks worth making to a class:
-
-- The reverse update quoted earlier in this note, $\mathbf{x}_{t-1} = \tfrac{1}{\sqrt{\alpha_t}}(\mathbf{x}_t-\tfrac{\beta_t}{\sqrt{1-\bar\alpha_t}}\boldsymbol{\epsilon}_\theta)+\sqrt{\beta_t}\,\mathbf{z}$, is *exactly* $\boldsymbol{\mu}_\theta$ from Step 4 plus noise. The sampler is not a separate construction; it is the learned posterior mean.
-- Discarding the prefactor $\beta_t^2/[2\sigma_t^2\alpha_t(1-\bar\alpha_t)]$ means $L_{\text{simple}}$ is an **unweighted** least-squares fit across noise levels, whereas the ELBO prescribes a **weighted** one. This is the same weighted-versus-unweighted choice met in ordinary regression; here the unweighted version de-emphasises the very small-$t$ terms and is found to train better.
-
-**5a. A second reading: $\boldsymbol{\epsilon}_\theta$ as an estimate of the score**
-
-The derivation just given is the **variational** route promised at the start of this note: likelihood $\rightarrow$ bound $\rightarrow$ KL $\rightarrow$ cancellation. Notice that the score $\nabla\log p_t$ never appeared anywhere in it — the whole derivation goes through without it.
-
-We now build the bridge to the **score-matching** route, which is what makes the trained network interpretable and modifiable. This is the step that licenses everything intuitive said earlier — the KDE picture of $p_t$, the bandwidth reading of $t$, the weighted vote among training fields, Tweedie's formula — none of which can even be stated in variational language. Without it, those are two unrelated stories about the same network.
-
-Given $L_{\text{simple}}$, the bridge is two lines of calculus followed by a result already proved in this chapter.
+The bridge from $L_{\text{simple}}$ to the score is two lines of calculus followed by a result already proved in this chapter.
 
 *Step 1 — if you knew $\mathbf{x}_0$, it is just the derivative of a Gaussian.* Recall $\boldsymbol{\epsilon} = (\mathbf{x}_t - \sqrt{\bar\alpha_t}\mathbf{x}_0)/\sqrt{1-\bar\alpha_t}$. For a *known* starting point, $q(\mathbf{x}_t\mid\mathbf{x}_0)$ is an ordinary Gaussian, so
 
@@ -722,13 +782,15 @@ $$\nabla\log p_t(\mathbf{x}) = \int \underbrace{\frac{p_0(\mathbf{x}_0)q(\mathbf
 
 The marginal score is the **posterior average of the conditional scores**. Substituting Step 1:
 
-$$\mathbb{E}[\boldsymbol{\epsilon}\mid\mathbf{x}_t] = -\sqrt{1-\bar\alpha_t}\,\nabla\log p_t(\mathbf{x}_t)$$
+$$\boxed{\ \mathbb{E}[\boldsymbol{\epsilon}\mid\mathbf{x}_t] = -\sqrt{1-\bar\alpha_t}\,\nabla\log p_t(\mathbf{x}_t)\ }$$
 
-*Step 3 — why the trained network equals that.* The objective derived above, $L_{\text{simple}} = \mathbb{E}\|\boldsymbol{\epsilon}-\boldsymbol{\epsilon}_\theta(\mathbf{x}_t,t)\|^2$, is an ordinary least-squares regression of $\boldsymbol{\epsilon}$ on $\mathbf{x}_t$ — and this chapter has already established what least squares returns: the **conditional mean of the target given the predictor**. Hence the optimum is $\boldsymbol{\epsilon}_\theta^\star = \mathbb{E}[\boldsymbol{\epsilon}\mid\mathbf{x}_t]$, which is the identity. The $\approx$ is only because a real network has finite capacity and finite training; the identity itself is exact.
+*Step 3 — why the trained network equals that.* $L_{\text{simple}} = \mathbb{E}\|\boldsymbol{\epsilon}-\boldsymbol{\epsilon}_\theta(\mathbf{x}_t,t)\|^2$ is an ordinary least-squares regression of $\boldsymbol{\epsilon}$ on $\mathbf{x}_t$ — and this chapter has already established what least squares returns: the **conditional mean of the target given the predictor**. Hence the optimum is $\boldsymbol{\epsilon}_\theta^\star = \mathbb{E}[\boldsymbol{\epsilon}\mid\mathbf{x}_t]$, which is the identity above. Any $\approx$ is only because a real network has finite capacity and finite training; the identity itself is exact.
 
-This is the punchline worth stating explicitly to a class: **the network is doing plain least-squares regression, and the score identity is what makes that regression secretly a density estimate.** You never write down $p_t$, yet minimising a squared error hands you its gradient. Tweedie's formula then follows in one line by applying $\mathbb{E}[\,\cdot\mid\mathbf{x}_t]$ to $\mathbf{x}_0=(\mathbf{x}_t-\sqrt{1-\bar\alpha_t}\boldsymbol{\epsilon})/\sqrt{\bar\alpha_t}$.
+This is the punchline worth stating explicitly: **the network is doing plain least-squares regression, and the score identity is what makes that regression secretly a density estimate.** You never write down $p_t$, yet minimising a squared error hands you its gradient. Tweedie's formula follows in one line by applying $\mathbb{E}[\,\cdot\mid\mathbf{x}_t]$ to $\mathbf{x}_0=(\mathbf{x}_t-\sqrt{1-\bar\alpha_t}\boldsymbol{\epsilon})/\sqrt{\bar\alpha_t}$:
 
-Computing both sides independently for the four-mode mixture used below — the left by finite-differencing the analytic $\log p_t$, the right by Monte Carlo over $8\times10^6$ draws — confirms it:
+$$\mathbb{E}[\mathbf{x}_0\mid\mathbf{x}_t] = \frac{\mathbf{x}_t - \sqrt{1-\bar{\alpha}_t}\,\boldsymbol{\epsilon}_\theta(\mathbf{x}_t,t)}{\sqrt{\bar{\alpha}_t}}$$
+
+Computing both sides of the identity independently for the four-mode mixture used in section 14 — the left by finite-differencing the analytic $\log p_t$, the right by Monte Carlo over $8\times10^6$ draws — confirms it:
 
 | $t$ | $x_t$ | $-\sqrt{1-\bar\alpha_t}\,\nabla\log p_t$ | $\mathbb{E}[\epsilon\mid x_t]$ | difference |
 |---|---|---|---|---|
@@ -737,7 +799,7 @@ Computing both sides independently for the four-mode mixture used below — the 
 | 250 | 0.30 | 0.164649 | 0.164322 | $3.3\times10^{-4}$ |
 | 350 | 1.50 | 1.341690 | 1.341872 | $1.8\times10^{-4}$ |
 
-**5b. How to read the identity**
+**How to read the identity.**
 
 *It is a change of units.* If $\mathbf{x}$ carries units $[X]$, then $\nabla_{\mathbf{x}}\log p_t$ has units $[X]^{-1}$, while $\sigma_t \equiv \sqrt{1-\bar\alpha_t}$ is a standard deviation with units $[X]$. Their product is dimensionless — as $\boldsymbol{\epsilon}\sim\mathcal{N}(\mathbf{0},\mathbf{I})$ must be. The score and the noise-prediction are **the same vector field measured on two different rulers**, and $\sigma_t$ is the exchange rate.
 
@@ -759,11 +821,23 @@ which is exactly the $z$-score from the beginning of the course. So $\boldsymbol
 | 5 | 0.037 | 3.00 | 0.11 |
 | 1 | 0.016 | 3.03 | 0.05 |
 
-Two limits are worth checking by hand. At $t=T$, $p_T=\mathcal{N}(\mathbf{0},\mathbf{I})$ so $\nabla\log p_T=-\mathbf{x}_T$ and $\sigma_T\approx1$, giving $\boldsymbol{\epsilon}_\theta=\mathbf{x}_T$ — correct, since at pure noise everything you see *is* the noise. At $t\to0$, $\boldsymbol{\epsilon}_\theta\to\mathbf{0}$: here $\mathbf{x}_t\approx\mathbf{x}_0+\sigma_t\boldsymbol{\epsilon}$ with $\sigma_t$ tiny, so $\mathbf{x}_t$ pins down $\mathbf{x}_0$ but says almost nothing about $\boldsymbol{\epsilon}$. When a predictor carries no information ($r^2\to0$) the least-squares prediction collapses to the unconditional mean, which for $\boldsymbol{\epsilon}$ is zero — ordinary regression shrinkage. Note the score itself does *not* diverge here, because this $p_0$ is a smooth mixture; it would diverge for an empirical $p_0$ built from delta spikes, which is the memorisation regime discussed above.
+Two limits are worth checking by hand. At $t=T$, $p_T=\mathcal{N}(\mathbf{0},\mathbf{I})$ so $\nabla\log p_T=-\mathbf{x}_T$ and $\sigma_T\approx1$, giving $\boldsymbol{\epsilon}_\theta=\mathbf{x}_T$ — correct, since at pure noise everything you see *is* the noise. At $t\to0$, $\boldsymbol{\epsilon}_\theta\to\mathbf{0}$: here $\mathbf{x}_t\approx\mathbf{x}_0+\sigma_t\boldsymbol{\epsilon}$ with $\sigma_t$ tiny, so $\mathbf{x}_t$ pins down $\mathbf{x}_0$ but says almost nothing about $\boldsymbol{\epsilon}$. When a predictor carries no information ($r^2\to0$) the least-squares prediction collapses to the unconditional mean, which for $\boldsymbol{\epsilon}$ is zero — ordinary regression shrinkage. Note the score itself does *not* diverge here, because this $p_0$ is a smooth mixture; it would diverge for an empirical $p_0$ built from delta spikes, which is the memorisation regime of section 11.
 
 This also explains a design choice visible in every implementation: one could equally train the network to output $\mathbf{x}_0$, or the score directly, since all three are related by the algebra above. Predicting $\boldsymbol{\epsilon}$ is preferred because its *target* has unit variance at every $t$, keeping the regression well-conditioned — the same reason one standardises predictors before a multiple regression.
 
-**6. Watching it happen: a wiggly PDF through both processes**
+**13. Why the score reading is worth the trouble: conditioning without retraining**
+
+Because the normalising constant vanishes under the gradient, Bayes' rule becomes **addition**:
+
+$$\nabla_{\mathbf{x}}\log p(\mathbf{x}\mid\mathbf{y}) = \nabla_{\mathbf{x}}\log p(\mathbf{x}) + \nabla_{\mathbf{x}}\log p(\mathbf{y}\mid\mathbf{x})$$
+
+So a single *unconditional* model, trained once on high-resolution fields, can afterwards be conditioned on coarse model output, station observations or satellite retrievals by attaching the appropriate likelihood **at sampling time**, with no retraining. In the purely variational picture there is no handle on this: each new observation type means feeding $\mathbf{y}$ to the network as an input and training a new model. The same view also yields deterministic samplers (20–50 steps rather than 1000) and exact likelihoods.
+
+For downscaling the point is worth remembering: it converts "one trained model per data source" into "one prior, many observation operators" — which is precisely the structure of data assimilation.
+
+**Part E — What it is for**
+
+**14. Watching it happen: a wiggly PDF through both processes**
 
 The animation below runs a deliberately non-Gaussian ("wiggly") distribution all the way out to noise and back. The top panel is the distribution; the bottom panel follows 22 individual particles continuously through the forward pass and then back through the reverse pass.
 
@@ -804,21 +878,15 @@ The exact-score sampler is statistically indistinguishable from a fresh draw —
 ```
 :::
 
-**7a. Application to downscaling**
+**15. Application to downscaling, and why conditioning is necessary**
 
-For climate downscaling, $\mathbf{x}_0$ is a high-resolution field (e.g., 1 km precipitation) and the U-Net is **conditioned** on a low-resolution field $\mathbf{y}$ (e.g., 25 km GCM output). The model learns the conditional distribution $p(\mathbf{x}_0 \mid \mathbf{y})$, allowing it to generate statistically realistic high-resolution fields consistent with the coarse model output.
+For climate downscaling, $\mathbf{x}_0$ is a high-resolution field (e.g. 1 km precipitation) and the U-Net is **conditioned** on a low-resolution field $\mathbf{y}$ (e.g. 25 km GCM output), so the model learns $p(\mathbf{x}_0\mid\mathbf{y})$ rather than $p(\mathbf{x}_0)$.
 
-**7b. Why conditioning is necessary — and how it maps onto $r^2$**
+A natural objection: if the forward process destroys everything, how can the reverse process know what is signal and what is noise? The answer has two parts, and it is worth keeping them separate.
 
-A natural objection: if the forward process destroys everything ($\mathbf{x}_T$ is pure noise regardless of $\mathbf{x}_0$), how can the reverse process know what is signal and what is noise? The answer has two parts, and it is worth keeping them separate:
+**1. The learned prior tells the model what data looks like.** By section 12 the trained network is an estimate of the score of $p_t$, and Tweedie's formula turns it into $\mathbb{E}[\mathbf{x}_0\mid\mathbf{x}_t]$. "Signal" is defined as *the direction of the training-data manifold*. This is why **unconditional** diffusion models work at all — no conditioning input is required to generate a realistic field. (The network is always conditioned on $t$, but that only tells it the current noise level.)
 
-**1. The learned prior tells the model what data looks like.** The trained network is (up to scaling) an estimate of the score of the noisy data distribution, $\boldsymbol{\epsilon}_\theta(\mathbf{x}_t,t) \approx -\sqrt{1-\bar\alpha_t}\,\nabla_{\mathbf{x}}\log p_t(\mathbf{x}_t)$, the relation established above — so that by Tweedie's formula
-
-$$\mathbb{E}[\mathbf{x}_0\mid\mathbf{x}_t] = \frac{\mathbf{x}_t - \sqrt{1-\bar{\alpha}_t}\,\boldsymbol{\epsilon}_\theta(\mathbf{x}_t,t)}{\sqrt{\bar{\alpha}_t}}$$
-
-"Signal" is defined as *the direction of the training-data manifold*. This is why **unconditional** diffusion models work at all — no conditioning input is required to generate a realistic field. (The network is always conditioned on $t$, but that only tells it the current noise level.)
-
-**2. The conditioning tells the model which realization.** An unconditional model produces *a* plausible field, never *the* field behind a particular observation — that information was destroyed. To reconstruct, we must sample $p(\mathbf{x}_0\mid\mathbf{y})$ rather than $p(\mathbf{x}_0)$.
+**2. The conditioning tells the model which realisation.** An unconditional model produces *a* plausible field, never *the* field behind a particular observation — that information was destroyed in the forward pass, as the particle trajectories in section 14 show directly.
 
 The connection to everything above is exact. Ordinary least squares returns the *conditional mean* of the predictand given the predictor — written $\mathbb{E}[y\mid x]$ in the regression sections, and $\mathbb{E}[\mathbf{x}_0\mid\mathbf{y}]$ in the notation of this note. It is a single best estimate, and its variance is only $r^2$ times the variance of the target. The residual $(1-r^2)$ fraction is discarded, which is precisely why regression-based downscaling produces fields that are too smooth. A conditional diffusion model learns the *full* conditional distribution, so it restores that $(1-r^2)$ fraction — not as white noise, but with the spatial and temporal structure learned from data:
 
@@ -843,19 +911,20 @@ Unconditional vs. regression vs. conditional reconstruction of an AR1 field from
 Note that the correlation with the truth *drops* from 0.86 to 0.66 when the residual variance is added back. The conditional sample is a **worse point estimate** than the regression mean but a **better field**, because it has the correct spectrum. This is the same bias–variance trade that motivates using $\hat y$ for prediction but $\hat y + \text{residual}$ for anything requiring realistic variability (extremes, thresholds, spatial gradients).
 :::
 
-**8. Summary of the AR1–diffusion connection**
+**16. Summary: the AR(1) ↔ diffusion dictionary**
 
 | AR(1) concept | Diffusion model equivalent |
 |---|---|
-| $a = \sqrt{1-\beta}$ (memory coefficient) | Noise schedule $\beta_t$ |
+| $a$ (memory coefficient) | $\sqrt{1-\beta_t} = \sqrt{\alpha_t}$, set by the noise schedule |
 | $b = \sqrt{1-a^2}$ (noise amplitude) | $\sqrt{\beta_t}$ |
-| $a^n$ (n-step autocorrelation) | $\sqrt{\bar{\alpha}_t}$ |
-| White noise limit ($a \to 0$) | $\mathbf{x}_T \to \mathcal{N}(\mathbf{0},\mathbf{I})$ as $T\to\infty$ |
-| Stationary variance = 1 | Unit variance of the noise prior |
-| Fitted part $y_{\text{fitted}}$ (the $r^2$ fraction) | Conditional mean $\mathbb{E}[\mathbf{x}_0\mid\mathbf{y}]$ |
-| Residual $y_{\text{residual}}$ (the $1-r^2$ fraction) | Stochastic part of the reverse process |
+| $a^n$ ($n$-step autocorrelation) | $\sqrt{\bar{\alpha}_t}$ |
+| unit-variance normalisation $a^2+b^2=1$ | the variance-preserving condition of section 2 |
+| white noise limit ($a \to 0$) | $\mathbf{x}_T \to \mathcal{N}(\mathbf{0},\mathbf{I})$ as $T\to\infty$ |
+| least squares returns $\mathbb{E}[y\mid x]$ | $\boldsymbol{\epsilon}_\theta^\star = \mathbb{E}[\boldsymbol{\epsilon}\mid\mathbf{x}_t]$, hence the score |
+| fitted part $y_{\text{fitted}}$ (the $r^2$ fraction) | conditional mean $\mathbb{E}[\mathbf{x}_0\mid\mathbf{y}]$ |
+| residual $y_{\text{residual}}$ (the $1-r^2$ fraction) | stochastic part of the reverse process |
 
-The key innovation of diffusion models is not the forward AR(1) process — that is just Gaussian noise addition — but the learned *reverse* process, which turns pure noise back into structured data. The statistical machinery of AR1 you learned here is the exact mathematical foundation.
+The key innovation of diffusion models is not the forward AR(1) process — that is just Gaussian noise addition, and you derived its normalisation earlier in this chapter — but the learned *reverse* process, which turns pure noise back into structured data. The statistical machinery of AR1 and least squares you learned here is the exact mathematical foundation.
 ::::
 
 ### Effective sample size $N^*$
