@@ -688,19 +688,9 @@ a_{m1} &amp; a_{m2} &amp; a_{m3} &amp; \cdots &amp; a_{mn}
 -4 &amp; -2\\ -2 &amp; -4\\ -2 &amp; 0\\ 0 &amp; -2\\ 0 &amp; 2\\ 2 &amp; 0\\ 2 &amp; 4\\ 4 &amp; 2
 \end{bmatrix}\end{split}\]</div>
 <p>Both columns already sum to zero, so this is an anomaly matrix. Plotted as dots, the data form a tilted, cigar-shaped cloud:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>                                      <span class="n">EOF1</span>  <span class="p">(</span><span class="k">lambda</span> <span class="o">=</span> <span class="mi">10</span><span class="p">)</span>
-   <span class="n">y</span>                                 <span class="o">/</span>
-   <span class="mi">4</span> <span class="o">|</span> \                 <span class="n">o</span>     <span class="o">/</span>
-   <span class="mi">2</span> <span class="o">|</span>       \     <span class="n">o</span>     <span class="o">/</span>     <span class="n">o</span>
-   <span class="mi">0</span> <span class="o">|</span>       <span class="n">o</span>     <span class="o">+</span>     <span class="n">o</span>
-  <span class="o">-</span><span class="mi">2</span> <span class="o">|</span> <span class="n">o</span>     <span class="o">/</span>     <span class="n">o</span>     \
-  <span class="o">-</span><span class="mi">4</span> <span class="o">|</span> <span class="o">/</span>     <span class="n">o</span>                 \
-     <span class="o">+-----------------------------</span>  <span class="n">x</span>
-      <span class="o">-</span><span class="mi">4</span>    <span class="o">-</span><span class="mi">2</span>     <span class="mi">0</span>     <span class="mi">2</span>     <span class="mi">4</span>
-        \
-         <span class="n">EOF2</span>  <span class="p">(</span><span class="k">lambda</span> <span class="o">=</span> <span class="mi">2</span><span class="p">)</span>
-</pre></div>
-</div>
+<p>Run <a class="reference download internal" download="" href="../_downloads/72035f1e3b6c310d2c66d0841eec4596/eof_scatter_2d.py"><span class="xref download myst"><code class="docutils literal notranslate"><span class="pre">eof_scatter_2d.py</span></code></span></a> to generate this figure.
+<img alt="EOFs as the axes of a 2D scatter cloud" src="../_images/eof_scatter_2d.png" /></p>
+<p>The script runs the full recipe in nine lines of numpy — form <span class="math notranslate nohighlight">\(\mathbf{C}\)</span>, call <code class="docutils literal notranslate"><span class="pre">numpy.linalg.eigh</span></code>, sort the eigenvalues descending, project — and prints the numbers derived by hand below. The left panel is the cloud in data space with the EOF axes drawn; the right panel is the same eight dots after the rotation <span class="math notranslate nohighlight">\(\mathbf{Z} = \mathbf{XE}\)</span>.</p>
 <p><strong>The covariance matrix.</strong> With <span class="math notranslate nohighlight">\(M = 8\)</span>,</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\mathbf{C} = \frac{1}{M}\mathbf{X}^T\mathbf{X} = \begin{bmatrix} 6 &amp; 4\\ 4 &amp; 6\end{bmatrix}, \qquad \mathrm{tr}(\mathbf{C}) = 12\end{split}\]</div>

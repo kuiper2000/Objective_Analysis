@@ -314,19 +314,10 @@ $$\mathbf{X} = \begin{bmatrix}
 
 Both columns already sum to zero, so this is an anomaly matrix. Plotted as dots, the data form a tilted, cigar-shaped cloud:
 
-```
-                                      EOF1  (lambda = 10)
-   y                                 /
-   4 | \                 o     /
-   2 |       \     o     /     o
-   0 |       o     +     o
-  -2 | o     /     o     \
-  -4 | /     o                 \
-     +-----------------------------  x
-      -4    -2     0     2     4
-        \
-         EOF2  (lambda = 2)
-```
+Run [`eof_scatter_2d.py`](eof_scatter_2d.py) to generate this figure.
+![EOFs as the axes of a 2D scatter cloud](eof_scatter_2d.png)
+
+The script runs the full recipe in nine lines of numpy — form $\mathbf{C}$, call `numpy.linalg.eigh`, sort the eigenvalues descending, project — and prints the numbers derived by hand below. The left panel is the cloud in data space with the EOF axes drawn; the right panel is the same eight dots after the rotation $\mathbf{Z} = \mathbf{XE}$.
 
 **The covariance matrix.** With $M = 8$,
 
