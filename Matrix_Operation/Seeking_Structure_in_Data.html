@@ -388,6 +388,7 @@
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#part-3-eofs-via-eigenanalysis">Part 3 — EOFs via Eigenanalysis</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-picture-to-keep-in-your-head">The picture to keep in your head</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#setting-up-the-maximization">Setting up the maximization</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#what-this-buys-you">What this buys you</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#getting-your-original-data-back">Getting your original data back</a></li>
@@ -675,6 +676,80 @@ a_{m1} &amp; a_{m2} &amp; a_{m3} &amp; \cdots &amp; a_{mn}
 <li><p><strong>EOF analysis</strong> normally refers to finding the principal components that maximize variance explained — so, a subset of all the PCs</p></li>
 </ul>
 <p>We will cover two routes to EOFs: eigenanalysis of the covariance matrix (this Part) and singular value decomposition (Part 4). <strong>Both give identical answers.</strong></p>
+<section id="the-picture-to-keep-in-your-head">
+<h3>The picture to keep in your head<a class="headerlink" href="#the-picture-to-keep-in-your-head" title="Link to this heading">#</a></h3>
+<p>Before any algebra, it is worth seeing what an EOF <em>is</em> geometrically. Everything below is a rotation of coordinate axes, and with only two grid points you can draw the whole thing on paper.</p>
+<div class="note admonition">
+<p class="admonition-title">Example / deeper dive</p>
+<p><strong>EOFs are the axes of the scatter cloud</strong></p>
+<p>Take two stations, <span class="math notranslate nohighlight">\(N = 2\)</span>, so every observation is a <strong>point in a plane</strong>: <span class="math notranslate nohighlight">\(x\)</span> is the anomaly at station A, <span class="math notranslate nohighlight">\(y\)</span> the anomaly at station B. Eight observation times, <span class="math notranslate nohighlight">\(M = 8\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\mathbf{X} = \begin{bmatrix}
+-4 &amp; -2\\ -2 &amp; -4\\ -2 &amp; 0\\ 0 &amp; -2\\ 0 &amp; 2\\ 2 &amp; 0\\ 2 &amp; 4\\ 4 &amp; 2
+\end{bmatrix}\end{split}\]</div>
+<p>Both columns already sum to zero, so this is an anomaly matrix. Plotted as dots, the data form a tilted, cigar-shaped cloud:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>                                      <span class="n">EOF1</span>  <span class="p">(</span><span class="k">lambda</span> <span class="o">=</span> <span class="mi">10</span><span class="p">)</span>
+   <span class="n">y</span>                                 <span class="o">/</span>
+   <span class="mi">4</span> <span class="o">|</span> \                 <span class="n">o</span>     <span class="o">/</span>
+   <span class="mi">2</span> <span class="o">|</span>       \     <span class="n">o</span>     <span class="o">/</span>     <span class="n">o</span>
+   <span class="mi">0</span> <span class="o">|</span>       <span class="n">o</span>     <span class="o">+</span>     <span class="n">o</span>
+  <span class="o">-</span><span class="mi">2</span> <span class="o">|</span> <span class="n">o</span>     <span class="o">/</span>     <span class="n">o</span>     \
+  <span class="o">-</span><span class="mi">4</span> <span class="o">|</span> <span class="o">/</span>     <span class="n">o</span>                 \
+     <span class="o">+-----------------------------</span>  <span class="n">x</span>
+      <span class="o">-</span><span class="mi">4</span>    <span class="o">-</span><span class="mi">2</span>     <span class="mi">0</span>     <span class="mi">2</span>     <span class="mi">4</span>
+        \
+         <span class="n">EOF2</span>  <span class="p">(</span><span class="k">lambda</span> <span class="o">=</span> <span class="mi">2</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>The covariance matrix.</strong> With <span class="math notranslate nohighlight">\(M = 8\)</span>,</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\mathbf{C} = \frac{1}{M}\mathbf{X}^T\mathbf{X} = \begin{bmatrix} 6 &amp; 4\\ 4 &amp; 6\end{bmatrix}, \qquad \mathrm{tr}(\mathbf{C}) = 12\end{split}\]</div>
+<p><strong>The eigenanalysis.</strong> For a matrix of the form <span class="math notranslate nohighlight">\(\begin{bmatrix}a &amp; b\\ b &amp; a\end{bmatrix}\)</span> the eigenvalues are <span class="math notranslate nohighlight">\(a \pm b\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\lambda_1 = 10, \quad \mathbf{e}_1 = \tfrac{1}{\sqrt2}\begin{bmatrix}1\\1\end{bmatrix}; \qquad
+\lambda_2 = 2, \quad \mathbf{e}_2 = \tfrac{1}{\sqrt2}\begin{bmatrix}1\\-1\end{bmatrix}\end{split}\]</div>
+<p>Check: <span class="math notranslate nohighlight">\(\mathbf{C}\mathbf{e}_1 = \tfrac{1}{\sqrt2}(10,10)^T = 10\,\mathbf{e}_1\)</span>, <span class="math notranslate nohighlight">\(\mathbf{e}_1^T\mathbf{e}_2 = 0\)</span>, and <span class="math notranslate nohighlight">\(\lambda_1 + \lambda_2 = 12 = \mathrm{tr}(\mathbf{C})\)</span>. EOF 1 explains <span class="math notranslate nohighlight">\(10/12 = 83.3\%\)</span> of the variance, EOF 2 the remaining <span class="math notranslate nohighlight">\(16.7\%\)</span>.</p>
+<p><strong>The PCs</strong> are simply the coordinates of each dot measured along the new axes, <span class="math notranslate nohighlight">\(\mathbf{Z} = \mathbf{X}\mathbf{E}\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[\mathbf{z}_1 = \frac{x+y}{\sqrt2} = \sqrt2\,(-3,-3,-1,-1,1,1,3,3)^T, \qquad
+\mathbf{z}_2 = \frac{x-y}{\sqrt2} = \sqrt2\,(1,-1,-1,1,-1,1,-1,1)^T\]</div>
+<p>with <span class="math notranslate nohighlight">\(\mathrm{var}(\mathbf{z}_1) = 10 = \lambda_1\)</span>, <span class="math notranslate nohighlight">\(\mathrm{var}(\mathbf{z}_2) = 2 = \lambda_2\)</span>, and <span class="math notranslate nohighlight">\(\mathbf{z}_1^T\mathbf{z}_2 = 0\)</span> — the PCs are uncorrelated, which is the entire point of diagonalizing <span class="math notranslate nohighlight">\(\mathbf{C}\)</span>.</p>
+<p><strong>The dictionary between the algebra and the picture:</strong></p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Algebra</p></th>
+<th class="head"><p>Geometry</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(\mathbf{e}_1\)</span></p></td>
+<td><p>direction of the <strong>major axis</strong> of the scatter ellipse</p></td>
+</tr>
+<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(\mathbf{e}_2\)</span></p></td>
+<td><p><strong>minor axis</strong>, forced perpendicular to <span class="math notranslate nohighlight">\(\mathbf{e}_1\)</span></p></td>
+</tr>
+<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(\sqrt{\lambda_i}\)</span></p></td>
+<td><p><strong>half-length</strong> of the ellipse along axis <span class="math notranslate nohighlight">\(i\)</span>; here <span class="math notranslate nohighlight">\(\sqrt{10}:\sqrt{2} = \sqrt5 \approx 2.24\)</span>, so the cloud is 2.24 times longer than it is wide</p></td>
+</tr>
+<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(z_i(t)\)</span></p></td>
+<td><p>the <strong>coordinate</strong> of dot <span class="math notranslate nohighlight">\(t\)</span> along axis <span class="math notranslate nohighlight">\(i\)</span></p></td>
+</tr>
+<tr class="row-even"><td><p>the whole analysis</p></td>
+<td><p>a <strong>rigid rotation</strong> of the axes into the cloud’s own frame</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>The tilt angle in general is <span class="math notranslate nohighlight">\(\tan 2\theta = 2c_{xy}/(c_{xx} - c_{yy})\)</span>. Here the denominator vanishes, so <span class="math notranslate nohighlight">\(\theta = 45^\circ\)</span> exactly: whenever two variables have equal variance, EOF 1 bisects them no matter how strong the correlation. The correlation (<span class="math notranslate nohighlight">\(r = 4/6 = 0.67\)</span>) sets the ellipse’s <em>eccentricity</em>, not its <em>orientation</em>.</p>
+<p>Three things the picture makes obvious:</p>
+<ol class="arabic simple">
+<li><p><strong>EOF 1 is not the regression line.</strong> Regressing <span class="math notranslate nohighlight">\(y\)</span> on <span class="math notranslate nohighlight">\(x\)</span> gives slope <span class="math notranslate nohighlight">\(c_{xy}/c_{xx} = 2/3\)</span>, not 1. Regression minimizes <em>vertical</em> distance to the line; EOF 1 minimizes <em>perpendicular</em> distance. The two coincide only when <span class="math notranslate nohighlight">\(r = \pm1\)</span>.</p></li>
+<li><p><strong>The sign is arbitrary.</strong> <span class="math notranslate nohighlight">\(-\mathbf{e}_1\)</span> is an equally valid axis — an axis has a direction, not an arrowhead. Flipping <span class="math notranslate nohighlight">\(\mathbf{e}_1\)</span> flips <span class="math notranslate nohighlight">\(\mathbf{z}_1\)</span> and leaves the product <span class="math notranslate nohighlight">\(\mathbf{z}_1\mathbf{e}_1^T\)</span> untouched.</p></li>
+<li><p><strong>Orthogonality is imposed, not discovered.</strong> EOF 2 had no freedom at all: in two dimensions, once EOF 1 is fixed there is only one unit direction left. That is the geometric root of the warning in Part 5 — higher EOFs are shaped as much by the EOFs before them as by the physics.</p></li>
+</ol>
+<p>Physically, <span class="math notranslate nohighlight">\(\mathbf{e}_1 = (1,1)/\sqrt2\)</span> is the two stations warming <strong>together</strong> and <span class="math notranslate nohighlight">\(\mathbf{e}_2 = (1,-1)/\sqrt2\)</span> is a <strong>seesaw</strong> between them — the same uniform-versus-dipole story as the four-point basin worked through at the end of this Part, but small enough to draw.</p>
+</div>
+</section>
 <section id="setting-up-the-maximization">
 <h3>Setting up the maximization<a class="headerlink" href="#setting-up-the-maximization" title="Link to this heading">#</a></h3>
 <p>Let <span class="math notranslate nohighlight">\(\mathbf{X}\)</span> be <span class="math notranslate nohighlight">\(M \times N\)</span>, rows being times and columns being spatial locations. We want to decompose <span class="math notranslate nohighlight">\(\mathbf{X}\)</span> into orthogonal eigenvectors that explain the most variance. Equivalently, we want to find the <span class="math notranslate nohighlight">\(\mathbf{e}_1\)</span> (dimension <span class="math notranslate nohighlight">\([N\times1]\)</span>, i.e. a spatial pattern) that most resembles the data.</p>
@@ -798,6 +873,54 @@ x_{m1} &amp; x_{m2} &amp; \cdots &amp; x_{mn}
 <li><p>to find the PCs, project the data onto the eigenvectors — PCs should have the length of your sampling dimension</p></li>
 <li><p>the fraction of variance explained by the <span class="math notranslate nohighlight">\(i\)</span>th EOF pair is <span class="math notranslate nohighlight">\(\lambda_i/\sum_j\lambda_j\)</span></p></li>
 </ol>
+<div class="note admonition">
+<p class="admonition-title">Example / deeper dive</p>
+<p><strong>A complete EOF analysis you can do by hand</strong></p>
+<p>The <span class="math notranslate nohighlight">\(2\times2\)</span> example in Part 2 showed the eigenanalysis. This one runs the whole recipe end to end, on numbers small enough to check with a pencil.</p>
+<p><strong>The data.</strong> Imagine a basin with four grid points in a row, observed at four times. The anomaly matrix <span class="math notranslate nohighlight">\(\mathbf{X} = [M\times N] = [4 \text{ times} \times 4 \text{ points}]\)</span> is</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\mathbf{X} = \begin{bmatrix}
+3 &amp; 3 &amp; -1 &amp; -1 \\
+-1 &amp; -1 &amp; 3 &amp; 3 \\
+1 &amp; 1 &amp; -3 &amp; -3 \\
+-3 &amp; -3 &amp; 1 &amp; 1
+\end{bmatrix}\end{split}\]</div>
+<p>Reading the rows: at time 1 the west half is warm and the east half is cool; at time 2 it has flipped. There is a <strong>seesaw</strong> in the data, plus something weaker going on.</p>
+<p><strong>Step 1 — remove the sampling mean.</strong> Each column already sums to zero, so <span class="math notranslate nohighlight">\(\mathbf{X}\)</span> is already an anomaly matrix. (Check: <span class="math notranslate nohighlight">\(3-1+1-3 = 0\)</span>.)</p>
+<p><strong>Step 2 — form the covariance matrix.</strong> With <span class="math notranslate nohighlight">\(M = 4\)</span>,</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\mathbf{C} = \frac{1}{4}\mathbf{X}^T\mathbf{X} = \begin{bmatrix}
+5 &amp; 5 &amp; -3 &amp; -3 \\
+5 &amp; 5 &amp; -3 &amp; -3 \\
+-3 &amp; -3 &amp; 5 &amp; 5 \\
+-3 &amp; -3 &amp; 5 &amp; 5
+\end{bmatrix}\end{split}\]</div>
+<p>It is square, symmetric, and <span class="math notranslate nohighlight">\(4\times4\)</span> because we contracted over time. Points 1 and 2 covary positively (<span class="math notranslate nohighlight">\(+5\)</span>); points 1 and 3 covary negatively (<span class="math notranslate nohighlight">\(-3\)</span>). The total variance is <span class="math notranslate nohighlight">\(\mathrm{tr}(\mathbf{C}) = 20\)</span>.</p>
+<p><strong>Step 3 — eigenanalyze.</strong> Two eigenvalues are non-zero:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\lambda_1 = 16, \quad \mathbf{e}_1 = \tfrac12\begin{bmatrix}1\\1\\-1\\-1\end{bmatrix}; \qquad
+\lambda_2 = 4, \quad \mathbf{e}_2 = \tfrac12\begin{bmatrix}1\\1\\1\\1\end{bmatrix}; \qquad \lambda_3=\lambda_4=0\end{split}\]</div>
+<p>Verify the first one directly: <span class="math notranslate nohighlight">\(\mathbf{C}\mathbf{e}_1 = (8,8,-8,-8)^T = 16\,\mathbf{e}_1\)</span>. Both vectors have unit norm (<span class="math notranslate nohighlight">\(4\times(\tfrac12)^2 = 1\)</span>) and are orthogonal (<span class="math notranslate nohighlight">\(\mathbf{e}_1^T\mathbf{e}_2 = 0\)</span>), as Part 3 promised they must be. Note also <span class="math notranslate nohighlight">\(\sum_i\lambda_i = 16+4 = 20 = \mathrm{tr}(\mathbf{C})\)</span>: the eigenvalues redistribute the total variance, they do not create or destroy it.</p>
+<p><strong>Step 4 — EOF 1.</strong> The leading eigenvector is the <strong>dipole</strong> <span class="math notranslate nohighlight">\((+,+,-,-)\)</span>: the west-versus-east seesaw. EOF 2 is the <strong>uniform</strong> pattern <span class="math notranslate nohighlight">\((+,+,+,+)\)</span>: the whole basin warming or cooling together.</p>
+<p><strong>Step 5 — the PCs.</strong> Project the data onto the eigenvectors, <span class="math notranslate nohighlight">\(\mathbf{Z} = \mathbf{X}\mathbf{E}\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\mathbf{z}_1 = \mathbf{X}\mathbf{e}_1 = \begin{bmatrix}4\\-4\\4\\-4\end{bmatrix}, \qquad
+\mathbf{z}_2 = \mathbf{X}\mathbf{e}_2 = \begin{bmatrix}2\\2\\-2\\-2\end{bmatrix}\end{split}\]</div>
+<p>Each has length <span class="math notranslate nohighlight">\(M = 4\)</span>, as it must. PC 1 flips sign every time step — the seesaw oscillating fast. PC 2 switches sign once, halfway through — a slow basin-wide drift. And <span class="math notranslate nohighlight">\(\mathbf{z}_1^T\mathbf{z}_2 = 0\)</span>: <strong>the PCs are uncorrelated</strong>, which is the whole point of diagonalizing <span class="math notranslate nohighlight">\(\mathbf{C}\)</span>. Note too that <span class="math notranslate nohighlight">\(\mathrm{var}(\mathbf{z}_1) = 16 = \lambda_1\)</span> — the eigenvalue <em>is</em> the variance of its PC.</p>
+<p><strong>Step 6 — variance explained.</strong></p>
+<div class="math notranslate nohighlight">
+\[\frac{\lambda_1}{\sum_i\lambda_i} = \frac{16}{20} = 80\%, \qquad \frac{\lambda_2}{\sum_i\lambda_i} = \frac{4}{20} = 20\%\]</div>
+<p>Two EOFs account for everything. That is not luck: we built <span class="math notranslate nohighlight">\(\mathbf{X}\)</span> from exactly two patterns, so its rank is 2, and by the rank argument in Part 1 a rank-2 matrix cannot have more than two non-zero eigenvalues. The <span class="math notranslate nohighlight">\(4\times4\)</span> covariance matrix is degenerate, and <span class="math notranslate nohighlight">\(\mathbf{e}_3,\mathbf{e}_4\)</span> span its null space. Whatever your eigensolver returns for them is numerical noise — a situation you meet constantly with real data, where <span class="math notranslate nohighlight">\(N\)</span> grid points vastly outnumber <span class="math notranslate nohighlight">\(M\)</span> time steps.</p>
+<p><strong>Putting it back together.</strong> Because the decomposition is complete,</p>
+<div class="math notranslate nohighlight">
+\[\mathbf{X} = \mathbf{z}_1\mathbf{e}_1^T + \mathbf{z}_2\mathbf{e}_2^T\]</div>
+<p>Check row 1: <span class="math notranslate nohighlight">\(4\cdot(\tfrac12,\tfrac12,-\tfrac12,-\tfrac12) + 2\cdot(\tfrac12,\tfrac12,\tfrac12,\tfrac12) = (2,2,-2,-2)+(1,1,1,1) = (3,3,-1,-1)\)</span>. ✓</p>
+<p><strong>Physical units (looking ahead to Part 5).</strong> <span class="math notranslate nohighlight">\(\mathbf{e}_1\)</span> has no units — its entries are <span class="math notranslate nohighlight">\(\pm\tfrac12\)</span> because we forced unit norm. Standardize PC 1 (its mean is already zero, and <span class="math notranslate nohighlight">\(\sigma_{z_1} = 4\)</span>) to get <span class="math notranslate nohighlight">\(\tilde{\mathbf{z}}_1 = (1,-1,1,-1)^T\)</span>, then regress it back onto the data:</p>
+<div class="math notranslate nohighlight">
+\[\mathbf{d}_1 = \frac{1}{M}\tilde{\mathbf{z}}_1^T\mathbf{X} = (2,\,2,\,-2,\,-2)\]</div>
+<p>This is a sentence you can defend in a caption: <em>a one-standard-deviation swing of PC 1 corresponds to a <span class="math notranslate nohighlight">\(+2\)</span> anomaly at the two western points and <span class="math notranslate nohighlight">\(-2\)</span> at the two eastern points.</em> Observe that <span class="math notranslate nohighlight">\(\mathbf{d}_1 = \sigma_{z_1}\mathbf{e}_1\)</span> exactly — because here we neither area-weighted nor standardized, the pattern is unchanged and only the scaling differs, precisely as noted in Recipe 1 step 8.</p>
+<p><strong>One caution.</strong> EOF 1 came out as the dipole because the dipole carried the most variance, not because it is more “physical” than the uniform mode. Had we multiplied the uniform pattern’s amplitude by 3, EOF 1 would be the uniform mode instead, with the dipole demoted to EOF 2. The ordering is a statement about variance, nothing more — a point that returns with force in Part 5.</p>
+</div>
 <div class="tip admonition">
 <p class="admonition-title">Figure / in-class demonstration</p>
 <p><em>Show slides:</em> <code class="docutils literal notranslate"><span class="pre">eof_physicalvars.pdf</span></code></p>
@@ -865,6 +988,13 @@ x_{m1} &amp; x_{m2} &amp; \cdots &amp; x_{mn}
 <div class="math notranslate nohighlight">
 \[\mathbf{Z} = \boldsymbol{\Sigma}\mathbf{V}^T\]</div>
 <p>which is consistent with <span class="math notranslate nohighlight">\(\mathbf{X} = \mathbf{E}\mathbf{Z}\)</span> from the eigenanalysis, since <span class="math notranslate nohighlight">\(\mathbf{U} = \mathbf{E}\)</span>.</p>
+<p><strong>Numerical check.</strong> Take the <span class="math notranslate nohighlight">\(4\times4\)</span> matrix <span class="math notranslate nohighlight">\(\mathbf{X}\)</span> from the worked example in Part 3 and hand it to an SVD routine. The singular values come back as</p>
+<div class="math notranslate nohighlight">
+\[s = (8,\; 4,\; 0,\; 0)\]</div>
+<p>That matrix is <span class="math notranslate nohighlight">\([\text{time}\times\text{space}]\)</span> — the Part 3 convention — so by the warning box above the EOFs are the columns of <span class="math notranslate nohighlight">\(\mathbf{V}\)</span>, and indeed <span class="math notranslate nohighlight">\(\mathbf{V}\)</span>’s first column is <span class="math notranslate nohighlight">\(\pm\tfrac12(1,1,-1,-1)^T\)</span>: the same dipole, possibly with the sign flipped, which as always carries no meaning. The variance fractions agree too,</p>
+<div class="math notranslate nohighlight">
+\[\frac{s_1^2}{\sum_j s_j^2} = \frac{64}{80} = 80\%, \qquad \frac{s_2^2}{\sum_j s_j^2} = \frac{16}{80} = 20\%\]</div>
+<p>and <span class="math notranslate nohighlight">\(s_i^2/M = (16, 4, 0, 0)\)</span> recovers the eigenvalues of <span class="math notranslate nohighlight">\(\mathbf{C}\)</span> exactly, which is the relation <span class="math notranslate nohighlight">\(\frac{1}{M}\boldsymbol{\Sigma}^2 = \boldsymbol{\Lambda}\)</span> just derived. Two zero singular values, again flagging rank 2.</p>
 </div>
 <section id="summary-eofs-with-svd-mathbf-x-m-times-n">
 <h3>Summary: EOFs with SVD, <span class="math notranslate nohighlight">\(\mathbf{X} = [M\times N]\)</span><a class="headerlink" href="#summary-eofs-with-svd-mathbf-x-m-times-n" title="Link to this heading">#</a></h3>
@@ -1277,6 +1407,7 @@ Many options exist. Running k-means many times and choosing the best solution is
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#part-3-eofs-via-eigenanalysis">Part 3 — EOFs via Eigenanalysis</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-picture-to-keep-in-your-head">The picture to keep in your head</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#setting-up-the-maximization">Setting up the maximization</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#what-this-buys-you">What this buys you</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#getting-your-original-data-back">Getting your original data back</a></li>

@@ -240,7 +240,7 @@ The significance of the slope $a_1$ is a direct application of our earlier t-tes
 
 $$t = \frac{a_1}{\sigma_{a_1}} \sim t_{N^*-2}$$
 
-where $\sigma_{a_1}$ is the standard error of the slope (see above) and **$N^*$ is the effective sample size** (Leith formula), not $N$, to account for autocorrelation in the residuals. This is a common mistake — if the residuals are red noise with lag-1 autocorrelation $\alpha$, using $N$ instead of $N^*$ inflates the t-statistic and leads to spurious detections.
+where $\sigma_{a_1}$ is the standard error of the slope (see above) and **$N^*$ is the effective sample size** ({ref}`derived below <effective-sample-size>`), not $N$, to account for autocorrelation in the residuals. This is a common mistake — if the residuals are red noise with lag-1 autocorrelation $\alpha$, using $N$ instead of $N^*$ inflates the t-statistic and leads to spurious detections.
 
 #### Why a linear fit can fail: the nonlinear forced response problem
 
@@ -279,7 +279,7 @@ The procedure for constructing confidence intervals is then:
 
 1. **Fit** $f(t)$ by polynomial regression of order $p$ (e.g., $p = 2$).
 2. **Estimate** the lag-1 autocorrelation $\alpha = \rho(\Delta t)$ of the residuals $\eta(t)$.
-3. **Compute** the effective sample size using the Leith formula:
+3. **Compute** the effective sample size using the AR1 formula ({ref}`derived below <effective-sample-size>`):
 
    $$N^* \approx N\frac{1-\alpha}{1+\alpha}$$
 
@@ -927,42 +927,92 @@ Note that the correlation with the truth *drops* from 0.86 to 0.66 when the resi
 The key innovation of diffusion models is not the forward AR(1) process — that is just Gaussian noise addition, and you derived its normalisation earlier in this chapter — but the learned *reverse* process, which turns pure noise back into structured data. The statistical machinery of AR1 and least squares you learned here is the exact mathematical foundation.
 ::::
 
+(effective-sample-size)=
 ### Effective sample size $N^*$
 
 Persistence in a data set leads to **overestimation of the sample size**, because each data point is not independent of its neighbors. If persistence is ignored, the standard error of the mean is underestimated and the t-statistic is inflated.
 
 The solution is to introduce an **effective sample size** $N^* \leq N$ and substitute it for $N$ in formulas.
 
-For a first-order AR process, $N^*$ can be estimated with the **Bretherton/Wilks approximation** (Wilks, p. 127):
+For a first-order AR process, $N^*$ is given by the classical **AR1 effective sample size** (Bartlett 1935; Wilks, p. 144):
 
-$$\frac{N^*}{N} \approx \frac{1-\rho(\Delta t)}{1+\rho(\Delta t)}$$
+$$\boxed{\frac{N^*}{N} \approx \frac{1-\rho(\Delta t)}{1+\rho(\Delta t)}}$$
 
 - if $\rho(1) = 0$ (white noise): $N^* = N$
 - as $\rho(1)$ increases, $N^*$ decreases
+- as $\rho(1)\rightarrow 1$: $N^*\rightarrow 0$, since a perfectly persistent series is one observation repeated $N$ times
 
-An equivalent form from Leith (*J. Appl. Meteor.*, 1973):
+:::{admonition} Example / deeper dive
+:class: note
+**Where $\dfrac{N^*}{N}=\dfrac{1-\rho}{1+\rho}$ comes from**
+
+The formula is not a rule of thumb — it falls out of asking how much autocorrelation inflates the variance of the sample mean.
+
+**1. Variance of the mean of a correlated series.** Let $x_1,\dots,x_N$ be stationary with variance $\sigma^2$ and autocorrelation $\rho(k)$. For $\overline{x}=\frac{1}{N}\sum_i x_i$,
+
+$$\operatorname{Var}(\overline{x}) = \frac{1}{N^2}\sum_{i=1}^{N}\sum_{j=1}^{N}\operatorname{Cov}(x_i,x_j) = \frac{\sigma^2}{N^2}\sum_{i=1}^{N}\sum_{j=1}^{N}\rho(|i-j|)$$
+
+If the data were independent, only the $i=j$ terms survive and we recover the familiar $\sigma^2/N$. With memory, the off-diagonal terms do not vanish — that is the entire effect.
+
+**2. Count the pairs by lag.** In that $N\times N$ double sum, lag $k=0$ occurs $N$ times and each lag $|k|=1,\dots,N-1$ occurs $2(N-k)$ times — the factor of 2 being the $+k$ and $-k$ diagonals, i.e. the fact that a point is correlated with its neighbours both *before* and *after* it. Hence
+
+$$\operatorname{Var}(\overline{x}) = \frac{\sigma^2}{N}\underbrace{\left[1 + 2\sum_{k=1}^{N-1}\left(1-\frac{k}{N}\right)\rho(k)\right]}_{\text{variance inflation factor}}$$
+
+**3. Define $N^*$.** Let $N^*$ be the number of *independent* samples that would give the same $\operatorname{Var}(\overline{x})$, i.e. set $\operatorname{Var}(\overline{x})\equiv\sigma^2/N^*$:
+
+$$\frac{N^*}{N} = \frac{1}{1 + 2\sum_{k=1}^{N-1}\left(1-\frac{k}{N}\right)\rho(k)}$$
+
+Everything to this point is exact, and holds for **any** stationary process — this is the general result worth remembering.
+
+**4. Specialise to AR1.** Now insert $\rho(k)=\rho^k$, derived above. Two approximations enter, both good for large $N$: drop the edge correction $(1-k/N)$, and extend the sum to $\infty$ (legitimate because $\rho^k$ decays geometrically, so the added terms are negligible). The sum is then geometric:
+
+$$\sum_{k=1}^{\infty}\rho^k = \frac{\rho}{1-\rho} \qquad\Longrightarrow\qquad 1+2\cdot\frac{\rho}{1-\rho} = \frac{(1-\rho)+2\rho}{1-\rho} = \frac{1+\rho}{1-\rho}$$
+
+and therefore $N^*/N \approx (1-\rho)/(1+\rho)$. $\;\blacksquare$
+
+The $(1+\rho)$ in the denominator is literally the geometric sum of all the lagged covariances; the $(1-\rho)$ in the numerator is what survives of the diagonal once that memory is paid for.
+:::
+
+An equivalent form in the strong-persistence limit, from Leith (*J. Appl. Meteor.*, 1973):
 
 $$N^* \approx \frac{N\Delta t}{2T_e} = \frac{\text{total record length}}{2 \times \text{e-folding time}}$$
 
-The factor of 2 reflects the fact that any point in red noise can be predicted by points both before and after it. The Leith formula can also be written as:
+Using $T_e = -\Delta t/\ln a$, this is the same as
 
 $$\frac{N^*}{N} \approx \frac{\ln a}{-2}$$
 
-The table below shows $N^*/N$ as a function of lag-1 autocorrelation:
+The useful reading: **a genuinely new piece of information arrives about every $2T_e$**, so a record of length $N\Delta t$ holds roughly $N\Delta t/2T_e$ of them. The factor of 2 is the same factor of 2 as in step 2 of the derivation above — a point is constrained by its neighbours on both sides.
 
-| $\rho(\Delta t)$ | $<0.1$ | $0.3$ | $0.5$ | $0.7$ | $0.9$ |
-|---|---|---|---|---|---|
-| $N^*/N$ | $\approx 1$ | $0.60$ | $0.35$ | $0.18$ | $0.053$ |
+:::{admonition} Example / deeper dive
+:class: note
+**Why the Leith form and $(1-\rho)/(1+\rho)$ are the same formula**
 
-Bretherton et al. (*J. Climate*, 1999) proposed a less conservative approximation (use for variance/higher-order moments):
+Write $\rho = e^{-\Delta t/T_e}$, which is exactly the AR1 decay law derived above. Then
+
+$$\frac{1-\rho}{1+\rho} = \frac{1-e^{-\Delta t/T_e}}{1+e^{-\Delta t/T_e}} = \tanh\!\left(\frac{\Delta t}{2T_e}\right) \approx \frac{\Delta t}{2T_e} \qquad (\Delta t \ll T_e)$$
+
+So Leith's $N^*=N\Delta t/2T_e$ is the small-argument limit $\tanh u \approx u$ of the exact AR1 result. The two agree when sampling is fast compared with the memory ($\rho$ near 1) and **diverge when $\rho$ is small**: $-\ln(a)/2$ grows without bound as $a\to 0$ and already exceeds 1 for $\rho<0.135$, which is nonsense, whereas $(1-\rho)/(1+\rho)\rightarrow 1$ correctly. Prefer $(1-\rho)/(1+\rho)$ as the default; use the $T_e$ form when you are thinking in terms of a decorrelation time.
+:::
+
+The table below shows $N^*/N$ as a function of lag-1 autocorrelation, for all three expressions:
+
+| $\rho(\Delta t)$ | $0.1$ | $0.3$ | $0.5$ | $0.7$ | $0.9$ | $0.95$ |
+|---|---|---|---|---|---|---|
+| $\dfrac{1-\rho}{1+\rho}$ (AR1, for the mean) | $0.82$ | $0.54$ | $0.33$ | $0.18$ | $0.053$ | $0.026$ |
+| $-\dfrac{\ln\rho}{2}$ (Leith) | $1.15$ ✗ | $0.60$ | $0.35$ | $0.18$ | $0.053$ | $0.026$ |
+| $\dfrac{1-\rho^2}{1+\rho^2}$ (Bretherton) | $0.98$ | $0.84$ | $0.60$ | $0.34$ | $0.105$ | $0.051$ |
+
+Note how the first two rows converge for $\rho\gtrsim0.7$ and part company below that, exactly as the $\tanh$ argument predicts.
+
+Bretherton et al. (*J. Climate*, 1999) proposed a less conservative approximation for the correlation between two autocorrelated series, $\frac{N^*}{N}\approx\frac{1-\rho_1\rho_2}{1+\rho_1\rho_2}$, which for two series of equal persistence $\rho_1=\rho_2=\rho$ becomes:
 
 $$\frac{N^*}{N} \approx \frac{1-\rho^2(\Delta t)}{1+\rho^2(\Delta t)}$$
 
-This yields nearly twice as many degrees of freedom as the Leith formula. For testing the **mean**, use the Leith formula; for testing **variance**, the Bretherton formula may be used.
+This yields nearly twice as many degrees of freedom. For testing the **mean**, use $(1-\rho)/(1+\rho)$; for testing **correlation, variance, and higher-order moments**, the Bretherton formula may be used.
 
 :::{admonition} Figure / in-class demonstration
 :class: tip
-*Figure Example: `effective_sample_size.py`* — plot of $N^*/N$ vs $\rho(\Delta t)$ comparing the Leith and Bretherton approximations.
+*Figure Example: `effective_sample_size.py`* — plot of $N^*/N$ vs $\rho(\Delta t)$ comparing all three curves: the AR1 result $(1-\rho)/(1+\rho)$, the Leith limit $-\ln\rho/2$ (note where it exceeds 1 and must be discarded), and the Bretherton form $(1-\rho^2)/(1+\rho^2)$.
 :::
 
 ## Multiple Regression (Multi-linear Regression)

@@ -674,7 +674,7 @@ r^2 &amp;= \frac{\text{explained variance}}{\text{total variance}}
 <p>The significance of the slope <span class="math notranslate nohighlight">\(a_1\)</span> is a direct application of our earlier t-test. Under <span class="math notranslate nohighlight">\(H_0: a_1 = 0\)</span>, the test statistic is:</p>
 <div class="math notranslate nohighlight">
 \[t = \frac{a_1}{\sigma_{a_1}} \sim t_{N^*-2}\]</div>
-<p>where <span class="math notranslate nohighlight">\(\sigma_{a_1}\)</span> is the standard error of the slope (see above) and <strong><span class="math notranslate nohighlight">\(N^*\)</span> is the effective sample size</strong> (Leith formula), not <span class="math notranslate nohighlight">\(N\)</span>, to account for autocorrelation in the residuals. This is a common mistake — if the residuals are red noise with lag-1 autocorrelation <span class="math notranslate nohighlight">\(\alpha\)</span>, using <span class="math notranslate nohighlight">\(N\)</span> instead of <span class="math notranslate nohighlight">\(N^*\)</span> inflates the t-statistic and leads to spurious detections.</p>
+<p>where <span class="math notranslate nohighlight">\(\sigma_{a_1}\)</span> is the standard error of the slope (see above) and <strong><span class="math notranslate nohighlight">\(N^*\)</span> is the effective sample size</strong> (<a class="reference internal" href="#effective-sample-size"><span class="std std-ref">derived below</span></a>), not <span class="math notranslate nohighlight">\(N\)</span>, to account for autocorrelation in the residuals. This is a common mistake — if the residuals are red noise with lag-1 autocorrelation <span class="math notranslate nohighlight">\(\alpha\)</span>, using <span class="math notranslate nohighlight">\(N\)</span> instead of <span class="math notranslate nohighlight">\(N^*\)</span> inflates the t-statistic and leads to spurious detections.</p>
 </section>
 <section id="why-a-linear-fit-can-fail-the-nonlinear-forced-response-problem">
 <h4>Why a linear fit can fail: the nonlinear forced response problem<a class="headerlink" href="#why-a-linear-fit-can-fail-the-nonlinear-forced-response-problem" title="Link to this heading">#</a></h4>
@@ -707,7 +707,7 @@ r^2 &amp;= \frac{\text{explained variance}}{\text{total variance}}
 <ol class="arabic">
 <li><p><strong>Fit</strong> <span class="math notranslate nohighlight">\(f(t)\)</span> by polynomial regression of order <span class="math notranslate nohighlight">\(p\)</span> (e.g., <span class="math notranslate nohighlight">\(p = 2\)</span>).</p></li>
 <li><p><strong>Estimate</strong> the lag-1 autocorrelation <span class="math notranslate nohighlight">\(\alpha = \rho(\Delta t)\)</span> of the residuals <span class="math notranslate nohighlight">\(\eta(t)\)</span>.</p></li>
-<li><p><strong>Compute</strong> the effective sample size using the Leith formula:</p>
+<li><p><strong>Compute</strong> the effective sample size using the AR1 formula (<a class="reference internal" href="#effective-sample-size"><span class="std std-ref">derived below</span></a>):</p>
 <div class="math notranslate nohighlight">
 \[N^* \approx N\frac{1-\alpha}{1+\alpha}\]</div>
 </li>
@@ -1629,51 +1629,101 @@ Z_2 &amp;= \frac{1}{2}\ln\left(\frac{1+r_2}{1-r_2}\right)
 </div>
 </section>
 <section id="effective-sample-size-n">
-<h3>Effective sample size <span class="math notranslate nohighlight">\(N^*\)</span><a class="headerlink" href="#effective-sample-size-n" title="Link to this heading">#</a></h3>
+<span id="effective-sample-size"></span><h3>Effective sample size <span class="math notranslate nohighlight">\(N^*\)</span><a class="headerlink" href="#effective-sample-size-n" title="Link to this heading">#</a></h3>
 <p>Persistence in a data set leads to <strong>overestimation of the sample size</strong>, because each data point is not independent of its neighbors. If persistence is ignored, the standard error of the mean is underestimated and the t-statistic is inflated.</p>
 <p>The solution is to introduce an <strong>effective sample size</strong> <span class="math notranslate nohighlight">\(N^* \leq N\)</span> and substitute it for <span class="math notranslate nohighlight">\(N\)</span> in formulas.</p>
-<p>For a first-order AR process, <span class="math notranslate nohighlight">\(N^*\)</span> can be estimated with the <strong>Bretherton/Wilks approximation</strong> (Wilks, p. 127):</p>
+<p>For a first-order AR process, <span class="math notranslate nohighlight">\(N^*\)</span> is given by the classical <strong>AR1 effective sample size</strong> (Bartlett 1935; Wilks, p. 144):</p>
 <div class="math notranslate nohighlight">
-\[\frac{N^*}{N} \approx \frac{1-\rho(\Delta t)}{1+\rho(\Delta t)}\]</div>
+\[\boxed{\frac{N^*}{N} \approx \frac{1-\rho(\Delta t)}{1+\rho(\Delta t)}}\]</div>
 <ul class="simple">
 <li><p>if <span class="math notranslate nohighlight">\(\rho(1) = 0\)</span> (white noise): <span class="math notranslate nohighlight">\(N^* = N\)</span></p></li>
 <li><p>as <span class="math notranslate nohighlight">\(\rho(1)\)</span> increases, <span class="math notranslate nohighlight">\(N^*\)</span> decreases</p></li>
+<li><p>as <span class="math notranslate nohighlight">\(\rho(1)\rightarrow 1\)</span>: <span class="math notranslate nohighlight">\(N^*\rightarrow 0\)</span>, since a perfectly persistent series is one observation repeated <span class="math notranslate nohighlight">\(N\)</span> times</p></li>
 </ul>
-<p>An equivalent form from Leith (<em>J. Appl. Meteor.</em>, 1973):</p>
+<div class="note admonition">
+<p class="admonition-title">Example / deeper dive</p>
+<p><strong>Where <span class="math notranslate nohighlight">\(\dfrac{N^*}{N}=\dfrac{1-\rho}{1+\rho}\)</span> comes from</strong></p>
+<p>The formula is not a rule of thumb — it falls out of asking how much autocorrelation inflates the variance of the sample mean.</p>
+<p><strong>1. Variance of the mean of a correlated series.</strong> Let <span class="math notranslate nohighlight">\(x_1,\dots,x_N\)</span> be stationary with variance <span class="math notranslate nohighlight">\(\sigma^2\)</span> and autocorrelation <span class="math notranslate nohighlight">\(\rho(k)\)</span>. For <span class="math notranslate nohighlight">\(\overline{x}=\frac{1}{N}\sum_i x_i\)</span>,</p>
+<div class="math notranslate nohighlight">
+\[\operatorname{Var}(\overline{x}) = \frac{1}{N^2}\sum_{i=1}^{N}\sum_{j=1}^{N}\operatorname{Cov}(x_i,x_j) = \frac{\sigma^2}{N^2}\sum_{i=1}^{N}\sum_{j=1}^{N}\rho(|i-j|)\]</div>
+<p>If the data were independent, only the <span class="math notranslate nohighlight">\(i=j\)</span> terms survive and we recover the familiar <span class="math notranslate nohighlight">\(\sigma^2/N\)</span>. With memory, the off-diagonal terms do not vanish — that is the entire effect.</p>
+<p><strong>2. Count the pairs by lag.</strong> In that <span class="math notranslate nohighlight">\(N\times N\)</span> double sum, lag <span class="math notranslate nohighlight">\(k=0\)</span> occurs <span class="math notranslate nohighlight">\(N\)</span> times and each lag <span class="math notranslate nohighlight">\(|k|=1,\dots,N-1\)</span> occurs <span class="math notranslate nohighlight">\(2(N-k)\)</span> times — the factor of 2 being the <span class="math notranslate nohighlight">\(+k\)</span> and <span class="math notranslate nohighlight">\(-k\)</span> diagonals, i.e. the fact that a point is correlated with its neighbours both <em>before</em> and <em>after</em> it. Hence</p>
+<div class="math notranslate nohighlight">
+\[\operatorname{Var}(\overline{x}) = \frac{\sigma^2}{N}\underbrace{\left[1 + 2\sum_{k=1}^{N-1}\left(1-\frac{k}{N}\right)\rho(k)\right]}_{\text{variance inflation factor}}\]</div>
+<p><strong>3. Define <span class="math notranslate nohighlight">\(N^*\)</span>.</strong> Let <span class="math notranslate nohighlight">\(N^*\)</span> be the number of <em>independent</em> samples that would give the same <span class="math notranslate nohighlight">\(\operatorname{Var}(\overline{x})\)</span>, i.e. set <span class="math notranslate nohighlight">\(\operatorname{Var}(\overline{x})\equiv\sigma^2/N^*\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[\frac{N^*}{N} = \frac{1}{1 + 2\sum_{k=1}^{N-1}\left(1-\frac{k}{N}\right)\rho(k)}\]</div>
+<p>Everything to this point is exact, and holds for <strong>any</strong> stationary process — this is the general result worth remembering.</p>
+<p><strong>4. Specialise to AR1.</strong> Now insert <span class="math notranslate nohighlight">\(\rho(k)=\rho^k\)</span>, derived above. Two approximations enter, both good for large <span class="math notranslate nohighlight">\(N\)</span>: drop the edge correction <span class="math notranslate nohighlight">\((1-k/N)\)</span>, and extend the sum to <span class="math notranslate nohighlight">\(\infty\)</span> (legitimate because <span class="math notranslate nohighlight">\(\rho^k\)</span> decays geometrically, so the added terms are negligible). The sum is then geometric:</p>
+<div class="math notranslate nohighlight">
+\[\sum_{k=1}^{\infty}\rho^k = \frac{\rho}{1-\rho} \qquad\Longrightarrow\qquad 1+2\cdot\frac{\rho}{1-\rho} = \frac{(1-\rho)+2\rho}{1-\rho} = \frac{1+\rho}{1-\rho}\]</div>
+<p>and therefore <span class="math notranslate nohighlight">\(N^*/N \approx (1-\rho)/(1+\rho)\)</span>. <span class="math notranslate nohighlight">\(\;\blacksquare\)</span></p>
+<p>The <span class="math notranslate nohighlight">\((1+\rho)\)</span> in the denominator is literally the geometric sum of all the lagged covariances; the <span class="math notranslate nohighlight">\((1-\rho)\)</span> in the numerator is what survives of the diagonal once that memory is paid for.</p>
+</div>
+<p>An equivalent form in the strong-persistence limit, from Leith (<em>J. Appl. Meteor.</em>, 1973):</p>
 <div class="math notranslate nohighlight">
 \[N^* \approx \frac{N\Delta t}{2T_e} = \frac{\text{total record length}}{2 \times \text{e-folding time}}\]</div>
-<p>The factor of 2 reflects the fact that any point in red noise can be predicted by points both before and after it. The Leith formula can also be written as:</p>
+<p>Using <span class="math notranslate nohighlight">\(T_e = -\Delta t/\ln a\)</span>, this is the same as</p>
 <div class="math notranslate nohighlight">
 \[\frac{N^*}{N} \approx \frac{\ln a}{-2}\]</div>
-<p>The table below shows <span class="math notranslate nohighlight">\(N^*/N\)</span> as a function of lag-1 autocorrelation:</p>
+<p>The useful reading: <strong>a genuinely new piece of information arrives about every <span class="math notranslate nohighlight">\(2T_e\)</span></strong>, so a record of length <span class="math notranslate nohighlight">\(N\Delta t\)</span> holds roughly <span class="math notranslate nohighlight">\(N\Delta t/2T_e\)</span> of them. The factor of 2 is the same factor of 2 as in step 2 of the derivation above — a point is constrained by its neighbours on both sides.</p>
+<div class="note admonition">
+<p class="admonition-title">Example / deeper dive</p>
+<p><strong>Why the Leith form and <span class="math notranslate nohighlight">\((1-\rho)/(1+\rho)\)</span> are the same formula</strong></p>
+<p>Write <span class="math notranslate nohighlight">\(\rho = e^{-\Delta t/T_e}\)</span>, which is exactly the AR1 decay law derived above. Then</p>
+<div class="math notranslate nohighlight">
+\[\frac{1-\rho}{1+\rho} = \frac{1-e^{-\Delta t/T_e}}{1+e^{-\Delta t/T_e}} = \tanh\!\left(\frac{\Delta t}{2T_e}\right) \approx \frac{\Delta t}{2T_e} \qquad (\Delta t \ll T_e)\]</div>
+<p>So Leith’s <span class="math notranslate nohighlight">\(N^*=N\Delta t/2T_e\)</span> is the small-argument limit <span class="math notranslate nohighlight">\(\tanh u \approx u\)</span> of the exact AR1 result. The two agree when sampling is fast compared with the memory (<span class="math notranslate nohighlight">\(\rho\)</span> near 1) and <strong>diverge when <span class="math notranslate nohighlight">\(\rho\)</span> is small</strong>: <span class="math notranslate nohighlight">\(-\ln(a)/2\)</span> grows without bound as <span class="math notranslate nohighlight">\(a\to 0\)</span> and already exceeds 1 for <span class="math notranslate nohighlight">\(\rho&lt;0.135\)</span>, which is nonsense, whereas <span class="math notranslate nohighlight">\((1-\rho)/(1+\rho)\rightarrow 1\)</span> correctly. Prefer <span class="math notranslate nohighlight">\((1-\rho)/(1+\rho)\)</span> as the default; use the <span class="math notranslate nohighlight">\(T_e\)</span> form when you are thinking in terms of a decorrelation time.</p>
+</div>
+<p>The table below shows <span class="math notranslate nohighlight">\(N^*/N\)</span> as a function of lag-1 autocorrelation, for all three expressions:</p>
 <div class="pst-scrollable-table-container"><table class="table">
 <thead>
 <tr class="row-odd"><th class="head"><p><span class="math notranslate nohighlight">\(\rho(\Delta t)\)</span></p></th>
-<th class="head"><p><span class="math notranslate nohighlight">\(&lt;0.1\)</span></p></th>
+<th class="head"><p><span class="math notranslate nohighlight">\(0.1\)</span></p></th>
 <th class="head"><p><span class="math notranslate nohighlight">\(0.3\)</span></p></th>
 <th class="head"><p><span class="math notranslate nohighlight">\(0.5\)</span></p></th>
 <th class="head"><p><span class="math notranslate nohighlight">\(0.7\)</span></p></th>
 <th class="head"><p><span class="math notranslate nohighlight">\(0.9\)</span></p></th>
+<th class="head"><p><span class="math notranslate nohighlight">\(0.95\)</span></p></th>
 </tr>
 </thead>
 <tbody>
-<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(N^*/N\)</span></p></td>
-<td><p><span class="math notranslate nohighlight">\(\approx 1\)</span></p></td>
+<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(\dfrac{1-\rho}{1+\rho}\)</span> (AR1, for the mean)</p></td>
+<td><p><span class="math notranslate nohighlight">\(0.82\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(0.54\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(0.33\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(0.18\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(0.053\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(0.026\)</span></p></td>
+</tr>
+<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(-\dfrac{\ln\rho}{2}\)</span> (Leith)</p></td>
+<td><p><span class="math notranslate nohighlight">\(1.15\)</span> ✗</p></td>
 <td><p><span class="math notranslate nohighlight">\(0.60\)</span></p></td>
 <td><p><span class="math notranslate nohighlight">\(0.35\)</span></p></td>
 <td><p><span class="math notranslate nohighlight">\(0.18\)</span></p></td>
 <td><p><span class="math notranslate nohighlight">\(0.053\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(0.026\)</span></p></td>
+</tr>
+<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(\dfrac{1-\rho^2}{1+\rho^2}\)</span> (Bretherton)</p></td>
+<td><p><span class="math notranslate nohighlight">\(0.98\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(0.84\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(0.60\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(0.34\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(0.105\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(0.051\)</span></p></td>
 </tr>
 </tbody>
 </table>
 </div>
-<p>Bretherton et al. (<em>J. Climate</em>, 1999) proposed a less conservative approximation (use for variance/higher-order moments):</p>
+<p>Note how the first two rows converge for <span class="math notranslate nohighlight">\(\rho\gtrsim0.7\)</span> and part company below that, exactly as the <span class="math notranslate nohighlight">\(\tanh\)</span> argument predicts.</p>
+<p>Bretherton et al. (<em>J. Climate</em>, 1999) proposed a less conservative approximation for the correlation between two autocorrelated series, <span class="math notranslate nohighlight">\(\frac{N^*}{N}\approx\frac{1-\rho_1\rho_2}{1+\rho_1\rho_2}\)</span>, which for two series of equal persistence <span class="math notranslate nohighlight">\(\rho_1=\rho_2=\rho\)</span> becomes:</p>
 <div class="math notranslate nohighlight">
 \[\frac{N^*}{N} \approx \frac{1-\rho^2(\Delta t)}{1+\rho^2(\Delta t)}\]</div>
-<p>This yields nearly twice as many degrees of freedom as the Leith formula. For testing the <strong>mean</strong>, use the Leith formula; for testing <strong>variance</strong>, the Bretherton formula may be used.</p>
+<p>This yields nearly twice as many degrees of freedom. For testing the <strong>mean</strong>, use <span class="math notranslate nohighlight">\((1-\rho)/(1+\rho)\)</span>; for testing <strong>correlation, variance, and higher-order moments</strong>, the Bretherton formula may be used.</p>
 <div class="tip admonition">
 <p class="admonition-title">Figure / in-class demonstration</p>
-<p><em>Figure Example: <code class="docutils literal notranslate"><span class="pre">effective_sample_size.py</span></code></em> — plot of <span class="math notranslate nohighlight">\(N^*/N\)</span> vs <span class="math notranslate nohighlight">\(\rho(\Delta t)\)</span> comparing the Leith and Bretherton approximations.</p>
+<p><em>Figure Example: <code class="docutils literal notranslate"><span class="pre">effective_sample_size.py</span></code></em> — plot of <span class="math notranslate nohighlight">\(N^*/N\)</span> vs <span class="math notranslate nohighlight">\(\rho(\Delta t)\)</span> comparing all three curves: the AR1 result <span class="math notranslate nohighlight">\((1-\rho)/(1+\rho)\)</span>, the Leith limit <span class="math notranslate nohighlight">\(-\ln\rho/2\)</span> (note where it exceeds 1 and must be discarded), and the Bretherton form <span class="math notranslate nohighlight">\((1-\rho^2)/(1+\rho^2)\)</span>.</p>
 </div>
 </section>
 </section>

@@ -298,6 +298,75 @@ A vocabulary note first, since the literature is loose about it:
 
 We will cover two routes to EOFs: eigenanalysis of the covariance matrix (this Part) and singular value decomposition (Part 4). **Both give identical answers.**
 
+### The picture to keep in your head
+
+Before any algebra, it is worth seeing what an EOF *is* geometrically. Everything below is a rotation of coordinate axes, and with only two grid points you can draw the whole thing on paper.
+
+:::{admonition} Example / deeper dive
+:class: note
+**EOFs are the axes of the scatter cloud**
+
+Take two stations, $N = 2$, so every observation is a **point in a plane**: $x$ is the anomaly at station A, $y$ the anomaly at station B. Eight observation times, $M = 8$:
+
+$$\mathbf{X} = \begin{bmatrix}
+-4 & -2\\ -2 & -4\\ -2 & 0\\ 0 & -2\\ 0 & 2\\ 2 & 0\\ 2 & 4\\ 4 & 2
+\end{bmatrix}$$
+
+Both columns already sum to zero, so this is an anomaly matrix. Plotted as dots, the data form a tilted, cigar-shaped cloud:
+
+```
+                                      EOF1  (lambda = 10)
+   y                                 /
+   4 | \                 o     /
+   2 |       \     o     /     o
+   0 |       o     +     o
+  -2 | o     /     o     \
+  -4 | /     o                 \
+     +-----------------------------  x
+      -4    -2     0     2     4
+        \
+         EOF2  (lambda = 2)
+```
+
+**The covariance matrix.** With $M = 8$,
+
+$$\mathbf{C} = \frac{1}{M}\mathbf{X}^T\mathbf{X} = \begin{bmatrix} 6 & 4\\ 4 & 6\end{bmatrix}, \qquad \mathrm{tr}(\mathbf{C}) = 12$$
+
+**The eigenanalysis.** For a matrix of the form $\begin{bmatrix}a & b\\ b & a\end{bmatrix}$ the eigenvalues are $a \pm b$:
+
+$$\lambda_1 = 10, \quad \mathbf{e}_1 = \tfrac{1}{\sqrt2}\begin{bmatrix}1\\1\end{bmatrix}; \qquad
+\lambda_2 = 2, \quad \mathbf{e}_2 = \tfrac{1}{\sqrt2}\begin{bmatrix}1\\-1\end{bmatrix}$$
+
+Check: $\mathbf{C}\mathbf{e}_1 = \tfrac{1}{\sqrt2}(10,10)^T = 10\,\mathbf{e}_1$, $\mathbf{e}_1^T\mathbf{e}_2 = 0$, and $\lambda_1 + \lambda_2 = 12 = \mathrm{tr}(\mathbf{C})$. EOF 1 explains $10/12 = 83.3\%$ of the variance, EOF 2 the remaining $16.7\%$.
+
+**The PCs** are simply the coordinates of each dot measured along the new axes, $\mathbf{Z} = \mathbf{X}\mathbf{E}$:
+
+$$\mathbf{z}_1 = \frac{x+y}{\sqrt2} = \sqrt2\,(-3,-3,-1,-1,1,1,3,3)^T, \qquad
+\mathbf{z}_2 = \frac{x-y}{\sqrt2} = \sqrt2\,(1,-1,-1,1,-1,1,-1,1)^T$$
+
+with $\mathrm{var}(\mathbf{z}_1) = 10 = \lambda_1$, $\mathrm{var}(\mathbf{z}_2) = 2 = \lambda_2$, and $\mathbf{z}_1^T\mathbf{z}_2 = 0$ — the PCs are uncorrelated, which is the entire point of diagonalizing $\mathbf{C}$.
+
+**The dictionary between the algebra and the picture:**
+
+| Algebra | Geometry |
+|---|---|
+| $\mathbf{e}_1$ | direction of the **major axis** of the scatter ellipse |
+| $\mathbf{e}_2$ | **minor axis**, forced perpendicular to $\mathbf{e}_1$ |
+| $\sqrt{\lambda_i}$ | **half-length** of the ellipse along axis $i$; here $\sqrt{10}:\sqrt{2} = \sqrt5 \approx 2.24$, so the cloud is 2.24 times longer than it is wide |
+| $z_i(t)$ | the **coordinate** of dot $t$ along axis $i$ |
+| the whole analysis | a **rigid rotation** of the axes into the cloud's own frame |
+
+The tilt angle in general is $\tan 2\theta = 2c_{xy}/(c_{xx} - c_{yy})$. Here the denominator vanishes, so $\theta = 45^\circ$ exactly: whenever two variables have equal variance, EOF 1 bisects them no matter how strong the correlation. The correlation ($r = 4/6 = 0.67$) sets the ellipse's *eccentricity*, not its *orientation*.
+
+Three things the picture makes obvious:
+
+1. **EOF 1 is not the regression line.** Regressing $y$ on $x$ gives slope $c_{xy}/c_{xx} = 2/3$, not 1. Regression minimizes *vertical* distance to the line; EOF 1 minimizes *perpendicular* distance. The two coincide only when $r = \pm1$.
+2. **The sign is arbitrary.** $-\mathbf{e}_1$ is an equally valid axis — an axis has a direction, not an arrowhead. Flipping $\mathbf{e}_1$ flips $\mathbf{z}_1$ and leaves the product $\mathbf{z}_1\mathbf{e}_1^T$ untouched.
+3. **Orthogonality is imposed, not discovered.** EOF 2 had no freedom at all: in two dimensions, once EOF 1 is fixed there is only one unit direction left. That is the geometric root of the warning in Part 5 — higher EOFs are shaped as much by the EOFs before them as by the physics.
+
+Physically, $\mathbf{e}_1 = (1,1)/\sqrt2$ is the two stations warming **together** and $\mathbf{e}_2 = (1,-1)/\sqrt2$ is a **seesaw** between them — the same uniform-versus-dipole story as the four-point basin worked through at the end of this Part, but small enough to draw.
+:::
+
 ### Setting up the maximization
 
 Let $\mathbf{X}$ be $M \times N$, rows being times and columns being spatial locations. We want to decompose $\mathbf{X}$ into orthogonal eigenvectors that explain the most variance. Equivalently, we want to find the $\mathbf{e}_1$ (dimension $[N\times1]$, i.e. a spatial pattern) that most resembles the data.
@@ -435,6 +504,73 @@ $$\mathbf{C} = \frac{1}{N}\mathbf{X}\mathbf{X}^T \to [M\times M] \quad \text{if 
 5. to find the PCs, project the data onto the eigenvectors — PCs should have the length of your sampling dimension
 6. the fraction of variance explained by the $i$th EOF pair is $\lambda_i/\sum_j\lambda_j$
 
+:::{admonition} Example / deeper dive
+:class: note
+**A complete EOF analysis you can do by hand**
+
+The $2\times2$ example in Part 2 showed the eigenanalysis. This one runs the whole recipe end to end, on numbers small enough to check with a pencil.
+
+**The data.** Imagine a basin with four grid points in a row, observed at four times. The anomaly matrix $\mathbf{X} = [M\times N] = [4 \text{ times} \times 4 \text{ points}]$ is
+
+$$\mathbf{X} = \begin{bmatrix}
+3 & 3 & -1 & -1 \\
+-1 & -1 & 3 & 3 \\
+1 & 1 & -3 & -3 \\
+-3 & -3 & 1 & 1
+\end{bmatrix}$$
+
+Reading the rows: at time 1 the west half is warm and the east half is cool; at time 2 it has flipped. There is a **seesaw** in the data, plus something weaker going on.
+
+**Step 1 — remove the sampling mean.** Each column already sums to zero, so $\mathbf{X}$ is already an anomaly matrix. (Check: $3-1+1-3 = 0$.)
+
+**Step 2 — form the covariance matrix.** With $M = 4$,
+
+$$\mathbf{C} = \frac{1}{4}\mathbf{X}^T\mathbf{X} = \begin{bmatrix}
+5 & 5 & -3 & -3 \\
+5 & 5 & -3 & -3 \\
+-3 & -3 & 5 & 5 \\
+-3 & -3 & 5 & 5
+\end{bmatrix}$$
+
+It is square, symmetric, and $4\times4$ because we contracted over time. Points 1 and 2 covary positively ($+5$); points 1 and 3 covary negatively ($-3$). The total variance is $\mathrm{tr}(\mathbf{C}) = 20$.
+
+**Step 3 — eigenanalyze.** Two eigenvalues are non-zero:
+
+$$\lambda_1 = 16, \quad \mathbf{e}_1 = \tfrac12\begin{bmatrix}1\\1\\-1\\-1\end{bmatrix}; \qquad
+\lambda_2 = 4, \quad \mathbf{e}_2 = \tfrac12\begin{bmatrix}1\\1\\1\\1\end{bmatrix}; \qquad \lambda_3=\lambda_4=0$$
+
+Verify the first one directly: $\mathbf{C}\mathbf{e}_1 = (8,8,-8,-8)^T = 16\,\mathbf{e}_1$. Both vectors have unit norm ($4\times(\tfrac12)^2 = 1$) and are orthogonal ($\mathbf{e}_1^T\mathbf{e}_2 = 0$), as Part 3 promised they must be. Note also $\sum_i\lambda_i = 16+4 = 20 = \mathrm{tr}(\mathbf{C})$: the eigenvalues redistribute the total variance, they do not create or destroy it.
+
+**Step 4 — EOF 1.** The leading eigenvector is the **dipole** $(+,+,-,-)$: the west-versus-east seesaw. EOF 2 is the **uniform** pattern $(+,+,+,+)$: the whole basin warming or cooling together.
+
+**Step 5 — the PCs.** Project the data onto the eigenvectors, $\mathbf{Z} = \mathbf{X}\mathbf{E}$:
+
+$$\mathbf{z}_1 = \mathbf{X}\mathbf{e}_1 = \begin{bmatrix}4\\-4\\4\\-4\end{bmatrix}, \qquad
+\mathbf{z}_2 = \mathbf{X}\mathbf{e}_2 = \begin{bmatrix}2\\2\\-2\\-2\end{bmatrix}$$
+
+Each has length $M = 4$, as it must. PC 1 flips sign every time step — the seesaw oscillating fast. PC 2 switches sign once, halfway through — a slow basin-wide drift. And $\mathbf{z}_1^T\mathbf{z}_2 = 0$: **the PCs are uncorrelated**, which is the whole point of diagonalizing $\mathbf{C}$. Note too that $\mathrm{var}(\mathbf{z}_1) = 16 = \lambda_1$ — the eigenvalue *is* the variance of its PC.
+
+**Step 6 — variance explained.**
+
+$$\frac{\lambda_1}{\sum_i\lambda_i} = \frac{16}{20} = 80\%, \qquad \frac{\lambda_2}{\sum_i\lambda_i} = \frac{4}{20} = 20\%$$
+
+Two EOFs account for everything. That is not luck: we built $\mathbf{X}$ from exactly two patterns, so its rank is 2, and by the rank argument in Part 1 a rank-2 matrix cannot have more than two non-zero eigenvalues. The $4\times4$ covariance matrix is degenerate, and $\mathbf{e}_3,\mathbf{e}_4$ span its null space. Whatever your eigensolver returns for them is numerical noise — a situation you meet constantly with real data, where $N$ grid points vastly outnumber $M$ time steps.
+
+**Putting it back together.** Because the decomposition is complete,
+
+$$\mathbf{X} = \mathbf{z}_1\mathbf{e}_1^T + \mathbf{z}_2\mathbf{e}_2^T$$
+
+Check row 1: $4\cdot(\tfrac12,\tfrac12,-\tfrac12,-\tfrac12) + 2\cdot(\tfrac12,\tfrac12,\tfrac12,\tfrac12) = (2,2,-2,-2)+(1,1,1,1) = (3,3,-1,-1)$. ✓
+
+**Physical units (looking ahead to Part 5).** $\mathbf{e}_1$ has no units — its entries are $\pm\tfrac12$ because we forced unit norm. Standardize PC 1 (its mean is already zero, and $\sigma_{z_1} = 4$) to get $\tilde{\mathbf{z}}_1 = (1,-1,1,-1)^T$, then regress it back onto the data:
+
+$$\mathbf{d}_1 = \frac{1}{M}\tilde{\mathbf{z}}_1^T\mathbf{X} = (2,\,2,\,-2,\,-2)$$
+
+This is a sentence you can defend in a caption: *a one-standard-deviation swing of PC 1 corresponds to a $+2$ anomaly at the two western points and $-2$ at the two eastern points.* Observe that $\mathbf{d}_1 = \sigma_{z_1}\mathbf{e}_1$ exactly — because here we neither area-weighted nor standardized, the pattern is unchanged and only the scaling differs, precisely as noted in Recipe 1 step 8.
+
+**One caution.** EOF 1 came out as the dipole because the dipole carried the most variance, not because it is more "physical" than the uniform mode. Had we multiplied the uniform pattern's amplitude by 3, EOF 1 would be the uniform mode instead, with the dipole demoted to EOF 2. The ordering is a statement about variance, nothing more — a point that returns with force in Part 5.
+:::
+
 :::{admonition} Figure / in-class demonstration
 :class: tip
 *Show slides:* `eof_physicalvars.pdf`
@@ -514,6 +650,16 @@ Similarly for the PCs: starting again from $\mathbf{X} = \mathbf{U}\boldsymbol{\
 $$\mathbf{Z} = \boldsymbol{\Sigma}\mathbf{V}^T$$
 
 which is consistent with $\mathbf{X} = \mathbf{E}\mathbf{Z}$ from the eigenanalysis, since $\mathbf{U} = \mathbf{E}$.
+
+**Numerical check.** Take the $4\times4$ matrix $\mathbf{X}$ from the worked example in Part 3 and hand it to an SVD routine. The singular values come back as
+
+$$s = (8,\; 4,\; 0,\; 0)$$
+
+That matrix is $[\text{time}\times\text{space}]$ — the Part 3 convention — so by the warning box above the EOFs are the columns of $\mathbf{V}$, and indeed $\mathbf{V}$'s first column is $\pm\tfrac12(1,1,-1,-1)^T$: the same dipole, possibly with the sign flipped, which as always carries no meaning. The variance fractions agree too,
+
+$$\frac{s_1^2}{\sum_j s_j^2} = \frac{64}{80} = 80\%, \qquad \frac{s_2^2}{\sum_j s_j^2} = \frac{16}{80} = 20\%$$
+
+and $s_i^2/M = (16, 4, 0, 0)$ recovers the eigenvalues of $\mathbf{C}$ exactly, which is the relation $\frac{1}{M}\boldsymbol{\Sigma}^2 = \boldsymbol{\Lambda}$ just derived. Two zero singular values, again flagging rank 2.
 :::
 
 ### Summary: EOFs with SVD, $\mathbf{X} = [M\times N]$
